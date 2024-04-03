@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1710669463360,
+      "tag": "0000_plain_nitro",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1710693548274,
+      "tag": "0001_dashing_slipstream",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1712085144171,
+      "tag": "0002_peaceful_colossus",
+      "breakpoints": true
+    }
+  ]
+}
