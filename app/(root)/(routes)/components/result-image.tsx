@@ -24,6 +24,9 @@ export default function ResultImage({ src, alt, ...props }: ImageProps) {
     <Image
       src={`/api/image/view?token=${token}${param}`}
       alt={alt}
+      decoding="async"
+      loading="lazy"
+      unoptimized
       {...props}
     />
   );
