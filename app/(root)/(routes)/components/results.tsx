@@ -1,11 +1,13 @@
-import { Suspense, cache, use } from "react";
-import Image, { ImageLoader } from "next/image";
-import { useHits, useSearchBox } from "react-instantsearch";
+import { Suspense, cache, memo, use, useState } from "react";
+import { useHits, useInfiniteHits } from "react-instantsearch";
+
 import Loading from "@/app/loading";
 import { PostHit, PostHitResults } from "@/services/post";
-import { useSearchParams } from "next/navigation";
-import jwt from "jsonwebtoken";
 import ResultImage from "./result-image";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { usePopup } from "@/providers/popup-provider";
+import { Button } from "@/components/ui/button";
+import { useEbook } from "@/providers/ebook-provider";
 
 const getHitPostsByIds = cache(async (ids: string[]) => {
   if (ids.length === 0) {
@@ -20,55 +22,58 @@ const getHitPostsByIds = cache(async (ids: string[]) => {
   return response.json();
 });
 
-const imageLoader = (({ src, width, quality }) => {
-  const token = jwt.sign({ foo: "bar" }, "shhhhh");
-  console.log(token);
+function ResultCard(post: PostHitResults[number]) {
+  return (
+    <article
+      key={post.id}
+      className="rounded-2xl overflow-hidden shadow-lg md:basis-1/3 lg:basis-1/4"
+    >
+      <div
+        className="relative aspect-video rounded-inherit border-border border"
+        onClick={() => usePopup.getState().open(post)}
+      >
+        <ResultImage
+          src={post.imageUrl!}
+          alt={post.book}
+          fill
+          next
+          className="rounded-inherit object-cover"
+          onClick={(e) => e.preventDefault()}
+        />
+      </div>
+      <div className="flex items-center justify-between text-white bg-card-result px-3 py-2">
+        <div>
+          <span className="text-[0.5rem] leading-none">Page {post.page}</span>
+          <h6 className="text-xs leading-none mt-px">{post.book}</h6>
+        </div>
+        <Button
+          size="sm"
+          variant="secondary"
+          className="text-xs h-7 py-0.5 leading-none rounded-full"
+          onClick={() => useEbook.getState().open(post)}
+        >
+          See as book formet
+        </Button>
+        <p className="text-xs px-2 py-1 rounded-full leading-none">
+          {post.chapter}
+        </p>
+      </div>
+    </article>
+  );
+}
 
-  return `http://localhost:8000/marked-image?image_url=${src}`;
-}) satisfies ImageLoader;
-
-function HitReslts({ ids }: { ids: string[] }) {
+const HitReslts = memo(({ ids }: { ids: string[] }) => {
   const { posts } = use<{ posts?: PostHitResults }>(getHitPostsByIds(ids));
 
   return (
     <section className="flex flex-col md:flex-row gap-4">
-      {posts?.map((hit) => {
-        return (
-          <article
-            key={hit.id}
-            className="aspect-video rounded-2xl overflow-hidden shadow-lg border-border border relative md:basis-1/3 lg:basis-1/4"
-          >
-            <ResultImage
-              src={hit.imageUrl!}
-              alt={hit.book}
-              fill
-              className="rounded-inherit object-cover"
-            />
-            {/* <Image
-              src={
-                hit.imageUrl ||
-                "https://images.unsplash.com/photo-1457369804613-52c61a468e7d"
-              }
-              alt={hit.book}
-              fill
-              objectFit="cover"
-              className="rounded-inherit object-cover"
-            /> */}
-            <div className="absolute bottom-0 w-full flex items-end justify-between text-white bg-slate-900/50 rounded-inherit px-3 py-1">
-              <div>
-                <span className="text-xs leading-none">Page {hit.page}</span>
-                <h6 className="text-sm leading-none mt-px">{hit.book}</h6>
-              </div>
-              <p className="text-xs px-2 py-1 rounded-full bg-slate-900 leading-none">
-                {hit.chapter}
-              </p>
-            </div>
-          </article>
-        );
-      })}
+      {posts?.map((hit) => (
+        <ResultCard key={hit.id} {...hit} />
+      ))}
     </section>
   );
-}
+});
+HitReslts.displayName = "HitResults";
 
 export default function Hits() {
   const { hits } = useHits<PostHit>({ escapeHTML: true });

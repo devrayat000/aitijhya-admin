@@ -92,6 +92,7 @@ export async function getHitPostsByIds(ids: string[]) {
       chapter: chapter.name,
       subject: subject.name,
       book: bookAuthor.name,
+      bookUrl: bookAuthor.embedUrl,
     })
     .from(post)
     .innerJoin(chapter, eq(chapter.id, post.chapterId))

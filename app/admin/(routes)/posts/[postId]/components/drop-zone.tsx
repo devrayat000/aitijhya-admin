@@ -23,7 +23,8 @@ const DropZoneInput = forwardRef<HTMLInputElement, DropZoneInputProps>(
     });
     const { getRootProps, getInputProps } = useDropzone({
       accept: {
-        "image/*": [],
+        "image/jpeg": [],
+        "image/png": [],
       },
       multiple: false,
       onDrop: (acceptedFiles) => {

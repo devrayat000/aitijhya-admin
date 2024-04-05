@@ -32,8 +32,6 @@ export async function GET(request: Request): Promise<Response> {
     fetchUrl.searchParams.set("q", q);
   }
 
-  console.log(fetchUrl.toString());
-
   return fetch(fetchUrl, {
     headers: {
       Accept:

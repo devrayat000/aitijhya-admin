@@ -3,7 +3,16 @@ import Image, { ImageProps } from "next/image";
 import { useSearchParams } from "next/navigation";
 import { use } from "react";
 
-export default function ResultImage({ src, alt, ...props }: ImageProps) {
+interface ResultImageProps extends ImageProps {
+  next?: boolean;
+}
+
+export default function ResultImage({
+  src,
+  alt,
+  next,
+  ...props
+}: ResultImageProps) {
   const token = use(
     encrypt(
       typeof src === "string"
@@ -16,9 +25,20 @@ export default function ResultImage({ src, alt, ...props }: ImageProps) {
   );
   const searchParams = useSearchParams();
 
-  const q = searchParams.get("posts[query]");
-  console.log("query=", q);
+  const q = searchParams.get("q")?.trim();
   const param = q ? `&q=${q}` : "";
+
+  if (!next) {
+    return (
+      <img
+        src={`/api/image/view?token=${token}${param}`}
+        alt={alt}
+        decoding="async"
+        loading="lazy"
+        {...props}
+      />
+    );
+  }
 
   return (
     <Image

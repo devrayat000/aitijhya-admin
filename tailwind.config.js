@@ -6,6 +6,7 @@ const tailwindConfig = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
+    "./providers/**/*.{ts,tsx}",
   ],
   experimental: { optimizeUniversalDefaults: true },
   theme: {
@@ -50,6 +51,7 @@ const tailwindConfig = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          result: "#25A8A8",
         },
       },
       borderRadius: {
