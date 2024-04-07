@@ -22,6 +22,13 @@
       "when": 1712085144171,
       "tag": "0002_peaceful_colossus",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1712422481170,
+      "tag": "0003_tired_silk_fever",
+      "breakpoints": true
     }
   ]
 }

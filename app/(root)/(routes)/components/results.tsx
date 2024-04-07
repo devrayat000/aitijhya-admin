@@ -8,6 +8,9 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { usePopup } from "@/providers/popup-provider";
 import { Button } from "@/components/ui/button";
 import { useEbook } from "@/providers/ebook-provider";
+import { getCurrentUserSearchHistory } from "@/services/history";
+import SearchHistory from "./search-history";
+import BookmarkButton from "./bookmark";
 
 const getHitPostsByIds = cache(async (ids: string[]) => {
   if (ids.length === 0) {
@@ -30,7 +33,7 @@ function ResultCard(post: PostHitResults[number]) {
     >
       <div
         className="relative aspect-video rounded-inherit border-border border"
-        onClick={() => usePopup.getState().open(post)}
+        // onClick={() => usePopup.getState().open(post)}
       >
         <ResultImage
           src={post.imageUrl!}
@@ -40,6 +43,7 @@ function ResultCard(post: PostHitResults[number]) {
           className="rounded-inherit object-cover"
           onClick={(e) => e.preventDefault()}
         />
+        <BookmarkButton postId={post.id} />
       </div>
       <div className="flex items-center justify-between text-white bg-card-result px-3 py-2">
         <div>
@@ -76,8 +80,16 @@ const HitReslts = memo(({ ids }: { ids: string[] }) => {
 HitReslts.displayName = "HitResults";
 
 export default function Hits() {
-  const { hits } = useHits<PostHit>({ escapeHTML: true });
+  const { hits, results } = useHits<PostHit>({ escapeHTML: true });
   const ids = hits.map((hit) => hit.objectID);
+
+  if (!results?.query) {
+    return (
+      <Suspense fallback={<Loading />}>
+        <SearchHistory />
+      </Suspense>
+    );
+  }
 
   return (
     <Suspense fallback={<Loading />}>

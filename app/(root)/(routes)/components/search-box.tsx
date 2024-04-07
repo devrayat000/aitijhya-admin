@@ -10,7 +10,11 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchBox } from "react-instantsearch";
+import {
+  useInstantSearch,
+  useSearchBox,
+  AdditionalWidgetProperties,
+} from "react-instantsearch";
 import { useDropzone } from "react-dropzone";
 
 import logoMulti from "@/assets/logo_multi.png";
@@ -28,13 +32,29 @@ function queryHook(query: string, hook: (value: string) => void) {
 
 const MotionButton = motion(Button);
 
+type GetWidgetSearchParameters = Exclude<
+  AdditionalWidgetProperties["getWidgetSearchParameters"],
+  undefined
+>;
+
 export function SearchBox() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const searchQuery = searchParams.get("q") || "";
 
-  const { clear, refine: executeSearch } = useSearchBox({ queryHook });
   const [q, setQ] = useState(searchQuery);
+  const { clear, refine: executeSearch } = useSearchBox(
+    { queryHook },
+    {
+      getWidgetSearchParameters: useCallback<GetWidgetSearchParameters>(
+        (state, widgetSearchParametersOptions) => {
+          console.log({ ...state });
+          return Object.assign(state, { optionalWords: [q] });
+        },
+        [q]
+      ),
+    }
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
   const {
@@ -72,6 +92,7 @@ export function SearchBox() {
       e.preventDefault();
       e.stopPropagation();
       setQ("");
+      router.push(`.`);
       clear();
       inputRef.current?.focus();
     },
@@ -86,8 +107,6 @@ export function SearchBox() {
   useEffect(() => {
     executeSearch(searchQuery);
   }, [searchQuery]);
-
-  console.log({ q });
 
   useEffect(() => {
     if (!!ocrText) {
@@ -148,7 +167,7 @@ export function SearchBox() {
             <Camera className="h-5 w-5 text-muted-foreground" />
             <input {...getInputProps()} />
           </Button>
-          {/* {!listening ? (
+          {!listening ? (
             <MotionButton
               layoutId="mic"
               key="mic"
@@ -174,7 +193,7 @@ export function SearchBox() {
             >
               <MicOff className="h-5 w-5 text-muted-foreground" />
             </MotionButton>
-          )} */}
+          )}
         </motion.div>
       </form>
     </div>
