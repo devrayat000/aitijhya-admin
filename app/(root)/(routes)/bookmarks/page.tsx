@@ -23,7 +23,7 @@ export default function BookmarksPage() {
         >
           <section className="flex flex-col md:flex-row gap-4">
             {posts?.map((hit) => (
-              <ResultCard key={hit.id} {...hit} />
+              <ResultCard isStatic key={hit.id} {...hit} />
             ))}
           </section>
         </ServerStoreProvider>

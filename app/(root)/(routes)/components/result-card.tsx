@@ -1,12 +1,20 @@
 "use client";
 
+import NextImage from "next/image";
+
 import { PostHitResults } from "@/services/post";
 import ResultImage from "./result-image";
 import BookmarkButton from "./bookmark";
 import { Button } from "@/components/ui/button";
 import { useEbook } from "@/providers/ebook-provider";
 
-export default function ResultCard(post: PostHitResults[number]) {
+export type ResultCardProps = PostHitResults[number] & {
+  isStatic?: boolean;
+};
+
+export default function ResultCard({ isStatic, ...post }: ResultCardProps) {
+  const Image = isStatic ? NextImage : ResultImage;
+
   return (
     <article
       key={post.id}
@@ -16,14 +24,15 @@ export default function ResultCard(post: PostHitResults[number]) {
         className="relative aspect-video rounded-inherit border-border border"
         // onClick={() => usePopup.getState().open(post)}
       >
-        <ResultImage
-          src={post.imageUrl!}
-          alt={post.book}
-          fill
-          next
-          className="rounded-inherit object-cover"
-          onClick={(e) => e.preventDefault()}
-        />
+        {
+          <Image
+            src={post.imageUrl!}
+            alt={post.book}
+            fill
+            next
+            className="rounded-inherit object-cover"
+          />
+        }
         <BookmarkButton postId={post.id} />
       </div>
       <div className="flex items-center justify-between text-white bg-card-result px-3 py-2">
