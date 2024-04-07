@@ -10,11 +10,7 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  useInstantSearch,
-  useSearchBox,
-  AdditionalWidgetProperties,
-} from "react-instantsearch";
+import { useSearchBox, AdditionalWidgetProperties } from "react-instantsearch";
 import { useDropzone } from "react-dropzone";
 
 import logoMulti from "@/assets/logo_multi.png";
@@ -23,6 +19,8 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { getTextFromImage } from "@/actions/ocr";
 import { useRouter, useSearchParams } from "next/navigation";
+import { addToHistory } from "@/actions/history";
+import { useServerStore } from "@/hooks/use-server-data";
 
 function queryHook(query: string, hook: (value: string) => void) {
   if (!!query) {
@@ -41,6 +39,9 @@ export function SearchBox() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const searchQuery = searchParams.get("q") || "";
+  const addToStoreSearchHistory = useServerStore(
+    (store) => store.addSearchHistory
+  );
 
   const [q, setQ] = useState(searchQuery);
   const { clear, refine: executeSearch } = useSearchBox(
@@ -106,6 +107,8 @@ export function SearchBox() {
 
   useEffect(() => {
     executeSearch(searchQuery);
+    addToHistory(searchQuery, searchQuery);
+    addToStoreSearchHistory(searchQuery);
   }, [searchQuery]);
 
   useEffect(() => {

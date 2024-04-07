@@ -28,6 +28,7 @@ export async function updatePost(id: string, params: Partial<PostInput>) {
 
   await saveIndex(data.id);
   revalidatePath("/admin/posts");
+  revalidatePath(`/admin/posts/${id}`);
   return data;
 }
 

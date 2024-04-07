@@ -17,8 +17,7 @@ export default function BookmarkButton({ postId }: BookmarkButtonProps) {
       [postId]
     )
   );
-
-  console.log({ [postId]: bookmarked });
+  const toggleStoreBookmark = useServerStore((state) => state.toggleBookmark);
 
   const [isBookmarked, toggle] = useFormState(toggleBookmark, bookmarked);
   const [isOptimisticBookmarked, optimisticToggle] = useOptimistic<
@@ -29,11 +28,16 @@ export default function BookmarkButton({ postId }: BookmarkButtonProps) {
   function initiateToggle() {
     optimisticToggle(true);
     toggle(postId);
+    toggleStoreBookmark(postId);
   }
 
   return (
-    <button className="absolute top-0 right-2 z-50" onClick={initiateToggle}>
-      {!isOptimisticBookmarked ? <Bookmark /> : <BookmarkCheck />}
+    <button className="absolute -top-1 right-1 z-50" onClick={initiateToggle}>
+      {!isOptimisticBookmarked ? (
+        <Bookmark fill="#25A8A8" stroke="#ffffff" className="h-10 w-10" />
+      ) : (
+        <BookmarkCheck fill="#25A8A8" stroke="#ffffff" className="h-10 w-10" />
+      )}
     </button>
   );
 }

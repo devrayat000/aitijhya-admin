@@ -11,7 +11,12 @@ interface ServerData {
   bookmarks: BookmarkedList;
 }
 
-export type ServerStore = ServerData;
+interface ServerAction {
+  toggleBookmark: (postId: string) => void;
+  addSearchHistory: (search: string) => void;
+}
+
+export type ServerStore = ServerData & ServerAction;
 
 export const initServerStore = (initialData: ServerData): ServerData => {
   return initialData;
@@ -23,8 +28,31 @@ export const defaultInitState: ServerData = {
 };
 
 export const createServerStore = (initState: ServerData = defaultInitState) => {
-  return createStore<ServerStore>()(() => ({
+  return createStore<ServerStore>()((set, get) => ({
     ...initState,
+    toggleBookmark: (postId: string) => {
+      const bookmarks = get().bookmarks;
+      const index = bookmarks.findIndex((bm) => bm.postId === postId);
+      if (index === -1) {
+        set({ bookmarks: [...bookmarks, { postId }] });
+      } else {
+        set({ bookmarks: bookmarks.filter((bm) => bm.postId !== postId) });
+      }
+    },
+    addSearchHistory: (search: string) => {
+      const searchHistory = get().searchHistory;
+
+      set({
+        searchHistory: [
+          {
+            id: crypto.randomUUID(),
+            query: search,
+            createdAt: new Date(),
+          },
+          ...searchHistory,
+        ],
+      });
+    },
   }));
 };
 

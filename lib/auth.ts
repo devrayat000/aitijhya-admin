@@ -16,6 +16,7 @@ export const authOptions: AuthOptions = {
     }),
     // ...add more providers here
   ],
+  session: { strategy: "jwt" },
   callbacks: {
     jwt({ token, account, user }) {
       if (account) {
@@ -35,6 +36,8 @@ export const authOptions: AuthOptions = {
   },
   pages: {
     signIn: "/signin",
+    error: "/error",
+    newUser: "/init",
   },
 };
 

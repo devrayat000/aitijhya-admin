@@ -13,7 +13,7 @@ import { useSearchMode } from "@/hooks/use-search-mode";
 import { Suspense } from "react";
 // import { InstantSearchNext } from "react-instantsearch-nextjs";
 
-let algoliaClient = createClient(
+const algoliaClient = createClient(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!,
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!
 );
@@ -29,7 +29,7 @@ const SetupPage = () => {
         // routing
         future={{ preserveSharedStateOnUnmount: true }}
       >
-        <div className="pt-20">
+        <div className="pt-4">
           <Suspense>
             <SearchBox />
           </Suspense>

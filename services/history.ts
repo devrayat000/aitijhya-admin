@@ -12,7 +12,11 @@ export async function getCurrentUserSearchHistory() {
   }
 
   const history = await db
-    .select()
+    .select({
+      id: searchHistory.id,
+      query: searchHistory.query,
+      createdAt: searchHistory.createdAt,
+    })
     .from(searchHistory)
     .where(eq(searchHistory.userId, session.user.id))
     .orderBy(desc(searchHistory.createdAt))

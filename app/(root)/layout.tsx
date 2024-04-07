@@ -1,6 +1,7 @@
+import { Fragment } from "react";
+import Header from "./components/header";
 import { EbookProvider } from "@/providers/ebook-provider";
 import { PopupProvider } from "@/providers/popup-provider";
-import { Fragment } from "react";
 
 export default function HomeLayout({
   children,
@@ -9,6 +10,7 @@ export default function HomeLayout({
 }) {
   return (
     <Fragment>
+      <Header />
       {children}
       <PopupProvider />
       <EbookProvider />
