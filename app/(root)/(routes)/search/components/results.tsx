@@ -30,7 +30,7 @@ const HitReslts = memo(({ ids }: { ids: string[] }) => {
   const { posts } = use<{ posts?: PostHitResults }>(getHitPostsByIds(ids));
 
   return (
-    <section className="flex flex-col md:flex-row gap-4">
+    <section className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-8">
       {posts?.map((hit) => (
         <ResultCard key={hit.id} {...hit} />
       ))}

@@ -6,8 +6,8 @@ import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { SearchBox } from "../components/search-box";
-import Hits from "../components/results";
+import { SearchBox } from "./search-box";
+import Hits from "./results";
 import logoSingle from "@/assets/logo_single.png";
 import { useSearchMode } from "@/hooks/use-search-mode";
 import { Suspense } from "react";
@@ -46,10 +46,10 @@ const SetupPage = () => {
 function SearchTrigger() {
   return (
     <div className="h-full grid place-items-center">
-      <div className="w-full -mt-36">
-        <div className="flex justify-center">
+      <div className="w-full -mt-72">
+        <motion.div layoutId="search-icon" className="flex justify-center">
           <Image src={logoSingle} alt="logo" width={200} />
-        </div>
+        </motion.div>
         <motion.button
           onClick={useSearchMode.getState().open}
           layoutId="search-input"

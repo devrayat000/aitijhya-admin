@@ -3,7 +3,7 @@ import { use } from "react";
 import { getBookmarkedPosts } from "@/services/bookmark";
 
 import logoMulti from "@/assets/logo_multi.png";
-import ResultCard from "../components/result-card";
+import ResultCard from "../search/components/result-card";
 import { ServerStoreProvider } from "@/hooks/use-server-data";
 
 export default function BookmarksPage() {

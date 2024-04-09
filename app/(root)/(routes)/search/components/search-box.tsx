@@ -1,24 +1,18 @@
 "use client";
 
-import "regenerator-runtime/runtime";
-
 import { motion } from "framer-motion";
 import { useFormState } from "react-dom";
-import { Search, Camera, Mic, MicOff } from "lucide-react";
+import { Search, Camera } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
-import SpeechRecognition, {
-  useSpeechRecognition,
-} from "react-speech-recognition";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchBox, AdditionalWidgetProperties } from "react-instantsearch";
 import { useDropzone } from "react-dropzone";
 
-import logoMulti from "@/assets/logo_multi.png";
+import logoSingle from "@/assets/logo_single.png";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
 import { getTextFromImage } from "@/actions/ocr";
-import { useRouter, useSearchParams } from "next/navigation";
 import { addToHistory } from "@/actions/history";
 import { useServerStore } from "@/hooks/use-server-data";
 
@@ -27,8 +21,6 @@ function queryHook(query: string, hook: (value: string) => void) {
     return hook(query);
   }
 }
-
-const MotionButton = motion(Button);
 
 type GetWidgetSearchParameters = Exclude<
   AdditionalWidgetProperties["getWidgetSearchParameters"],
@@ -48,7 +40,7 @@ export function SearchBox() {
     { queryHook },
     {
       getWidgetSearchParameters: useCallback<GetWidgetSearchParameters>(
-        (state, widgetSearchParametersOptions) => {
+        (state) => {
           console.log({ ...state });
           return Object.assign(state, { optionalWords: [q] });
         },
@@ -58,14 +50,6 @@ export function SearchBox() {
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const {
-    listening,
-    isMicrophoneAvailable,
-    resetTranscript,
-    transcript,
-    browserSupportsSpeechRecognition,
-  } = useSpeechRecognition();
-  const { toast } = useToast();
 
   const [ocrText, ocrExecute, isLoadingOCR] = useFormState(getTextFromImage, q);
   const { open, getInputProps } = useDropzone({
@@ -82,9 +66,10 @@ export function SearchBox() {
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      router.push(`.?q=${q}`);
+      router.push(`./search/?q=${q}`);
       inputRef.current?.focus();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [q]
   );
 
@@ -97,6 +82,7 @@ export function SearchBox() {
       clear();
       inputRef.current?.focus();
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [clear]
   );
 
@@ -106,9 +92,12 @@ export function SearchBox() {
   );
 
   useEffect(() => {
-    executeSearch(searchQuery);
-    addToHistory(searchQuery, searchQuery);
-    addToStoreSearchHistory(searchQuery);
+    if (!!searchQuery) {
+      executeSearch(searchQuery);
+      addToHistory(searchQuery, searchQuery);
+      addToStoreSearchHistory(searchQuery);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   useEffect(() => {
@@ -117,32 +106,13 @@ export function SearchBox() {
     }
   }, [ocrText]);
 
-  useEffect(() => {
-    if (!!transcript) {
-      setQ(transcript);
-    }
-  }, [transcript]);
-
-  const startSpeechRecognition = useCallback(() => {
-    if (!browserSupportsSpeechRecognition) {
-      toast({
-        title: "Speech recognition is not supported by your browser",
-        description: "Please use a modern browser",
-      });
-    }
-    if (isMicrophoneAvailable) {
-      SpeechRecognition.startListening();
-    }
-  }, [isMicrophoneAvailable, browserSupportsSpeechRecognition, toast]);
-
-  const disabled = isLoadingOCR || listening;
-  console.log("q=", q);
+  const disabled = isLoadingOCR;
 
   return (
     <div className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex justify-center">
-        <Image src={logoMulti} alt="logo" width={120} />
-      </div>
+      <motion.div layoutId="search-icon" className="flex justify-center mb-2">
+        <Image src={logoSingle} alt="logo" width={120} />
+      </motion.div>
       <form role="search" onSubmit={onSearch} onReset={onReset}>
         <motion.div
           layoutId="search-input"
@@ -170,33 +140,6 @@ export function SearchBox() {
             <Camera className="h-5 w-5 text-muted-foreground" />
             <input {...getInputProps()} />
           </Button>
-          {!listening ? (
-            <MotionButton
-              layoutId="mic"
-              key="mic"
-              size="icon"
-              variant="ghost"
-              className="w-9 h-9 rounded-full -mr-2"
-              type="button"
-              onClick={startSpeechRecognition}
-              disabled={disabled}
-            >
-              <Mic className="h-5 w-5 text-muted-foreground" />
-            </MotionButton>
-          ) : (
-            <MotionButton
-              layoutId="mic"
-              key="mic-off"
-              size="icon"
-              variant="ghost"
-              className="w-9 h-9 rounded-full -mr-2"
-              type="button"
-              onClick={() => SpeechRecognition.stopListening()}
-              disabled={disabled}
-            >
-              <MicOff className="h-5 w-5 text-muted-foreground" />
-            </MotionButton>
-          )}
         </motion.div>
       </form>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import ResultImage from "@/app/(root)/(routes)/components/result-image";
+import ResultImage from "@/app/(root)/(routes)/search/components/result-image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { PostHitResults } from "@/services/post";
 import { create } from "zustand";

@@ -29,7 +29,7 @@ export const authOptions: AuthOptions = {
       // I skipped the line below coz it gave me a TypeError
       // session.accessToken = token.accessToken;
       session.user.id = token?.sub || user.id;
-      console.log(session);
+      // console.log(session);
 
       return session;
     },

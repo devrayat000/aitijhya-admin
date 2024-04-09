@@ -16,10 +16,7 @@ export default function ResultCard({ isStatic, ...post }: ResultCardProps) {
   const Image = isStatic ? NextImage : ResultImage;
 
   return (
-    <article
-      key={post.id}
-      className="rounded-2xl overflow-hidden shadow-lg md:basis-1/3 lg:basis-1/4"
-    >
+    <article key={post.id} className="rounded-2xl overflow-hidden shadow-lg">
       <div
         className="relative aspect-video rounded-inherit border-border border"
         // onClick={() => usePopup.getState().open(post)}

@@ -20,7 +20,7 @@ export async function getCurrentUserSearchHistory() {
     .from(searchHistory)
     .where(eq(searchHistory.userId, session.user.id))
     .orderBy(desc(searchHistory.createdAt))
-    .limit(15);
+    .limit(10);
 
   return history;
 }

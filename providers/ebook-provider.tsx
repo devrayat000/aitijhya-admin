@@ -1,12 +1,20 @@
 "use client";
 
-import Loading from "@/app/loading";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import splitPdf from "@/lib/split-pdf";
-import { PostHitResults } from "@/services/post";
 import { Suspense, use } from "react";
 import { create } from "zustand";
+
+import Loading from "@/app/loading";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import splitPdf from "@/lib/split-pdf";
+import { PostHitResults } from "@/services/post";
+
+import { pdfjs, Document, Page } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+import { useMeasure } from "@uidotdev/usehooks";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 type EbookPopupState = {
   isOpen: boolean;
@@ -29,19 +37,33 @@ type EbookViewerProps = {
   bookUrl: string;
 };
 
+const options = {
+  cMapUrl: "/cmaps/",
+};
+
 function EbookViewer({ bookUrl, page }: EbookViewerProps) {
   let effectivePage = page - 1;
   effectivePage = effectivePage < 0 ? 0 : effectivePage;
   const url = use(splitPdf(bookUrl, effectivePage));
+  const [containerRef, { width }] = useMeasure<HTMLDivElement>();
 
-  return <iframe src={url} frameBorder={0} className="h-[80vh] w-full" />;
+  return (
+    <object data={url} className="h-[80vh] w-full">
+      <ScrollArea className="h-[80vh] w-full" ref={containerRef}>
+        <Document file={url} options={options}>
+          <Page pageNumber={1} width={width || undefined} />
+        </Document>
+      </ScrollArea>
+    </object>
+  );
 }
 
-export const EbookProvider = () => {
+const EbookProvider = () => {
   const popupStore = useEbook();
   const post = popupStore.popupData;
 
   return (
+    // <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/legacy/build/pdf.worker.js">
     <Dialog
       open={popupStore.isOpen}
       onOpenChange={(open) => !open && popupStore.close()}
@@ -55,5 +77,8 @@ export const EbookProvider = () => {
         </DialogContent>
       )}
     </Dialog>
+    // </Worker>
   );
 };
+
+export default EbookProvider;
