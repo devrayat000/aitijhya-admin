@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { getTextFromImage } from "@/actions/ocr";
 import { addToHistory } from "@/actions/history";
 import { useServerStore } from "@/hooks/use-server-data";
+import Link from "next/link";
 
 function queryHook(query: string, hook: (value: string) => void) {
   if (!!query) {
@@ -110,9 +111,11 @@ export function SearchBox() {
 
   return (
     <div className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <motion.div layoutId="search-icon" className="flex justify-center mb-2">
-        <Image src={logoSingle} alt="logo" width={120} />
-      </motion.div>
+      <Link href="/">
+        <motion.div layoutId="search-icon" className="flex justify-center mb-2">
+          <Image src={logoSingle} alt="logo" width={120} />
+        </motion.div>
+      </Link>
       <form role="search" onSubmit={onSearch} onReset={onReset}>
         <motion.div
           layoutId="search-input"

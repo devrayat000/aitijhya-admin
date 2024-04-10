@@ -1,14 +1,13 @@
-"use client";
+// "use client";
 
-import { Fragment, Suspense } from "react";
+import { Fragment } from "react";
 
 import { PopupProvider } from "@/providers/popup-provider";
 import dynamic from "next/dynamic";
-import Loading from "../loading";
 
 const EbookProvider = dynamic(() => import("@/providers/ebook-provider"), {
   ssr: false,
-  // loader: () => import("../loading"),
+  loader: () => import("../loading"),
 });
 
 export default function HomeLayout({
@@ -20,9 +19,7 @@ export default function HomeLayout({
     <Fragment>
       {children}
       <PopupProvider />
-      <Suspense>
-        <EbookProvider />
-      </Suspense>
+      <EbookProvider />
     </Fragment>
   );
 }

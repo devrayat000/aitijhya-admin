@@ -7,9 +7,11 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <div className="min-h-[calc(100vh-72px)] flex flex-col">
-      <div className="flex justify-center">
-        <Image src={logoSingle} alt="logo" width={240} />
-      </div>
+      <Link href="/">
+        <div className="flex justify-center">
+          <Image src={logoSingle} alt="logo" width={240} />
+        </div>
+      </Link>
       {/* <div className="flex-1" /> */}
       <div className="p-6">
         <div>

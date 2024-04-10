@@ -2,8 +2,6 @@ import { decrypt, encryptionKey } from "@/lib/crypto";
 import { env } from "@/lib/utils";
 
 export async function GET(request: Request): Promise<Response> {
-  console.log("running.....");
-
   const sameOrigin = request.headers.get("sec-fetch-site") === "same-origin";
   if (!sameOrigin) {
     return new Response("Forbidden", { status: 403 });
@@ -33,12 +31,12 @@ export async function GET(request: Request): Promise<Response> {
   if (q) {
     fetchUrl.searchParams.set("q", q);
   }
-  console.log(fetchUrl.toString());
 
   return fetch(fetchUrl, {
     headers: {
       Accept:
         "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
     },
+    cache: "force-cache",
   });
 }
