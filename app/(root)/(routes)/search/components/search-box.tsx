@@ -117,33 +117,44 @@ export function SearchBox() {
         </motion.div>
       </Link>
       <form role="search" onSubmit={onSearch} onReset={onReset}>
-        <motion.div
-          layoutId="search-input"
-          className="px-4 flex h-12 w-full rounded-full border border-input bg-input py-2 text-sm items-center justify-between gap-x-2"
-        >
-          <Search className="h-4 w-4 text-muted-foreground" />
-          <input
-            placeholder="Questions of keywords..."
-            className="flex-1 bg-transparent text-sm p-0 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-            value={q}
-            disabled={disabled}
-            onChange={onInputChange}
-            ref={inputRef}
-            type="search"
-          />
-          <Separator orientation="vertical" className="bg-slate-400 w-0.5" />
-          <Button
-            size="icon"
-            variant="ghost"
-            className="w-9 h-9 rounded-full"
-            type="button"
-            onClick={open}
-            disabled={disabled}
+        <div className="flex items-center gap-2">
+          <motion.div
+            layoutId="search-input"
+            className="px-4 flex flex-1 h-12 w-full rounded-full border border-input bg-input py-2 text-sm items-center justify-between gap-x-2"
           >
-            <Camera className="h-5 w-5 text-muted-foreground" />
-            <input {...getInputProps()} />
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <input
+              placeholder="Questions of keywords..."
+              className="flex-1 bg-transparent text-sm p-0 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              value={q}
+              disabled={disabled}
+              onChange={onInputChange}
+              ref={inputRef}
+              type="search"
+            />
+            <Separator orientation="vertical" className="bg-slate-400 w-0.5" />
+            <Button
+              size="icon"
+              variant="ghost"
+              className="w-9 h-9 rounded-full"
+              type="button"
+              onClick={open}
+              disabled={disabled}
+            >
+              <Camera className="h-5 w-5 text-muted-foreground" />
+              <input {...getInputProps()} />
+            </Button>
+          </motion.div>
+
+          <Button
+            type="submit"
+            size="icon"
+            className="w-12 h-12 rounded-full bg-card-result hover:bg-card-result/90"
+            variant="default"
+          >
+            <Search className="h-8 w-8 text-muted-foreground" />
           </Button>
-        </motion.div>
+        </div>
       </form>
     </div>
   );
