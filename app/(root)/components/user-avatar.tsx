@@ -11,7 +11,6 @@ import {
 import { auth } from "@/lib/auth";
 import { getAvatarLetters } from "@/lib/utils";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { use } from "react";
 import LogoutButton from "./logout";
 
@@ -19,7 +18,8 @@ export default function UserAvatar() {
   const session = use(auth());
 
   if (!session) {
-    redirect("/signin");
+    // redirect("/signin");
+    return null;
   }
 
   return (
