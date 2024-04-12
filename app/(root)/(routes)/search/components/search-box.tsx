@@ -5,6 +5,7 @@ import { useFormState } from "react-dom";
 import { Search, Camera } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchBox, AdditionalWidgetProperties } from "react-instantsearch";
 import { useDropzone } from "react-dropzone";
@@ -15,7 +16,6 @@ import { Separator } from "@/components/ui/separator";
 import { getTextFromImage } from "@/actions/ocr";
 import { addToHistory } from "@/actions/history";
 import { useServerStore } from "@/hooks/use-server-data";
-import Link from "next/link";
 
 function queryHook(query: string, hook: (value: string) => void) {
   if (!!query) {

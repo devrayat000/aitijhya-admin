@@ -1,16 +1,9 @@
-import { Suspense, cache, memo, use, useState } from "react";
-import { useHits, useInfiniteHits } from "react-instantsearch";
+import { Suspense, cache, memo, use } from "react";
+import { useInfiniteHits } from "react-instantsearch";
 
 import Loading from "@/app/loading";
 import { PostHit, PostHitResults } from "@/services/post";
-import ResultImage from "./result-image";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { usePopup } from "@/providers/popup-provider";
-import { Button } from "@/components/ui/button";
-import { useEbook } from "@/providers/ebook-provider";
-import { getCurrentUserSearchHistory } from "@/services/history";
 import SearchHistory from "./search-history";
-import BookmarkButton from "./bookmark";
 import ResultCard from "./result-card";
 
 const getHitPostsByIds = cache(async (ids: string[]) => {
@@ -40,7 +33,10 @@ const HitReslts = memo(({ ids }: { ids: string[] }) => {
 HitReslts.displayName = "HitResults";
 
 export default function Hits() {
-  const { hits, results } = useHits<PostHit>({ escapeHTML: true });
+  const { hits, results, showMore } = useInfiniteHits<PostHit>({
+    escapeHTML: true,
+    transformItems: (items) => items.filter((item) => item.objectID),
+  });
   const ids = hits.map((hit) => hit.objectID);
 
   if (!results?.query) {

@@ -15,7 +15,7 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 // for query purposes
 
 if (dtResult.parsed) {
-  const queryClient = postgres(process.env.POSTGRES_URL!, { max: 1 });
+  const queryClient = postgres(process.env.DATABASE_URL!, { max: 1 });
   const db = drizzle(queryClient, { logger: true });
 
   await migrate(db, {
