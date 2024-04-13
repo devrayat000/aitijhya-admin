@@ -13,14 +13,14 @@ export default function HomePage() {
         </div>
       </Link>
       {/* <div className="flex-1" /> */}
-      <div className="p-6 lg:w-1/2">
+      <div className="p-6 lg:w-1/2 mx-auto">
         <div>
-          <h2 className="text-3xl font-bangla font-bold">
+          <h2 className="text-3xl font-bangla font-bold text-center">
             নয়শো ঘন্টার অপচয় রোধ
           </h2>
         </div>
         <div className="mt-4">
-          <p className="font-bangla text-lg">
+          <p className="font-bangla text-lg text-center">
             প্রতিটা পরীক্ষার পর প্রশ্ন সলভ করতে হয়। প্রশ্ন, অপশন খুঁজতে আমাদের
             শত শত ঘন্টা অপচয় হয়। এই টুলস ব্যবহার করলে আপনি সেকেন্ডের মাঝেই
             রেফারেন্স খুঁজে পাবেন। বইয়ের কোথায় আছে, কীভাবে আছে, কোন বইতে আছে

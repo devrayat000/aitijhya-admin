@@ -1,8 +1,13 @@
 import { Fragment } from "react";
-import Image from "next/image";
+import { PopupProvider } from "@/providers/popup-provider";
+import dynamic from "next/dynamic";
 
 import Header from "../components/header";
-import bgBlack from "@/assets/bg_black.jpeg";
+
+const EbookProvider = dynamic(() => import("@/providers/ebook-provider"), {
+  ssr: false,
+  // loader: () => import("../../loading"),
+});
 
 export default function MainLayout({
   children,
@@ -13,6 +18,8 @@ export default function MainLayout({
     <Fragment>
       <Header />
       <div className="relative z-10">{children}</div>
+      <PopupProvider />
+      <EbookProvider />
     </Fragment>
   );
 }

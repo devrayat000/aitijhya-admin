@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchBox, AdditionalWidgetProperties } from "react-instantsearch";
 import { useDropzone } from "react-dropzone";
+import { useWindowSize } from "@uidotdev/usehooks";
 
 import logoSingle from "@/assets/logo_single.png";
 import { Button } from "@/components/ui/button";
@@ -36,16 +37,26 @@ export function SearchBox() {
     (store) => store.addSearchHistory
   );
 
+  const { width } = useWindowSize();
+  const limit = width
+    ? width < 640
+      ? 10
+      : width < 768
+      ? 20
+      : width < 1024
+      ? 30
+      : 40
+    : 40;
+
   const [q, setQ] = useState(searchQuery);
   const { clear, refine: executeSearch } = useSearchBox(
     { queryHook },
     {
       getWidgetSearchParameters: useCallback<GetWidgetSearchParameters>(
         (state) => {
-          console.log({ ...state });
-          return Object.assign(state, { optionalWords: [q] });
+          return Object.assign(state, { optionalWords: [q], limit });
         },
-        [q]
+        [q, limit]
       ),
     }
   );

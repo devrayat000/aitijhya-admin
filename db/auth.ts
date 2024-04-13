@@ -15,6 +15,20 @@ export const users = pgTable("user", {
   image: text("image"),
 });
 
+export const institutionalInfo = pgTable(
+  "institutional_infos",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    hscYear: text("hscYear").notNull(),
+    college: text("college").notNull(),
+  },
+  (ii) => ({
+    compoundKey: primaryKey({ columns: [ii.userId] }),
+  })
+);
+
 export const accounts = pgTable(
   "account",
   {
