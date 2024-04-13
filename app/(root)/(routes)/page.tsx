@@ -32,7 +32,7 @@ export default function HomePage() {
           <Button
             size="lg"
             asChild
-            className="w-full lg:w-auto font-bangla text-2xl h-16 bg-card-result hover:bg-card-result/90"
+            className="w-full lg:w-auto lg:mx-auto font-bangla text-2xl h-16 bg-card-result hover:bg-card-result/90"
           >
             <Link href="/search">তথ্যের জগতে যাত্রা শুরু হোক!</Link>
           </Button>
