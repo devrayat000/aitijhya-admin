@@ -146,9 +146,9 @@ export const PostForm: React.FC<PostFormProps> = ({
         console.log("updating", data);
 
         await updatePost(initialData.id, data);
-        router.refresh();
+        // router.refresh();
       } else {
-        const result = await createPost({
+        await createPost({
           text: data.text,
           page: data.page,
           chapterId: data.chapterId,
@@ -156,7 +156,7 @@ export const PostForm: React.FC<PostFormProps> = ({
           // @ts-ignore
           imageUrl: data["imageUrl"],
         });
-        router.push(`/admin/posts/${result.id}`);
+        // router.push(`/admin/posts/${result.id}`);
       }
       toast.success(toastMessage);
     } catch (error: any) {
