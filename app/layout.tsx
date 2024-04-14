@@ -23,8 +23,12 @@ export const metadata: Metadata = {
   bookmarks: "https://taalaash.com/bookmarks",
   category: "Education",
   generator: "Next.js",
-  icons: logo.src,
+  icons: [{ url: logo.src, rel: "icon" }],
   metadataBase: new URL("https://taalaash.com"),
+  authors: {
+    name: "Zul Ikram Musaddik Rayat",
+    url: "https://twitter.com/zul_rayat",
+  },
 };
 
 export const dynamic = true;
