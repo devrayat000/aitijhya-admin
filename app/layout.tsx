@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   category: "Education",
   generator: "Next.js",
   icons: logo.src,
+  metadataBase: new URL("https://taalaash.com"),
 };
 
 export const dynamic = true;

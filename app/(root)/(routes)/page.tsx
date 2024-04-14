@@ -1,8 +1,26 @@
+import { Metadata } from "next";
 import Image from "next/image";
-
-import logoSingle from "@/assets/logo_single.png";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import logoSingle from "@/assets/logo_single.png";
+import home from "@/assets/og/home.png";
+
+export const metadata: Metadata = {
+  openGraph: {
+    type: "website",
+    countryName: "Bangladesh",
+    images: [{ url: home.src }],
+    title: "Taalaash",
+    url: "https://taalaash.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@taalaash",
+    creator: "@zul_rayat",
+    images: [{ url: home.src }],
+  },
+};
 
 export default function HomePage() {
   return (
@@ -32,7 +50,7 @@ export default function HomePage() {
           <Button
             size="lg"
             asChild
-            className="w-full lg:w-auto lg:mx-auto font-bangla text-2xl h-16 bg-card-result hover:bg-card-result/90"
+            className="w-full font-bangla text-2xl h-16 bg-card-result hover:bg-card-result/90"
           >
             <Link href="/search">তথ্যের জগতে যাত্রা শুরু হোক!</Link>
           </Button>
