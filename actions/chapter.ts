@@ -28,6 +28,8 @@ export async function updateChapter(
 
 export async function deleteChapter(id: string) {
   await db.delete(chapter).where(eq(chapter.id, id));
+  revalidatePath("/admin/chapters");
+  redirect("/admin/chapters");
 }
 
 export async function getChaptersByBooks(

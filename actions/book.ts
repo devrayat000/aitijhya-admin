@@ -26,6 +26,8 @@ export async function updateBook(
 
 export async function deleteBook(id: string) {
   await db.delete(bookAuthor).where(eq(bookAuthor.id, id));
+  revalidatePath("/admin/books");
+  redirect("/admin/books");
 }
 
 export async function getBooksBySubject(

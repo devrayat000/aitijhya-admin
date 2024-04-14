@@ -25,4 +25,6 @@ export async function updateSubject(
 
 export async function deleteSubject(id: string) {
   await db.delete(subject).where(eq(subject.id, id));
+  revalidatePath("/admin/subjects");
+  redirect("/admin/subjects");
 }

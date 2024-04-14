@@ -38,4 +38,6 @@ export async function updatePost(id: string, params: Partial<PostInput>) {
 export async function deletePost(id: string) {
   await db.delete(post).where(eq(post.id, id));
   await deleteIndex(id);
+  revalidatePath("/admin/posts");
+  redirect(`/admin/posts`);
 }
