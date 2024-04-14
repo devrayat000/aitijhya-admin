@@ -89,10 +89,10 @@ export const ChapterForm: React.FC<ChapterFormProps> = ({
       setLoading(true);
       if (initialData) {
         await updateChapter(initialData.id, data);
-        router.refresh();
+        // router.refresh();
       } else {
-        const result = await createChapter(data);
-        router.push(`/admin/chapters/${result.id}`);
+        await createChapter(data);
+        // router.push(`/admin/chapters/${result.id}`);
       }
       toast.success(toastMessage);
     } catch (error: any) {

@@ -4,30 +4,26 @@ import { chapter } from "@/db/schema";
 import db from "@/lib/db";
 import { InferSelectModel, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createChapter(params: {
   name: string;
   bookAuthorId: string;
 }) {
-  const [data] = await db
-    .insert(chapter)
-    .values(params)
-    .returning({ id: chapter.id });
+  await db.insert(chapter).values(params);
   revalidatePath("/admin/chapters");
-  return data;
+  redirect("/admin/chapters");
+  // return data;
 }
 
 export async function updateChapter(
   id: string,
   params: Partial<{ name: string; bookAuthorId: string }>
 ) {
-  const [data] = await db
-    .update(chapter)
-    .set(params)
-    .where(eq(chapter.id, id))
-    .returning({ id: chapter.id });
+  await db.update(chapter).set(params).where(eq(chapter.id, id));
   revalidatePath("/admin/chapters");
-  return data;
+  redirect("/admin/chapters");
+  // return data;
 }
 
 export async function deleteChapter(id: string) {

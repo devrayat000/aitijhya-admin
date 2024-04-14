@@ -31,7 +31,6 @@ import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { bookAuthor, subject } from "@/db/schema";
-import db from "@/lib/db";
 import {
   Select,
   SelectContent,
@@ -129,15 +128,15 @@ export const BookForm: React.FC<BookFormProps> = ({
 
       if (initialData) {
         await updateBook(initialData.id, data);
-        router.refresh();
+        // router.refresh();
       } else {
-        const result = await createBook({
+        await createBook({
           name: data.name,
           subjectId: data.subjectId,
           // @ts-ignore
           embedUrl: data["embedUrl"],
         });
-        router.push(`/admin/books/${result.id}`);
+        // router.push(`/admin/books/${result.id}`);
       }
       toast.success(toastMessage);
     } catch (error: any) {

@@ -62,10 +62,10 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({ initialData }) => {
 
       if (initialData) {
         await updateSubject(initialData.id, data);
-        router.refresh();
+        // router.refresh();
       } else {
-        const result = await createSubject(data);
-        router.push(`/admin/subjects/${result.id}`);
+        await createSubject(data);
+        // router.push(`/admin/subjects/${result.id}`);
       }
       toast.success(toastMessage);
     } catch (error: any) {
