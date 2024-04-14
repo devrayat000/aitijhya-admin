@@ -1,7 +1,9 @@
 import { Inter, Tiro_Bangla } from "next/font/google";
+import { Metadata } from "next";
 
 import { ModalProvider } from "@/providers/modal-provider";
 import { ToastProvider } from "@/providers/toast-provider";
+import logo from "@/assets/logo_single.png";
 
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -13,9 +15,15 @@ const tiroBangla = Tiro_Bangla({
   subsets: ["bengali"],
 });
 
-export const metadata = {
-  title: "Dashboard",
-  description: "E-Commerce Dashboard",
+export const metadata: Metadata = {
+  title: "Taalaash",
+  alternates: { canonical: "https://taalaash.com" },
+  appleWebApp: { capable: true, title: "Taalaash" },
+  applicationName: "Taalaash",
+  bookmarks: "https://taalaash.com/bookmarks",
+  category: "Education",
+  generator: "Next.js",
+  icons: logo.src,
 };
 
 export const dynamic = true;
