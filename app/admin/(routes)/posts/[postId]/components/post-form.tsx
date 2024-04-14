@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import { use, useEffect, useRef, useState } from "react";
+import { Suspense, use, useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -105,7 +105,6 @@ export const PostForm: React.FC<PostFormProps> = ({
   const defaultEmbed = initialData?.imageUrl
     ? use(createFile(initialData.imageUrl, "image/jpeg"))
     : null;
-  console.log(initialData);
 
   const form = useForm<PostFormValues>({
     resolver: zodResolver(formSchema, { async: true }),
@@ -127,7 +126,7 @@ export const PostForm: React.FC<PostFormProps> = ({
   }: PostFormValues) => {
     try {
       setLoading(true);
-      console.log(data);
+      // console.log(data);
 
       if (
         !!data.image &&
@@ -138,11 +137,14 @@ export const PostForm: React.FC<PostFormProps> = ({
           handleUploadUrl: "/api/image/upload",
           multipart: true,
         });
+        data.image = null;
         // @ts-ignore
         data["imageUrl"] = newBlob.url;
       }
 
       if (initialData) {
+        console.log("updating", data);
+
         await updatePost(initialData.id, data);
         router.refresh();
       } else {
@@ -350,12 +352,14 @@ export const PostForm: React.FC<PostFormProps> = ({
                 <FormItem>
                   <FormLabel>Image</FormLabel>
                   <FormControl>
-                    <DropZoneInput
-                      {...field}
-                      ref={embedRef}
-                      onFileDrop={(file) => onChange(file)}
-                      defaultFile={value || undefined}
-                    />
+                    <Suspense>
+                      <DropZoneInput
+                        {...field}
+                        ref={embedRef}
+                        onFileDrop={(file) => onChange(file)}
+                        defaultFile={value || undefined}
+                      />
+                    </Suspense>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

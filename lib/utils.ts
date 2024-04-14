@@ -39,8 +39,6 @@ export async function createFile(
     return null;
   }
 
-  console.log("fileUrl", fileUrl);
-
   const response = await fetch(fileUrl);
   const data = await response.blob();
   const metadata = { type };

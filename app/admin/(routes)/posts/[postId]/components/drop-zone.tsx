@@ -21,6 +21,7 @@ const DropZoneInput = forwardRef<HTMLInputElement, DropZoneInputProps>(
       }
       return undefined;
     });
+
     const { getRootProps, getInputProps } = useDropzone({
       accept: {
         "image/jpeg": [],
@@ -46,7 +47,7 @@ const DropZoneInput = forwardRef<HTMLInputElement, DropZoneInputProps>(
             URL.revokeObjectURL(file.preview);
           }}
           fill
-          objectFit="contain"
+          className="object-contain"
           alt={file.name}
         />
       </div>

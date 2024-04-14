@@ -1,9 +1,17 @@
-import { PostForm } from "./components/post-form";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
 import { getPostById } from "@/services/post";
 import { getSubjects } from "@/services/subject";
 import { getBooksBySubject } from "@/actions/book";
 import { getChaptersByBooks } from "@/actions/chapter";
-import { Suspense } from "react";
+
+const PostForm = dynamic(
+  () => import("./components/post-form").then((m) => ({ default: m.PostForm })),
+  {
+    ssr: false,
+  }
+);
 
 const PostPage = async ({ params }: { params: { postId: string } }) => {
   let initialData: any = {
