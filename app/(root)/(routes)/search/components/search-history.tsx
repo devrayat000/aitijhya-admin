@@ -3,7 +3,6 @@
 import { Variants, motion } from "framer-motion";
 
 import { useServerStore } from "@/hooks/use-server-data";
-import { SearchHistory } from "@/services/history";
 import { useRouter } from "next/navigation";
 
 const fade: Variants = {

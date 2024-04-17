@@ -3,7 +3,13 @@ import SearchClient from "./components/search-client";
 import { ServerStoreProvider } from "@/hooks/use-server-data";
 import { getCurrentUserSearchHistory } from "@/services/history";
 
-export default async function SearchPage() {
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: { q: string };
+}) {
+  console.log("server log", searchParams);
+
   const [bookmarks, searchHistory] = await Promise.all([
     getBookmarkedList(),
     getCurrentUserSearchHistory(),

@@ -7,7 +7,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useSearchBox, AdditionalWidgetProperties } from "react-instantsearch";
+import {
+  useSearchBox,
+  AdditionalWidgetProperties,
+  useHitsPerPage,
+  useConfigure,
+} from "react-instantsearch";
 import { useDropzone } from "react-dropzone";
 import { useWindowSize } from "@uidotdev/usehooks";
 
@@ -49,17 +54,21 @@ export function SearchBox() {
     : 40;
 
   const [q, setQ] = useState(searchQuery);
-  const { clear, refine: executeSearch } = useSearchBox(
-    { queryHook },
-    {
-      getWidgetSearchParameters: useCallback<GetWidgetSearchParameters>(
-        (state) => {
-          return Object.assign(state, { optionalWords: [q], limit });
-        },
-        [q, limit]
-      ),
-    }
-  );
+  const { refine } = useConfigure({});
+  // const { clear, refine: executeSearch } = useSearchBox(
+  //   { queryHook },
+  //   {
+  //     getWidgetSearchParameters: useCallback<GetWidgetSearchParameters>(
+  //       (state) => {
+  //         return Object.assign(state, {
+  //           optionalWords: [q],
+  //           // length: limit
+  //         });
+  //       },
+  //       [q]
+  //     ),
+  //   }
+  // );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -91,11 +100,11 @@ export function SearchBox() {
       e.stopPropagation();
       setQ("");
       router.push(`.`);
-      clear();
+      // clear();
       inputRef.current?.focus();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [clear]
+    []
   );
 
   const onInputChange = useCallback(
@@ -105,12 +114,17 @@ export function SearchBox() {
 
   useEffect(() => {
     if (!!searchQuery) {
-      executeSearch(searchQuery);
+      refine({
+        query: searchQuery,
+        optionalWords: [searchQuery],
+        hitsPerPage: limit,
+      });
+      // executeSearch(searchQuery);
       addToHistory(searchQuery, searchQuery);
       addToStoreSearchHistory(searchQuery);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
+  }, [searchQuery, limit]);
 
   useEffect(() => {
     if (!!ocrText) {

@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense, cache, memo, use } from "react";
 import { useInfiniteHits } from "react-instantsearch";
 
@@ -5,6 +7,8 @@ import Loading from "@/app/loading";
 import { PostHit, PostHitResults } from "@/services/post";
 import SearchHistory from "./search-history";
 import ResultCard from "./result-card";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const getHitPostsByIds = cache(async (ids: string[]) => {
   if (ids.length === 0) {
@@ -33,13 +37,18 @@ const HitReslts = memo(({ ids }: { ids: string[] }) => {
 HitReslts.displayName = "HitResults";
 
 export default function Hits() {
-  const { hits, results, showMore } = useInfiniteHits<PostHit>({
+  const { hits, showMore, isLastPage } = useInfiniteHits<PostHit>({
     escapeHTML: true,
-    transformItems: (items) => items.filter((item) => item.objectID),
+    // transformItems: (items) => items.filter((item) => item.objectID),
   });
   const ids = hits.map((hit) => hit.objectID);
 
-  if (!results?.query) {
+  console.log(hits);
+
+  const searchParams = useSearchParams();
+  const isSearchMode = searchParams.has("q") && !!searchParams.get("q");
+
+  if (!isSearchMode) {
     return (
       <Suspense fallback={<Loading />}>
         <SearchHistory />
@@ -50,6 +59,11 @@ export default function Hits() {
   return (
     <Suspense fallback={<Loading />}>
       <HitReslts ids={ids} />
+      {!isLastPage && (
+        <div className="flex justify-end items-center pb-2">
+          <Button onClick={showMore}>Show More</Button>
+        </div>
+      )}
     </Suspense>
   );
 }

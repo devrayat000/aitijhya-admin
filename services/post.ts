@@ -80,11 +80,25 @@ const hitPostsStatement = db
   .innerJoin(chapter, eq(chapter.id, post.chapterId))
   .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
   .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-  .where(inArray(post.id, sql.placeholder("ids")))
+  .where(inArray(post.id, [sql.placeholder("ids")]))
   .prepare("get_hit_posts_by_ids");
 
 export async function getHitPostsByIds(ids: string[]) {
-  const books = await hitPostsStatement.execute({ ids });
+  const books = await db
+    .select({
+      id: post.id,
+      page: post.page,
+      imageUrl: post.imageUrl,
+      chapter: chapter.name,
+      subject: subject.name,
+      book: bookAuthor.name,
+      bookUrl: bookAuthor.embedUrl,
+    })
+    .from(post)
+    .innerJoin(chapter, eq(chapter.id, post.chapterId))
+    .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
+    .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
+    .where(inArray(post.id, ids));
   return books;
 }
 

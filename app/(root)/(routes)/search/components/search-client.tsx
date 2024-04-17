@@ -69,6 +69,8 @@ export default function SearchClient() {
   const isSearchMode =
     (searchParams.has("q") && !!searchParams.get("q")) || searchMode;
 
+  console.log({ isSearchMode });
+
   return (
     <div className="p-4 h-screen" suppressHydrationWarning>
       <AnimatePresence initial={false}>

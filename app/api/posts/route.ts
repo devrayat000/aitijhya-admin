@@ -4,6 +4,7 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const idsParam = url.searchParams.get("ids");
   const ids = idsParam?.split(",");
+  console.log({ ids });
 
   const posts = ids ? await getHitPostsByIds(ids) : [];
 

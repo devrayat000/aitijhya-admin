@@ -28,7 +28,7 @@ const nextConfig = {
     scrollRestoration: true,
   },
   reactStrictMode: false,
-  webpack(config) {
+  webpack(config, { webpack }) {
     config.module.rules.push({
       test: /\.pdf$/,
       use: {
@@ -39,6 +39,12 @@ const nextConfig = {
       },
     });
     config.resolve.alias.canvas = false;
+
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^pg-native$|^cloudflare:sockets$/,
+      })
+    );
 
     config.plugins.push(
       new CopyWebpackPlugin({
