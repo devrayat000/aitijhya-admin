@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import logoSingle from "@/assets/logo_single.png";
 
 class NavPath {
   constructor(public href: string, public label: string) {}
@@ -31,6 +33,7 @@ export function MainNav({
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
+      <Image src={logoSingle} alt="Logo" height={52} />
       {routes.map((route) => (
         <Link
           key={route.href}
