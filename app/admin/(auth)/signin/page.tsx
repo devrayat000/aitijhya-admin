@@ -6,7 +6,6 @@ import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import bgBlack from "@/assets/bg_black.jpeg";
 import logoSingle from "@/assets/logo_single.png";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import {
@@ -17,7 +16,11 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 
-export default function SigninPage() {
+export default function SigninPage({
+  searchParams,
+}: {
+  searchParams?: { callbackUrl: string };
+}) {
   const form = useForm({
     defaultValues: {
       username: "",
@@ -26,7 +29,11 @@ export default function SigninPage() {
   });
 
   const onLogin = form.handleSubmit((data) => {
-    signIn("admin", { callbackUrl: "/admin", redirect: true, ...data });
+    signIn("admin", {
+      callbackUrl: searchParams?.callbackUrl || "/admin",
+      redirect: true,
+      ...data,
+    });
   });
 
   return (
