@@ -29,7 +29,7 @@ export default function SigninPage({
   });
 
   const onLogin = form.handleSubmit((data) => {
-    signIn("admin", {
+    return signIn("admin", {
       callbackUrl: searchParams?.callbackUrl || "/admin",
       redirect: true,
       ...data,
