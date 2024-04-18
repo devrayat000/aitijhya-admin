@@ -30,7 +30,7 @@ function Configure(props: UseConfigureProps) {
   const searchQuery = searchParams.get("q") || "";
 
   useConfigure({
-    hitsPerPage: 12,
+    hitsPerPage: 24,
     query: searchQuery,
     optionalWords: [searchQuery],
     attributesToRetrieve: ["objectID"],
@@ -68,7 +68,7 @@ const SetupPage = () => {
 function SearchTrigger() {
   return (
     <div className="h-full grid place-items-center">
-      <div className="w-full -mt-72">
+      <div className="w-full -mt-72 max-w-[52rem] mx-auto">
         <motion.div layoutId="search-icon" className="flex justify-center">
           <Image src={logoSingle} alt="logo" width={200} />
         </motion.div>

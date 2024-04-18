@@ -43,7 +43,7 @@ export default function ResultCard({ isStatic, ...post }: ResultCardProps) {
           className="text-xs h-7 py-0.5 leading-none rounded-full"
           onClick={() => useEbook.getState().open(post)}
         >
-          See as book formet
+          See as book format
         </Button>
         <p className="text-xs px-2 py-1 rounded-full leading-none">
           {post.chapter}

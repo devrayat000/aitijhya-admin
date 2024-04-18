@@ -116,14 +116,14 @@ export function SearchBox() {
         </motion.div>
       </Link>
       <form role="search" onSubmit={onSearch} onReset={onReset}>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 max-w-[52rem] mx-auto">
           <motion.div
             layoutId="search-input"
             className="px-4 flex flex-1 h-12 w-full rounded-full border border-input bg-input py-2 text-sm items-center justify-between gap-x-2"
           >
             <Search className="h-4 w-4 text-muted-foreground" />
             <input
-              placeholder="Questions of keywords..."
+              placeholder="Questions or keywords..."
               className="flex-1 bg-transparent text-sm p-0 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               value={q}
               disabled={disabled}
