@@ -1,7 +1,12 @@
 "use client";
 
 import createClient from "algoliasearch/lite";
-import { InstantSearch, InstantSearchSSRProvider } from "react-instantsearch";
+import {
+  InstantSearch,
+  InstantSearchSSRProvider,
+  UseConfigureProps,
+  useConfigure,
+} from "react-instantsearch";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -20,6 +25,21 @@ const algoliaClient = createClient(
 
 export const dynamic = "force-dynamic";
 
+function Configure(props: UseConfigureProps) {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
+
+  useConfigure({
+    hitsPerPage: 12,
+    query: searchQuery,
+    optionalWords: [searchQuery],
+    attributesToRetrieve: ["objectID"],
+    ...props,
+  });
+
+  return null;
+}
+
 const SetupPage = () => {
   return (
     <div>
@@ -32,6 +52,7 @@ const SetupPage = () => {
       >
         <div className="pt-4">
           <Suspense>
+            <Configure />
             <SearchBox />
           </Suspense>
           {/* <RefinementList attribute="chapter.name" /> */}

@@ -43,21 +43,7 @@ export function SearchBox() {
   );
 
   const [q, setQ] = useState(searchQuery);
-  const { refine } = useConfigure({ hitsPerPage: 12 });
-  // const { clear, refine: executeSearch } = useSearchBox(
-  //   { queryHook },
-  //   {
-  //     getWidgetSearchParameters: useCallback<GetWidgetSearchParameters>(
-  //       (state) => {
-  //         return Object.assign(state, {
-  //           optionalWords: [q],
-  //           // length: limit
-  //         });
-  //       },
-  //       [q]
-  //     ),
-  //   }
-  // );
+  const { clear, refine: executeSearch } = useSearchBox({ queryHook });
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -103,12 +89,7 @@ export function SearchBox() {
 
   useEffect(() => {
     if (!!searchQuery) {
-      refine({
-        query: searchQuery,
-        optionalWords: [searchQuery],
-        attributesToRetrieve: ["objectID"],
-      });
-      // executeSearch(searchQuery);
+      executeSearch(searchQuery);
       addToHistory(searchQuery, searchQuery);
       addToStoreSearchHistory(searchQuery);
     }
@@ -120,6 +101,10 @@ export function SearchBox() {
       setQ(ocrText);
     }
   }, [ocrText]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const disabled = isLoadingOCR;
 
@@ -166,7 +151,7 @@ export function SearchBox() {
             className="w-12 h-12 rounded-full bg-card-result hover:bg-card-result/90"
             variant="default"
           >
-            <Search className="h-8 w-8 text-muted-foreground" />
+            <Search className="h-8 w-8 text-white" />
           </Button>
         </div>
       </form>
