@@ -5,10 +5,12 @@ import { type ReactNode, createContext, useRef, useContext } from "react";
 import { type StoreApi, useStore } from "zustand";
 import { BookmarkedList } from "@/services/bookmark";
 import { SearchHistory } from "@/services/history";
+import { PostHitResults } from "@/services/post";
 
 interface ServerData {
   searchHistory: SearchHistory;
   bookmarks: BookmarkedList;
+  searchResults?: PostHitResults;
 }
 
 interface ServerAction {

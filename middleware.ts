@@ -26,6 +26,8 @@ import { NextResponse } from "next/server";
 
 export default withAuth(
   (req, ev) => {
+    console.log("runninng middleware");
+
     const url = new URL(req.url);
     const token = req.nextauth?.token;
 

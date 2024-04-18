@@ -1,7 +1,7 @@
 "use client";
 
 import createClient from "algoliasearch/lite";
-import { InstantSearch } from "react-instantsearch";
+import { InstantSearch, InstantSearchSSRProvider } from "react-instantsearch";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -23,6 +23,7 @@ export const dynamic = "force-dynamic";
 const SetupPage = () => {
   return (
     <div>
+      <InstantSearchSSRProvider initialResults={{}}></InstantSearchSSRProvider>
       <InstantSearch
         searchClient={algoliaClient}
         indexName="posts"

@@ -20,6 +20,10 @@ const nextConfig = {
       { hostname: "localhost" },
       { hostname: "localhost", port: "8000" },
       { hostname: "devrayat000-image-rec.hf.space", protocol: "https" },
+      {
+        hostname: "esztt3owbm3llyro.public.blob.vercel-storage.com",
+        protocol: "https",
+      },
     ],
   },
   typescript: { ignoreBuildErrors: true },

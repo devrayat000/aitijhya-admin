@@ -42,19 +42,8 @@ export function SearchBox() {
     (store) => store.addSearchHistory
   );
 
-  const { width } = useWindowSize();
-  const limit = width
-    ? width < 640
-      ? 10
-      : width < 768
-      ? 20
-      : width < 1024
-      ? 30
-      : 40
-    : 40;
-
   const [q, setQ] = useState(searchQuery);
-  const { refine } = useConfigure({});
+  const { refine } = useConfigure({ hitsPerPage: 12 });
   // const { clear, refine: executeSearch } = useSearchBox(
   //   { queryHook },
   //   {
@@ -117,14 +106,14 @@ export function SearchBox() {
       refine({
         query: searchQuery,
         optionalWords: [searchQuery],
-        hitsPerPage: limit,
+        attributesToRetrieve: ["objectID"],
       });
       // executeSearch(searchQuery);
       addToHistory(searchQuery, searchQuery);
       addToStoreSearchHistory(searchQuery);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, limit]);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!!ocrText) {
