@@ -6,7 +6,7 @@ import { PostHitResults } from "@/services/post";
 import ResultImage from "./result-image";
 import BookmarkButton from "./bookmark";
 import { Button } from "@/components/ui/button";
-import { useEbook } from "@/providers/ebook-provider";
+import { useEbook } from "@/hooks/use-ebook";
 
 export type ResultCardProps = PostHitResults[number] & {
   isStatic?: boolean;
@@ -41,9 +41,17 @@ export default function ResultCard({ isStatic, ...post }: ResultCardProps) {
           size="sm"
           variant="secondary"
           className="text-xs h-7 py-0.5 leading-none rounded-full"
-          onClick={() => useEbook.getState().open(post)}
+          asChild
+          // onClick={() => useEbook.getState().open(post)}
         >
-          See as book format
+          <a
+            href={post.imageUrl!}
+            title="Result image"
+            target="_blank"
+            rel="noreferer"
+          >
+            See full image
+          </a>
         </Button>
         <p className="text-xs px-2 py-1 rounded-full leading-none">
           {post.chapter}
