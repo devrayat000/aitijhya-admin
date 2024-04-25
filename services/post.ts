@@ -42,46 +42,45 @@ export async function getPostById(id: string) {
   return book;
 }
 
-export async function getPostByIdForIndexing(id: string) {
-  const [book] = await db
-    .select({
-      objectID: post.id,
-      text: post.text,
-      keywords: post.keywords,
-      chapter: {
-        name: chapter.name,
-      },
-      subject: {
-        name: subject.name,
-      },
-      book: {
-        name: bookAuthor.name,
-      },
-    })
-    .from(post)
-    .innerJoin(chapter, eq(chapter.id, post.chapterId))
-    .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-    .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-    .where(eq(post.id, id));
-  return book;
-}
-
-const hitPostsStatement = db
+const postIndexQuery = db
   .select({
-    id: post.id,
-    page: post.page,
+    objectID: post.id,
+    text: post.text,
+    keywords: post.keywords,
     imageUrl: post.imageUrl,
-    chapter: chapter.name,
-    subject: subject.name,
-    book: bookAuthor.name,
-    bookUrl: bookAuthor.embedUrl,
+    chapter: {
+      name: chapter.name,
+    },
+    subject: {
+      name: subject.name,
+    },
+    book: {
+      name: bookAuthor.name,
+      edition: bookAuthor.edition,
+    },
   })
   .from(post)
   .innerJoin(chapter, eq(chapter.id, post.chapterId))
   .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-  .where(inArray(post.id, [sql.placeholder("ids")]))
-  .prepare("get_hit_posts_by_ids");
+  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId));
+
+const allPostsIndexStatement = postIndexQuery.prepare(
+  "get_all_posts_for_indexing"
+);
+
+const postIndexStatement = postIndexQuery
+  .where(eq(post.id, sql.placeholder("id")))
+  .prepare("get_post_by_id_for_indexing");
+
+export async function getPostByIdForIndexing(id: string) {
+  const [book] = await postIndexStatement.execute({ id });
+  return book;
+}
+
+export async function getAllPostsForIndexing() {
+  const books = await allPostsIndexStatement.execute();
+  return books;
+}
 
 export async function getHitPostsByIds(ids: string[]) {
   const books = await db

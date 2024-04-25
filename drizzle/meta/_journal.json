@@ -36,6 +36,20 @@
       "when": 1713036906607,
       "tag": "0004_loose_king_cobra",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1714034250919,
+      "tag": "0005_giant_jean_grey",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1714049753580,
+      "tag": "0006_nosy_black_queen",
+      "breakpoints": true
     }
   ]
 }

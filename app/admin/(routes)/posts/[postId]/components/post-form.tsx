@@ -36,7 +36,7 @@ import { getBooksBySubject } from "@/actions/book";
 import { getChaptersByBooks } from "@/actions/chapter";
 import { Textarea } from "@/components/ui/textarea";
 import { upload } from "@vercel/blob/client";
-import DropZoneInput from "./drop-zone";
+import DropZoneInput from "@/components/drop-zone";
 import { createFile } from "@/lib/utils";
 
 const formSchema = z

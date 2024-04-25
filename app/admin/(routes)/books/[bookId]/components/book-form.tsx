@@ -43,10 +43,14 @@ import {
 import { createBook, deleteBook, updateBook } from "@/actions/book";
 import { upload } from "@vercel/blob/client";
 import { createFile } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
+import DropZoneInput from "@/components/drop-zone";
 
 let formSchema = z.object({
   name: z.string().min(1),
   subjectId: z.string().min(1),
+  edition: z.string().min(1),
+  marked: z.boolean().default(false),
 });
 
 if (typeof window !== "undefined") {
@@ -87,8 +91,8 @@ export const BookForm: React.FC<BookFormProps> = ({
   const toastMessage = initialData ? "Book updated." : "Book created.";
   const action = initialData ? "Save changes" : "Create";
 
-  const defaultEmbed = initialData?.embedUrl
-    ? use(createFile(initialData.embedUrl, "application/pdf"))
+  const defaultEmbed = initialData?.coverUrl
+    ? use(createFile(initialData.coverUrl, "image/jpeg"))
     : null;
 
   const form = useForm<BookFormValues>({
@@ -96,18 +100,20 @@ export const BookForm: React.FC<BookFormProps> = ({
     defaultValues: {
       name: initialData?.name ?? "",
       subjectId: initialData?.subject.id ?? "",
+      edition: initialData?.edition ?? "",
+      marked: initialData?.marked ?? false,
       embed: defaultEmbed,
     },
   });
 
   useEffect(() => {
-    if (embedRef.current && initialData?.embedUrl) {
+    if (embedRef.current && initialData?.coverUrl) {
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(defaultEmbed!);
       embedRef.current.files = dataTransfer.files;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialData?.embedUrl]);
+  }, [initialData?.coverUrl]);
 
   const onSubmit = async (data: BookFormValues) => {
     try {
@@ -115,7 +121,7 @@ export const BookForm: React.FC<BookFormProps> = ({
 
       if (
         !!data.embed &&
-        initialData?.embedUrl?.split("/")?.pop() !== data.embed?.name
+        initialData?.coverUrl?.split("/")?.pop() !== data.embed?.name
       ) {
         const newBlob = await upload(`books/${data.embed.name}`, data.embed, {
           access: "public",
@@ -123,7 +129,7 @@ export const BookForm: React.FC<BookFormProps> = ({
           multipart: true,
         });
         // @ts-ignore
-        data["embedUrl"] = newBlob.url;
+        data["coverUrl"] = newBlob.url;
       }
 
       if (initialData) {
@@ -134,7 +140,7 @@ export const BookForm: React.FC<BookFormProps> = ({
           name: data.name,
           subjectId: data.subjectId,
           // @ts-ignore
-          embedUrl: data["embedUrl"],
+          coverUrl: data["coverUrl"],
         });
         // router.push(`/admin/books/${result.id}`);
       }
@@ -151,7 +157,7 @@ export const BookForm: React.FC<BookFormProps> = ({
       setLoading(true);
       if (typeof params.bookId === "string")
         await deleteBook(params.bookId as string);
-      router.push(`/admin/books`);
+      // router.push(`/admin/books`);
       toast.success("Book deleted.");
     } catch (error: any) {
       toast.error("Make sure you removed all products using this book first.");
@@ -241,23 +247,64 @@ export const BookForm: React.FC<BookFormProps> = ({
               disabled={loading}
               render={({ field: { value, onChange, ...field } }) => (
                 <FormItem>
-                  <FormLabel>Ebook</FormLabel>
+                  <FormLabel>Book Cover</FormLabel>
                   <FormControl>
-                    <Input
+                    <DropZoneInput
+                      {...field}
+                      ref={embedRef}
+                      onFileDrop={(file) => onChange(file)}
+                      defaultFile={value || undefined}
+                    />
+                    {/* <Input
                       type="file"
-                      accept="application/pdf"
-                      placeholder="Upload an ebook"
+                      accept="image/*"
+                      placeholder="Upload a cover"
                       {...field}
                       onChange={(event) => {
                         onChange(event.target.files?.[0]);
                       }}
                       ref={embedRef}
-                    />
+                    /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-2 gap-x-5">
+              <FormField
+                control={form.control}
+                name="edition"
+                disabled={loading}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Edition</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Edition" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField<BookFormValues, "marked">
+                control={form.control}
+                name="marked"
+                disabled={loading}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <FormItem>
+                    <FormLabel>Marked book</FormLabel>
+                    <FormControl>
+                      <Switch
+                        {...field}
+                        checked={value}
+                        onCheckedChange={onChange}
+                        className="block"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

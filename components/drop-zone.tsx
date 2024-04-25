@@ -39,7 +39,7 @@ const DropZoneInput = forwardRef<HTMLInputElement, DropZoneInputProps>(
       },
     });
 
-    const thumbs = file && (
+    const thumbs = file && file.type.includes("image") && (
       <div className="mt-2 relative aspect-[32/9]">
         <Image
           src={file.preview}

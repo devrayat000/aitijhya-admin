@@ -7,7 +7,8 @@ export async function getBooks() {
     .select({
       id: bookAuthor.id,
       name: bookAuthor.name,
-      embedUrl: bookAuthor.embedUrl,
+      edition: bookAuthor.edition,
+      marked: bookAuthor.marked,
       subject: {
         name: subject.name,
         id: subject.id,
@@ -23,7 +24,9 @@ export async function getBookById(id: string) {
     .select({
       id: bookAuthor.id,
       name: bookAuthor.name,
-      embedUrl: bookAuthor.embedUrl,
+      edition: bookAuthor.edition,
+      marked: bookAuthor.marked,
+      coverUrl: bookAuthor.coverUrl,
       subject: {
         name: subject.name,
         id: subject.id,

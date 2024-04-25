@@ -1,11 +1,7 @@
-import { format } from "date-fns";
-
 import { BooksClient } from "./components/client";
-import db from "@/lib/db";
-import { bookAuthor } from "@/db/schema";
 import { getBooks } from "@/services/book";
 
-const SizesPage = async ({ params }: { params: { storeId: string } }) => {
+const SizesPage = async () => {
   const books = await getBooks();
 
   return (

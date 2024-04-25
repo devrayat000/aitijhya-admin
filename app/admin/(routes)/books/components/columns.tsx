@@ -1,6 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { Check, X } from "lucide-react";
 
 import { CellAction } from "./cell-action";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -40,6 +41,20 @@ export const columns: ColumnDef<BookColumn>[] = [
   {
     accessorKey: "name",
     header: "Name",
+  },
+  {
+    accessorKey: "edition",
+    header: "Edition",
+  },
+  {
+    accessorKey: "marked",
+    header: "Marked",
+    cell: ({ getValue }) =>
+      getValue<boolean>() ? (
+        <Check className="w-5 h-5 text-green-600" />
+      ) : (
+        <X className="w-5 h-5 text-red-600" />
+      ),
   },
   {
     accessorKey: "subject.name",
