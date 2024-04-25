@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { columns, BookColumn } from "./columns";
 import Link from "next/link";
+import { deleteManyBooks } from "@/actions/book";
 
 interface BooksClientProps {
   data: BookColumn[];
@@ -31,7 +32,12 @@ export const BooksClient: React.FC<BooksClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="name" columns={columns} data={data} />
+      <DataTable
+        searchKey="name"
+        columns={columns}
+        data={data}
+        deleteAction={deleteManyBooks}
+      />
       <Heading title="API" description="API Calls for Books" />
       <Separator />
       {/* <ApiList entityName="books" entityIdName="bookId" /> */}

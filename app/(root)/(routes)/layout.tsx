@@ -20,7 +20,7 @@ export default function MainLayout({
       <Header />
       <div className="relative z-10">{children}</div>
       <PopupProvider />
-      <ImageProvider />
+      {/* <ImageProvider /> */}
     </Fragment>
   );
 }

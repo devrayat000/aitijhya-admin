@@ -10,3 +10,7 @@ export async function saveIndex(id: string) {
 export async function deleteIndex(id: string) {
   await postIndex.deleteObject(id);
 }
+
+export async function deleteManyIndices(ids: string[]) {
+  await postIndex.deleteObjects(ids);
+}

@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { columns, ChapterColumn } from "./columns";
 import Link from "next/link";
+import { deleteManyChapters } from "@/actions/chapter";
 
 interface ChaptersClientProps {
   data: ChapterColumn[];
@@ -31,7 +32,12 @@ export const ChaptersClient: React.FC<ChaptersClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="name" columns={columns} data={data} />
+      <DataTable
+        searchKey="name"
+        columns={columns}
+        data={data}
+        deleteAction={deleteManyChapters}
+      />
       <Heading title="API" description="API Calls for Chapters" />
       <Separator />
       {/* <ApiList entityName="chapters" entityIdName="chapterId" /> */}

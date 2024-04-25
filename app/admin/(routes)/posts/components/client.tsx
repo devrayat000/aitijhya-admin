@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { columns, PostColumn } from "./columns";
 import Link from "next/link";
+import { deleteManyPosts } from "@/actions/post";
 
 interface PostsClientProps {
   data: PostColumn[];
@@ -30,9 +31,14 @@ export const PostsClient: React.FC<PostsClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="text" columns={columns} data={data} />
-      <Heading title="API" description="API Calls for Posts" />
-      <Separator />
+      <DataTable
+        searchKey="text"
+        columns={columns}
+        data={data}
+        deleteAction={deleteManyPosts}
+      />
+      {/* <Heading title="API" description="API Calls for Posts" />
+      <Separator /> */}
       {/* <ApiList entityName="posts" entityIdName="postId" /> */}
     </>
   );

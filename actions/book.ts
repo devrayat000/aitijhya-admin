@@ -1,6 +1,6 @@
 "use server";
 
-import { InferInsertModel, InferSelectModel, eq } from "drizzle-orm";
+import { InferInsertModel, InferSelectModel, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -39,4 +39,10 @@ export async function getBooksBySubject(
     .from(bookAuthor)
     .where(eq(bookAuthor.subjectId, subjectId));
   return books;
+}
+
+export async function deleteManyBooks(_: void, ids: string[]) {
+  await db.delete(bookAuthor).where(inArray(bookAuthor.id, ids));
+  revalidatePath("/admin/books");
+  redirect(`/admin/books`);
 }

@@ -2,7 +2,7 @@
 
 import { chapter } from "@/db/schema";
 import db from "@/lib/db";
-import { InferSelectModel, eq } from "drizzle-orm";
+import { InferSelectModel, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -41,4 +41,10 @@ export async function getChaptersByBooks(
     .from(chapter)
     .where(eq(chapter.bookAuthorId, bookAuthorId));
   return books;
+}
+
+export async function deleteManyChapters(_: void, ids: string[]) {
+  await db.delete(chapter).where(inArray(chapter.id, ids));
+  revalidatePath("/admin/chapters");
+  redirect(`/admin/chapters`);
 }

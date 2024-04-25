@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { columns, SubjectColumn } from "./columns";
 import Link from "next/link";
+import { deleteManySubjects } from "@/actions/subject";
 
 interface SubjectsClientProps {
   data: SubjectColumn[];
@@ -31,7 +32,12 @@ export const SubjectsClient: React.FC<SubjectsClientProps> = ({ data }) => {
         </Button>
       </div>
       <Separator />
-      <DataTable searchKey="name" columns={columns} data={data} />
+      <DataTable
+        searchKey="name"
+        columns={columns}
+        data={data}
+        deleteAction={deleteManySubjects}
+      />
       <Heading title="API" description="API Calls for Subjects" />
       <Separator />
       {/* <ApiList entityName="subjects" entityIdName="subjectId" /> */}
