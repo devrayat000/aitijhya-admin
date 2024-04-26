@@ -9,6 +9,12 @@ import { useClickAway } from "@uidotdev/usehooks";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSearchStore, useStore } from "@/hooks/use-search-history";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function SearchForm() {
   const searchParams = useSearchParams();
@@ -66,15 +72,26 @@ export default function SearchForm() {
             onFocus={() => setShowSuggestions(true)}
           />
           <Separator orientation="vertical" className="bg-slate-400 w-0.5" />
-          <Button
-            size="icon"
-            variant="ghost"
-            className="w-9 h-9 rounded-full"
-            type="button"
-          >
-            <Camera className="h-5 w-5 text-muted-foreground" />
-            {/* <input {...getInputProps()} /> */}
-          </Button>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="w-9 h-9 rounded-full"
+                  type="button"
+                >
+                  <Camera className="h-5 w-5 text-muted-foreground" />
+                  {/* <input {...getInputProps()} /> */}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>This feature is still under development</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           {showSuggestions && filteredHistory && filteredHistory.length > 0 && (
             <motion.ul
               ref={popupRef}
