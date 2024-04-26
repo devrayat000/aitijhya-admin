@@ -16,9 +16,15 @@ export const useSearchStore = create<
       history: [],
       saveHistory: (suggestion) => {
         console.log("adding history");
-        set((state) => ({
-          history: [suggestion, ...state.history],
-        }));
+        set((state) => {
+          const newHistoryStack = [suggestion, ...state.history];
+          if (newHistoryStack.length > 15) {
+            newHistoryStack.pop();
+          }
+          return {
+            history: newHistoryStack,
+          };
+        });
       },
     }),
     {
