@@ -1,60 +1,51 @@
-import { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
 import logoSingle from "@/assets/logo_single.png";
-import home from "@/assets/og/home.png";
+import { Camera, Search } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
-export const metadata: Metadata = {
-  openGraph: {
-    type: "website",
-    countryName: "Bangladesh",
-    images: [{ url: home.src }],
-    title: "Taalaash",
-    url: "https://taalaash.com",
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@taalaash",
-    creator: "@zul_rayat",
-    images: [{ url: home.src }],
-  },
-};
-
-export default function HomePage() {
+export default function LandingPage() {
   return (
-    <div className="min-h-[calc(100vh-72px)] flex flex-col">
-      <Link href="/">
+    <div className="h-full grid place-items-center">
+      <div className="w-full max-w-[52rem] mx-auto">
         <div className="flex justify-center">
-          <Image src={logoSingle} alt="logo" width={240} />
+          <Image src={logoSingle} alt="logo" width={200} />
         </div>
-      </Link>
-      {/* <div className="flex-1" /> */}
-      <div className="p-6 lg:w-1/2 mx-auto">
-        <div>
-          <h2 className="text-3xl font-bangla font-bold text-center">
-            নয়শো ঘন্টার অপচয় রোধ
-          </h2>
-        </div>
-        <div className="mt-4">
-          <p className="font-bangla text-lg text-center">
-            প্রতিটা পরীক্ষার পর প্রশ্ন সলভ করতে হয়। প্রশ্ন, অপশন খুঁজতে আমাদের
-            শত শত ঘন্টা অপচয় হয়। এই টুলস ব্যবহার করলে আপনি সেকেন্ডের মাঝেই
-            রেফারেন্স খুঁজে পাবেন। বইয়ের কোথায় আছে, কীভাবে আছে, কোন বইতে আছে
-            সবকিছু দেখতে পাবেন সেকেন্ডের মাঝে। বয়াকাডেমিকে অবশ্যই কাজে লাগাবে।
-            ভর্তি পরীক্ষায় যেন এই টুলস তোমার ডে টু ডে ব্যবহারের সঙ্গী হয়।{" "}
-          </p>
-        </div>
-        <div className="mt-14">
-          <Button
-            size="lg"
-            asChild
-            className="w-full font-bangla text-2xl h-16 bg-card-result hover:bg-card-result/90"
-          >
-            <Link href="/search">তথ্যের জগতে যাত্রা শুরু হোক!</Link>
-          </Button>
-        </div>
+        <form role="search" className="mt-10" method="get" action="/search">
+          <div className="flex items-center gap-2 max-w-[52rem] mx-auto">
+            <div className="px-4 flex flex-1 h-12 w-full rounded-full border border-input bg-input py-2 text-sm items-center justify-between gap-x-2">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <input
+                placeholder="Questions or keywords..."
+                className="flex-1 bg-transparent text-sm p-0 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                type="search"
+                name="query"
+              />
+              <Separator
+                orientation="vertical"
+                className="bg-slate-400 w-0.5"
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className="w-9 h-9 rounded-full"
+                type="button"
+              >
+                <Camera className="h-5 w-5 text-muted-foreground" />
+                {/* <input {...getInputProps()} /> */}
+              </Button>
+            </div>
+
+            <Button
+              type="submit"
+              size="icon"
+              className="w-12 h-12 rounded-full bg-card-result hover:bg-card-result/90"
+              variant="default"
+            >
+              <Search className="h-8 w-8 text-white" />
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );

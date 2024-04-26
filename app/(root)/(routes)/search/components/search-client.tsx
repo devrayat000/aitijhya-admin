@@ -4,24 +4,140 @@ import createClient from "algoliasearch/lite";
 import {
   InstantSearch,
   InstantSearchSSRProvider,
+  SearchBox,
   UseConfigureProps,
   useConfigure,
 } from "react-instantsearch";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { SearchBox } from "./search-box";
+// import { SearchBox } from "./search-box";
 import Hits from "./results";
 import logoSingle from "@/assets/logo_single.png";
 import { useSearchMode } from "@/hooks/use-search-mode";
 import { Suspense } from "react";
 // import { InstantSearchNext } from "react-instantsearch-nextjs";
+import {
+  InstantSearchNext,
+  InstantSearchNextRouting,
+} from "react-instantsearch-nextjs";
+import { history } from "instantsearch.js/es/lib/routers";
+import { UiState } from "instantsearch.js";
 
 const algoliaClient = createClient(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID!,
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY!
 );
+
+// Returns a slug from the category name.
+// Spaces are replaced by "+" to make
+// the URL easier to read and other
+// characters are encoded.
+function getCategorySlug(name) {
+  return name.split(" ").map(encodeURIComponent).join("+");
+}
+
+// Returns a name from the category slug.
+// The "+" are replaced by spaces and other
+// characters are decoded.
+function getCategoryName(slug) {
+  return slug.split("+").map(decodeURIComponent).join(" ");
+}
+
+const routing: InstantSearchNextRouting<UiState, UiState> = {
+  router: history({
+    cleanUrlOnDispose: false,
+    windowTitle({ category, query }) {
+      const queryTitle = query ? `Results for "${query}"` : "Search";
+
+      if (category) {
+        return `${category} – ${queryTitle}`;
+      }
+
+      return queryTitle;
+    },
+
+    createURL({ qsModule, routeState, location }) {
+      const urlParts = location.href.match(/^(.*?)\/search/);
+      const baseUrl = `${urlParts ? urlParts[1] : ""}/`;
+
+      const categoryPath = routeState.category
+        ? `${getCategorySlug(routeState.category)}/`
+        : "";
+      const queryParameters = {};
+
+      if (routeState.query) {
+        queryParameters.query = encodeURIComponent(routeState.query);
+      }
+      if (routeState.page !== 1) {
+        queryParameters.page = routeState.page;
+      }
+      if (routeState.brands) {
+        queryParameters.brands = routeState.brands.map(encodeURIComponent);
+      }
+
+      const queryString = qsModule.stringify(queryParameters, {
+        addQueryPrefix: true,
+        arrayFormat: "repeat",
+      });
+
+      return `${baseUrl}search/${categoryPath}${queryString}`;
+    },
+
+    parseURL({ qsModule, location }) {
+      const pathnameMatches = location.pathname.match(/search\/(.*?)\/?$/);
+      const category = getCategoryName(pathnameMatches?.[1] || "");
+      const {
+        query = "",
+        page,
+        brands = [],
+      } = qsModule.parse(location.search.slice(1));
+      // `qs` does not return an array when there's a single value.
+      const allBrands = Array.isArray(brands)
+        ? brands
+        : [brands].filter(Boolean);
+
+      return {
+        query: decodeURIComponent(query),
+        page,
+        brands: allBrands.map(decodeURIComponent),
+        category,
+      };
+    },
+    getLocation() {
+      return window.location;
+    },
+  }),
+
+  stateMapping: {
+    stateToRoute(uiState) {
+      const indexUiState = uiState["instant_search"] || {};
+
+      return {
+        query: indexUiState.query,
+        page: indexUiState.page,
+        brands: indexUiState.refinementList?.brand,
+        category: indexUiState.menu?.categories,
+      };
+    },
+
+    routeToState(routeState) {
+      return {
+        instant_search: {
+          query: routeState.query,
+          page: routeState.page,
+          menu: {
+            categories: routeState.category,
+          },
+          refinementList: {
+            brand: routeState.brands,
+          },
+        },
+      };
+    },
+  },
+};
 
 export const dynamic = "force-dynamic";
 
@@ -41,26 +157,28 @@ function Configure(props: UseConfigureProps) {
 }
 
 const SetupPage = () => {
+  // const router = useRouter();
   return (
     <div>
-      <InstantSearchSSRProvider initialResults={{}}></InstantSearchSSRProvider>
-      <InstantSearch
+      {/* <InstantSearchSSRProvider initialResults={{}}></InstantSearchSSRProvider> */}
+      <InstantSearchNext
         searchClient={algoliaClient}
         indexName="posts"
-        // routing
         future={{ preserveSharedStateOnUnmount: true }}
+        routing={routing}
       >
         <div className="pt-4">
-          <Suspense>
-            <Configure />
-            <SearchBox />
-          </Suspense>
+          {/* <Suspense>
+            <Configure /> */}
+          <SearchBox />
+          {/* <SearchBox /> */}
+          {/* </Suspense> */}
           {/* <RefinementList attribute="chapter.name" /> */}
         </div>
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <Hits />
-        </div>
-      </InstantSearch>
+        </div> */}
+      </InstantSearchNext>
     </div>
   );
 };
@@ -95,13 +213,7 @@ export default function SearchClient() {
 
   return (
     <div className="p-4 h-screen" suppressHydrationWarning>
-      <AnimatePresence initial={false}>
-        {isSearchMode ? (
-          <SetupPage key="search" />
-        ) : (
-          <SearchTrigger key="trigger" />
-        )}
-      </AnimatePresence>
+      <SetupPage key="search" />
     </div>
   );
 }

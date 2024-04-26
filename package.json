@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postbuild": "node --loader ts-node/esm --experimental-specifier-resolution node migrate.ts"
+    "postbuild": "node --loader ts-node/esm --experimental-specifier-resolution node migrate.ts",
+    "save:index": "node --loader ts-node/esm --experimental-fetch --experimental-specifier-resolution node save-index.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.8.2",

@@ -48,7 +48,7 @@ export async function createFile(
 }
 
 export function getAvatarLetters(fullName: string): string {
-  const words = fullName.split(" ");
+  const words = fullName?.split(" ");
 
   if (words.length === 1) {
     // For a single word, take the first two characters

@@ -33,12 +33,12 @@ export default function UserAvatar() {
             {session.user.image && (
               <AvatarImage
                 src={session.user.image}
-                alt={getAvatarLetters(session.user.name!)}
+                // alt={getAvatarLetters(session.user.name!)}
               />
             )}
-            <AvatarFallback>
+            {/* <AvatarFallback>
               {getAvatarLetters(session.user.name!)}
-            </AvatarFallback>
+            </AvatarFallback> */}
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
