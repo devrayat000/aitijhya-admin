@@ -1,11 +1,9 @@
-import { getBookmarkedList } from "@/services/bookmark";
-import SearchClient from "./components/search-client";
-import { ServerStoreProvider } from "@/hooks/use-server-data";
-import { getCurrentUserSearchHistory } from "@/services/history";
-import { postIndex } from "@/lib/algolia";
-import { PostHit, PostHitResults, getHitPostsByIds } from "@/services/post";
-import { InstantSearchNext } from "react-instantsearch-nextjs";
+import Image from "next/image";
 import { redirect } from "next/navigation";
+import { Camera, Search } from "lucide-react";
+
+import { postIndex } from "@/lib/algolia";
+import { PostHit } from "@/services/post";
 import {
   Pagination,
   PaginationContent,
@@ -15,13 +13,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import ResultCard from "./components/result-card";
 import BookmarkButton from "./components/bookmark";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Camera, Search } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import logoSingle from "@/assets/logo_single.png";
+import SearchForm from "./components/search-form";
+import Link from "next/link";
 
 export default async function SearchPage({
   searchParams,
@@ -54,42 +51,14 @@ export default async function SearchPage({
 
   return (
     <div className="px-4">
-      <form role="search" className="mt-2" method="get" action="/search">
-        <div className="flex gap-2 mx-8">
-          <div className="flex justify-center">
-            <Image src={logoSingle} alt="logo" width={120} />
-          </div>
-          <div className="px-4 flex flex-1 h-12 w-full rounded-full border border-input bg-input py-2 text-sm items-center justify-between gap-x-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
-            <input
-              placeholder="Questions or keywords..."
-              className="flex-1 bg-transparent text-sm p-0 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-              type="search"
-              name="query"
-              defaultValue={query}
-            />
-            <Separator orientation="vertical" className="bg-slate-400 w-0.5" />
-            <Button
-              size="icon"
-              variant="ghost"
-              className="w-9 h-9 rounded-full"
-              type="button"
-            >
-              <Camera className="h-5 w-5 text-muted-foreground" />
-              {/* <input {...getInputProps()} /> */}
-            </Button>
-          </div>
-
-          <Button
-            type="submit"
-            size="icon"
-            className="w-12 h-12 rounded-full bg-card-result hover:bg-card-result/90"
-            variant="default"
-          >
-            <Search className="h-8 w-8 text-white" />
-          </Button>
+      <div className="flex items-center gap-2">
+        <Link href="/" className="flex justify-center">
+          <Image src={logoSingle} alt="logo" width={120} />
+        </Link>
+        <div className="flex-1">
+          <SearchForm />
         </div>
-      </form>
+      </div>
       <section className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-8">
         {posts ? (
           posts.map((post) => (
@@ -97,7 +66,7 @@ export default async function SearchPage({
               key={post.objectID}
               className="rounded-2xl overflow-hidden shadow-lg"
             >
-              <div className="relative aspect-video rounded-inherit border-border border">
+              <div className="relative isolate aspect-[3/4] rounded-inherit border-border border">
                 <Image
                   src={post.imageUrl!}
                   alt={post.book.name}
