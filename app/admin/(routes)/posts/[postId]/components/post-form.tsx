@@ -42,7 +42,9 @@ import { createFile } from "@/lib/utils";
 const formSchema = z
   .object({
     text: z.string().min(1),
-    page: z.preprocess((x) => Number(x), z.number().int().positive()),
+    page: z
+      .preprocess((x) => Number(x), z.number().int().positive())
+      .optional(),
     // image: z.instanceof(File),
     keywords: z
       .preprocess(
