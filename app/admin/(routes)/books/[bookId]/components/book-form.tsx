@@ -125,7 +125,7 @@ export const BookForm: React.FC<BookFormProps> = ({
       ) {
         const newBlob = await upload(`books/${data.embed.name}`, data.embed, {
           access: "public",
-          handleUploadUrl: "/api/book/upload",
+          handleUploadUrl: "/api/image/upload",
           multipart: true,
         });
         // @ts-ignore

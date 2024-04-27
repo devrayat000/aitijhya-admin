@@ -1,24 +1,14 @@
 import Image from "next/image";
-import { redirect } from "next/navigation";
-import { Camera, Search } from "lucide-react";
+import { RedirectType, redirect } from "next/navigation";
+import Link from "next/link";
 
 import { postIndex } from "@/lib/algolia";
 import { PostHit } from "@/services/post";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import BookmarkButton from "./components/bookmark";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import logoSingle from "@/assets/logo_single.png";
 import SearchForm from "./components/search-form";
-import Link from "next/link";
+import PostPagination from "./components/pagination";
 
 export default async function SearchPage({
   searchParams,
@@ -26,10 +16,10 @@ export default async function SearchPage({
   searchParams?: { query: string; page?: string };
 }) {
   if (!searchParams?.query) {
-    redirect("/");
+    redirect("/", RedirectType.replace);
   }
 
-  const currentPage = searchParams.page ? parseInt(searchParams.page) : 1;
+  const currentPage = parseInt(searchParams.page || "1");
 
   const query = searchParams.query;
 
@@ -37,15 +27,8 @@ export default async function SearchPage({
     optionalWords: query,
     hitsPerPage: 12,
     page: currentPage - 1,
+    cacheable: true,
   });
-
-  const neighborPages = [currentPage - 1, currentPage, currentPage + 1];
-  while (neighborPages[0] < 2) {
-    neighborPages.shift();
-  }
-  while (neighborPages[neighborPages.length - 1] > results.nbPages - 1) {
-    neighborPages.pop();
-  }
 
   const posts = results.hits;
 
@@ -112,85 +95,11 @@ export default async function SearchPage({
           </div>
         )}
       </section>
-      <Pagination className="pb-4">
-        <PaginationContent>
-          {currentPage > 1 && (
-            <PaginationItem>
-              <PaginationPrevious
-                href={{
-                  query: {
-                    ...searchParams,
-                    page: currentPage - 1,
-                  },
-                }}
-              />
-            </PaginationItem>
-          )}
-          <PaginationItem>
-            <PaginationLink
-              href={{
-                query: {
-                  ...searchParams,
-                  page: 1,
-                },
-              }}
-              isActive={currentPage === 1}
-            >
-              1
-            </PaginationLink>
-          </PaginationItem>
-          {currentPage >= 4 && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-          {neighborPages.map((page) => (
-            <PaginationItem key={page}>
-              <PaginationLink
-                href={{
-                  query: {
-                    ...searchParams,
-                    page,
-                  },
-                }}
-                isActive={currentPage === page}
-              >
-                {page}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-          {currentPage <= results.nbPages - 3 && (
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-          )}
-          <PaginationItem>
-            <PaginationLink
-              href={{
-                query: {
-                  ...searchParams,
-                  page: results.nbPages,
-                },
-              }}
-              isActive={currentPage === results.nbPages}
-            >
-              {results.nbPages}
-            </PaginationLink>
-          </PaginationItem>
-          {currentPage < results.nbPages && (
-            <PaginationItem>
-              <PaginationNext
-                href={{
-                  query: {
-                    ...searchParams,
-                    page: currentPage + 1,
-                  },
-                }}
-              />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
+      <PostPagination
+        currentPage={currentPage}
+        searchParams={searchParams}
+        totalPages={results.nbPages}
+      />
     </div>
   );
 }
