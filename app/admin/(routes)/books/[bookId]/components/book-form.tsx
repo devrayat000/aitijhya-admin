@@ -155,7 +155,7 @@ export const BookForm: React.FC<BookFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      if (typeof params.bookId === "string")
+      if (typeof params?.bookId === "string")
         await deleteBook(params.bookId as string);
       // router.push(`/admin/books`);
       toast.success("Book deleted.");

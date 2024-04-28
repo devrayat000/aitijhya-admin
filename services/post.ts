@@ -2,7 +2,7 @@ import { bookAuthor, post, subject, chapter } from "@/db/schema";
 import db from "@/lib/db";
 import { eq, inArray, sql } from "drizzle-orm";
 
-const booksQuery = db
+const postsQuery = db
   .select({
     id: post.id,
     text: post.text,
@@ -27,8 +27,8 @@ const booksQuery = db
   .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
   .innerJoin(subject, eq(subject.id, bookAuthor.subjectId));
 
-const postsStatement = booksQuery.prepare("get_posts");
-const postByIdStatement = booksQuery
+const postsStatement = postsQuery.prepare("get_posts");
+const postByIdStatement = postsQuery
   .where(eq(post.id, sql.placeholder("id")))
   .prepare("get_post_by_id");
 

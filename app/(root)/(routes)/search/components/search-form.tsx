@@ -18,7 +18,9 @@ import {
 
 export default function SearchForm() {
   const searchParams = useSearchParams();
-  const [inputValue, setInputValue] = useState(searchParams.get("query") ?? "");
+  const [inputValue, setInputValue] = useState(
+    searchParams?.get("query") ?? ""
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const history = useStore(useSearchStore, (store) => store.history);
   const router = useRouter();

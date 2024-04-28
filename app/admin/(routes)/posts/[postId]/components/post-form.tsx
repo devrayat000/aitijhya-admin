@@ -42,9 +42,10 @@ import { createFile } from "@/lib/utils";
 const formSchema = z
   .object({
     text: z.string().min(1),
-    page: z
-      .preprocess((x) => Number(x), z.number().int().positive())
-      .optional(),
+    page: z.preprocess(
+      (x) => (!!x ? Number(x) : undefined),
+      z.number().int().positive().optional()
+    ),
     // image: z.instanceof(File),
     keywords: z
       .preprocess(
@@ -112,7 +113,7 @@ export const PostForm: React.FC<PostFormProps> = ({
     resolver: zodResolver(formSchema, { async: true }),
     defaultValues: {
       text: initialData?.text ?? "",
-      page: initialData?.page ?? 0,
+      page: initialData?.page ?? undefined,
       subjectId: initialData?.subject.id ?? "",
       bookAuthorId: initialData?.book.id ?? "",
       chapterId: initialData?.chapter.id ?? "",
@@ -377,7 +378,6 @@ export const PostForm: React.FC<PostFormProps> = ({
                     <FormLabel>Page No.</FormLabel>
                     <FormControl>
                       <Input
-                        required
                         placeholder="e.g. 40"
                         type="tel"
                         {...field}
