@@ -111,10 +111,6 @@ export function DataTable<TData extends IData, TValue>({
     },
   });
 
-  function onPageSizeChange(value: string) {
-    setPagination((prev) => ({ ...prev, pageSize: parseInt(value) }));
-  }
-
   const [, deleteSelected, isLoading] = useFormState(deleteAction, void 0);
 
   const isSelectionMode = Object.keys(rowSelection).length > 0;

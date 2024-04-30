@@ -25,6 +25,7 @@ const nextConfig = {
         protocol: "https",
       },
     ],
+    minimumCacheTTL: 864000 * 30,
   },
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },

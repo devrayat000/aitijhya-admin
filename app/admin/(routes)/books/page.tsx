@@ -14,3 +14,5 @@ const SizesPage = async () => {
 };
 
 export default SizesPage;
+
+export const dynamic = true;

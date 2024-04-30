@@ -17,3 +17,5 @@ const SizesPage = async ({ params }: { params: { storeId: string } }) => {
 };
 
 export default SizesPage;
+
+export const dynamic = true;

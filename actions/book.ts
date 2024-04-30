@@ -9,7 +9,7 @@ import db from "@/lib/db";
 
 export async function createBook(params: InferInsertModel<typeof bookAuthor>) {
   await db.insert(bookAuthor).values(params);
-  revalidatePath("/admin/books");
+  // revalidatePath("/admin/books");
   redirect("/admin/books");
   // return data;
 }
@@ -19,14 +19,14 @@ export async function updateBook(
   params: Partial<InferInsertModel<typeof bookAuthor>>
 ) {
   await db.update(bookAuthor).set(params).where(eq(bookAuthor.id, id));
-  revalidatePath("/admin/books");
+  // revalidatePath("/admin/books");
   redirect("/admin/books");
   // return data;
 }
 
 export async function deleteBook(id: string) {
   await db.delete(bookAuthor).where(eq(bookAuthor.id, id));
-  revalidatePath("/admin/books");
+  // revalidatePath("/admin/books");
   redirect("/admin/books");
 }
 
@@ -43,6 +43,6 @@ export async function getBooksBySubject(
 
 export async function deleteManyBooks(_: void, ids: string[]) {
   await db.delete(bookAuthor).where(inArray(bookAuthor.id, ids));
-  revalidatePath("/admin/books");
+  // revalidatePath("/admin/books");
   redirect(`/admin/books`);
 }

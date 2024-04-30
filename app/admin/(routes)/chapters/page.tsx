@@ -16,3 +16,5 @@ const ChaptersPage = async () => {
 };
 
 export default ChaptersPage;
+
+export const dynamic = true;

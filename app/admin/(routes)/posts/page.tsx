@@ -16,3 +16,5 @@ const PostsPage = async () => {
 };
 
 export default PostsPage;
+
+export const dynamic = true;
