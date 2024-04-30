@@ -12,7 +12,7 @@ import {
 import { useFormStatus, useFormState } from "react-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
-import { toast } from "react-hot-toast";
+import { toast } from "@/components/ui/use-toast";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { InferSelectModel } from "drizzle-orm";
