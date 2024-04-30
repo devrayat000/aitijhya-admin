@@ -149,9 +149,9 @@ export const PostForm: React.FC<PostFormProps> = ({
         console.log("updating", data);
 
         await updatePost(initialData.id, data);
-        // router.refresh();
+        router.refresh();
       } else {
-        await createPost({
+        const { id } = await createPost({
           text: data.text,
           page: data.page,
           chapterId: data.chapterId,
@@ -159,7 +159,7 @@ export const PostForm: React.FC<PostFormProps> = ({
           // @ts-ignore
           imageUrl: data["imageUrl"],
         });
-        // router.push(`/admin/posts/${result.id}`);
+        router.replace(`/admin/posts/${id}`);
       }
       toast.success(toastMessage);
     } catch (error: any) {
@@ -174,7 +174,7 @@ export const PostForm: React.FC<PostFormProps> = ({
       setLoading(true);
       if (typeof params.postId === "string")
         await deletePost(params.postId as string);
-      router.push(`/admin/posts`);
+      router.replace(`/admin/posts`);
       toast.success("Post deleted.");
     } catch (error: any) {
       toast.error("Make sure you removed all products using this post first.");

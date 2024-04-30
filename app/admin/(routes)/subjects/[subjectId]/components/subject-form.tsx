@@ -62,10 +62,10 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({ initialData }) => {
 
       if (initialData) {
         await updateSubject(initialData.id, data);
-        // router.refresh();
+        router.refresh();
       } else {
-        await createSubject(data);
-        // router.push(`/admin/subjects/${result.id}`);
+        const { id } = await createSubject(data);
+        router.replace(`/admin/subjects/${id}`);
       }
       toast.success(toastMessage);
     } catch (error: any) {
@@ -80,7 +80,7 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({ initialData }) => {
       setLoading(true);
       if (typeof params.subjectId === "string")
         await deleteSubject(params.subjectId as string);
-      router.push(`/admin/subjects`);
+      router.replace(`/admin/subjects`);
       toast.success("Subject deleted.");
     } catch (error: any) {
       toast.error(

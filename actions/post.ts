@@ -20,9 +20,9 @@ export async function createPost(params: PostInput) {
     .returning({ id: post.id });
 
   await saveIndex(data.id);
-  // revalidatePath("/admin/posts");
-  redirect(`/admin/posts`);
-  // return data;
+  revalidatePath("/admin/posts");
+  // redirect(`/admin/posts`);
+  return data;
 }
 
 export async function updatePost(id: string, params: Partial<PostInput>) {
@@ -33,21 +33,21 @@ export async function updatePost(id: string, params: Partial<PostInput>) {
     .returning({ id: post.id });
 
   await saveIndex(data.id);
-  // revalidatePath("/admin/posts");
-  redirect(`/admin/posts`);
+  revalidatePath("/admin/posts");
+  // redirect(`/admin/posts`);
   // return data;
 }
 
 export async function deletePost(id: string) {
   await db.delete(post).where(eq(post.id, id));
   await deleteIndex(id);
-  // revalidatePath("/admin/posts");
-  redirect(`/admin/posts`);
+  revalidatePath("/admin/posts");
+  // redirect(`/admin/posts`);
 }
 
 export async function deleteManyPosts(_: void, ids: string[]) {
   await db.delete(post).where(inArray(post.id, ids));
   await deleteManyIndices(ids);
-  // revalidatePath("/admin/posts");
-  redirect(`/admin/posts`);
+  revalidatePath("/admin/posts");
+  // redirect(`/admin/posts`);
 }

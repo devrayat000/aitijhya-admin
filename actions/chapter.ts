@@ -4,16 +4,18 @@ import { chapter } from "@/db/schema";
 import db from "@/lib/db";
 import { InferSelectModel, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export async function createChapter(params: {
   name: string;
   bookAuthorId: string;
 }) {
-  await db.insert(chapter).values(params);
-  // revalidatePath("/admin/chapters");
-  redirect("/admin/chapters");
-  // return data;
+  const [data] = await db
+    .insert(chapter)
+    .values(params)
+    .returning({ id: chapter.id });
+  revalidatePath("/admin/chapters");
+  // redirect("/admin/chapters");
+  return data;
 }
 
 export async function updateChapter(
@@ -21,15 +23,15 @@ export async function updateChapter(
   params: Partial<{ name: string; bookAuthorId: string }>
 ) {
   await db.update(chapter).set(params).where(eq(chapter.id, id));
-  // revalidatePath("/admin/chapters");
-  redirect("/admin/chapters");
+  revalidatePath("/admin/chapters");
+  // redirect("/admin/chapters");
   // return data;
 }
 
 export async function deleteChapter(id: string) {
   await db.delete(chapter).where(eq(chapter.id, id));
-  // revalidatePath("/admin/chapters");
-  redirect("/admin/chapters");
+  revalidatePath("/admin/chapters");
+  // redirect("/admin/chapters");
 }
 
 export async function getChaptersByBooks(
@@ -45,6 +47,6 @@ export async function getChaptersByBooks(
 
 export async function deleteManyChapters(_: void, ids: string[]) {
   await db.delete(chapter).where(inArray(chapter.id, ids));
-  // revalidatePath("/admin/chapters");
-  redirect(`/admin/chapters`);
+  revalidatePath("/admin/chapters");
+  // redirect(`/admin/chapters`);
 }

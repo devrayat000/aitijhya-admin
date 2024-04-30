@@ -134,15 +134,15 @@ export const BookForm: React.FC<BookFormProps> = ({
 
       if (initialData) {
         await updateBook(initialData.id, data);
-        // router.refresh();
+        router.refresh();
       } else {
-        await createBook({
+        const { id } = await createBook({
           name: data.name,
           subjectId: data.subjectId,
           // @ts-ignore
           coverUrl: data["coverUrl"],
         });
-        // router.push(`/admin/books/${result.id}`);
+        router.replace(`/admin/books/${id}`);
       }
       toast.success(toastMessage);
     } catch (error: any) {
@@ -157,7 +157,7 @@ export const BookForm: React.FC<BookFormProps> = ({
       setLoading(true);
       if (typeof params?.bookId === "string")
         await deleteBook(params.bookId as string);
-      // router.push(`/admin/books`);
+      router.replace(`/admin/books`);
       toast.success("Book deleted.");
     } catch (error: any) {
       toast.error("Make sure you removed all products using this book first.");

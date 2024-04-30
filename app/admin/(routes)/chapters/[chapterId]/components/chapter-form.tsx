@@ -24,7 +24,6 @@ import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { bookAuthor, chapter, subject } from "@/db/schema";
-import db from "@/lib/db";
 import {
   Select,
   SelectContent,
@@ -89,10 +88,10 @@ export const ChapterForm: React.FC<ChapterFormProps> = ({
       setLoading(true);
       if (initialData) {
         await updateChapter(initialData.id, data);
-        // router.refresh();
+        router.refresh();
       } else {
-        await createChapter(data);
-        // router.push(`/admin/chapters/${result.id}`);
+        const { id } = await createChapter(data);
+        router.replace(`/admin/chapters/${id}`);
       }
       toast.success(toastMessage);
     } catch (error: any) {
@@ -107,7 +106,7 @@ export const ChapterForm: React.FC<ChapterFormProps> = ({
       setLoading(true);
       if (typeof params.chapterId === "string")
         await deleteChapter(params.chapterId as string);
-      router.push(`/admin/chapters`);
+      router.replace(`/admin/chapters`);
       toast.success("Chapter deleted.");
     } catch (error: any) {
       toast.error(
