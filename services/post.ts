@@ -3,7 +3,13 @@ import db from "@/lib/db";
 import { count, eq, ilike, inArray, sql } from "drizzle-orm";
 import { GetParams } from "./types";
 
-const postsQuery = db
+const postCountStatement = db
+  .select({ count: count() })
+  .from(post)
+  .where(ilike(post.text, sql.placeholder("query")))
+  .prepare("get_post_count");
+
+const postsStatement = db
   .select({
     id: post.id,
     text: post.text,
@@ -26,26 +32,41 @@ const postsQuery = db
   .from(post)
   .innerJoin(chapter, eq(chapter.id, post.chapterId))
   .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId));
-
-const postCountStatement = db
-  .select({ count: count() })
-  .from(post)
-  .where(ilike(post.text, sql.placeholder("query")))
-  .prepare("get_post_count");
-
-const postsStatement = postsQuery
+  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
   .offset(sql.placeholder("offset"))
   .limit(sql.placeholder("limit"))
   .where(ilike(post.text, sql.placeholder("query")))
   .prepare("get_posts");
 
-const postByIdStatement = postsQuery
+const postByIdStatement = db
+  .select({
+    id: post.id,
+    text: post.text,
+    page: post.page,
+    keywords: post.keywords,
+    imageUrl: post.imageUrl,
+    chapter: {
+      name: chapter.name,
+      id: chapter.id,
+    },
+    subject: {
+      name: subject.name,
+      id: subject.id,
+    },
+    book: {
+      name: bookAuthor.name,
+      id: bookAuthor.id,
+    },
+  })
+  .from(post)
+  .innerJoin(chapter, eq(chapter.id, post.chapterId))
+  .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
+  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
   .where(eq(post.id, sql.placeholder("id")))
   .prepare("get_post_by_id");
 
 export type PostsQuery = Awaited<
-  ReturnType<(typeof postsQuery)["execute"]>
+  ReturnType<(typeof postsStatement)["execute"]>
 >[number];
 export async function getPosts(params?: GetParams) {
   const page = params?.page || 1;
@@ -70,7 +91,7 @@ export async function getPostById(id: string) {
   return book;
 }
 
-const postIndexQuery = db
+const allPostsIndexStatement = db
   .select({
     objectID: post.id,
     text: post.text,
@@ -90,13 +111,30 @@ const postIndexQuery = db
   .from(post)
   .innerJoin(chapter, eq(chapter.id, post.chapterId))
   .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId));
+  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
+  .prepare("get_all_posts_for_indexing");
 
-const allPostsIndexStatement = postIndexQuery.prepare(
-  "get_all_posts_for_indexing"
-);
-
-const postIndexStatement = postIndexQuery
+const postIndexStatement = db
+  .select({
+    objectID: post.id,
+    text: post.text,
+    keywords: post.keywords,
+    imageUrl: post.imageUrl,
+    chapter: {
+      name: chapter.name,
+    },
+    subject: {
+      name: subject.name,
+    },
+    book: {
+      name: bookAuthor.name,
+      edition: bookAuthor.edition,
+    },
+  })
+  .from(post)
+  .innerJoin(chapter, eq(chapter.id, post.chapterId))
+  .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
+  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
   .where(eq(post.id, sql.placeholder("id")))
   .prepare("get_post_by_id_for_indexing");
 

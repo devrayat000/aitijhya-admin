@@ -3,12 +3,12 @@ import { BookForm } from "./components/book-form";
 import { eq } from "drizzle-orm";
 import { bookAuthor, subject } from "@/db/schema";
 import { getBookById } from "@/services/book";
-import { getSubjects } from "@/services/subject";
+import { getAllSubjects, getSubjects } from "@/services/subject";
 import { Suspense } from "react";
 
 const SizePage = async ({ params }: { params: { bookId: string } }) => {
   let initialData: any = {
-    subjects: (await getSubjects()).subjects,
+    subjects: await getAllSubjects(),
   };
 
   if (params.bookId !== "new") {

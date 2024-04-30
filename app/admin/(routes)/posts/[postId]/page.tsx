@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 import { getPostById } from "@/services/post";
-import { getSubjects } from "@/services/subject";
+import { getAllSubjects, getSubjects } from "@/services/subject";
 import { getBooksBySubject } from "@/actions/book";
 import { getChaptersByBooks } from "@/actions/chapter";
 
@@ -15,7 +15,7 @@ const PostForm = dynamic(
 
 const PostPage = async ({ params }: { params: { postId: string } }) => {
   let initialData: any = {
-    subjects: (await getSubjects()).subjects,
+    subjects: await getAllSubjects(),
   };
 
   if (params.postId !== "new") {
