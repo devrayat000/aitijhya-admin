@@ -15,7 +15,7 @@ const PostForm = dynamic(
 
 const PostPage = async ({ params }: { params: { postId: string } }) => {
   let initialData: any = {
-    subjects: await getSubjects(),
+    subjects: (await getSubjects()).subjects,
   };
 
   if (params.postId !== "new") {

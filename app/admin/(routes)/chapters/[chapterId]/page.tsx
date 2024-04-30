@@ -7,7 +7,7 @@ import { getBooksBySubject } from "@/actions/book";
 
 const ChapterPage = async ({ params }: { params: { chapterId: string } }) => {
   let initialData: any = {
-    subjects: await getSubjects(),
+    subjects: (await getSubjects()).subjects,
   };
 
   if (params.chapterId !== "new") {

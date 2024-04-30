@@ -8,7 +8,7 @@ import { Suspense } from "react";
 
 const SizePage = async ({ params }: { params: { bookId: string } }) => {
   let initialData: any = {
-    subjects: await getSubjects(),
+    subjects: (await getSubjects()).subjects,
   };
 
   if (params.bookId !== "new") {
