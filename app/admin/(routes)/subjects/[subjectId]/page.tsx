@@ -1,15 +1,11 @@
-import db from "@/lib/db";
 import { SubjectForm } from "./components/subject-form";
-import { eq } from "drizzle-orm";
-import { subject } from "@/db/schema";
+import { getSubjectById } from "@/services/subject";
 
 const SizePage = async ({ params }: { params: { subjectId: string } }) => {
   let initialData = null;
 
   if (params.subjectId !== "new") {
-    initialData = (
-      await db.select().from(subject).where(eq(subject.id, params.subjectId))
-    )[0];
+    initialData = await getSubjectById(params.subjectId);
   }
 
   return (

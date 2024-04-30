@@ -1,7 +1,6 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -9,20 +8,21 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 // import { ApiList } from "@/components/ui/api-list";
 
-import { columns, BookColumn } from "./columns";
+import { columns } from "./columns";
 import Link from "next/link";
 import { deleteManyBooks } from "@/actions/book";
+import { useServerTableStore } from "@/hooks/use-server-table-data";
 
-interface BooksClientProps {
-  data: BookColumn[];
-}
+interface BooksClientProps {}
 
-export const BooksClient: React.FC<BooksClientProps> = ({ data }) => {
+export const BooksClient: React.FC<BooksClientProps> = () => {
+  const count = useServerTableStore((state) => state.count);
+
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Books (${data.length})`}
+          title={`Books (${count})`}
           description="Manage books for your products"
         />
         <Button asChild>
@@ -35,7 +35,6 @@ export const BooksClient: React.FC<BooksClientProps> = ({ data }) => {
       <DataTable
         searchKey="name"
         columns={columns}
-        data={data}
         deleteAction={deleteManyBooks}
       />
       <Heading title="API" description="API Calls for Books" />

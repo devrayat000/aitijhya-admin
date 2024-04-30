@@ -1,7 +1,6 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -9,20 +8,21 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 // import { ApiList } from "@/components/ui/api-list";
 
-import { columns, ChapterColumn } from "./columns";
+import { columns } from "./columns";
 import Link from "next/link";
 import { deleteManyChapters } from "@/actions/chapter";
+import { useServerTableStore } from "@/hooks/use-server-table-data";
 
-interface ChaptersClientProps {
-  data: ChapterColumn[];
-}
+interface ChaptersClientProps {}
 
-export const ChaptersClient: React.FC<ChaptersClientProps> = ({ data }) => {
+export const ChaptersClient: React.FC<ChaptersClientProps> = () => {
+  const count = useServerTableStore((state) => state.count);
+
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Chapters (${data.length})`}
+          title={`Chapters (${count})`}
           description="Manage chapters for your products"
         />
         <Button asChild>
@@ -35,7 +35,6 @@ export const ChaptersClient: React.FC<ChaptersClientProps> = ({ data }) => {
       <DataTable
         searchKey="name"
         columns={columns}
-        data={data}
         deleteAction={deleteManyChapters}
       />
       <Heading title="API" description="API Calls for Chapters" />

@@ -54,6 +54,9 @@ import {
 } from "./alert-dialog";
 import { useFormState } from "react-dom";
 import { AnimatePresence } from "framer-motion";
+import useUrlPagination from "@/hooks/use-url-pagination";
+import { useServerTableStore } from "@/hooks/use-server-table-data";
+import { usePathname } from "next/navigation";
 
 interface IData {
   id: string;
@@ -61,7 +64,6 @@ interface IData {
 
 interface DataTableProps<TData extends IData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
   searchKey: string;
   deleteAction: (state: void, ids: string[]) => Promise<void>;
 }
@@ -79,53 +81,66 @@ const fade: Variants = {
 
 export function DataTable<TData extends IData, TValue>({
   columns,
-  data,
   searchKey,
   deleteAction,
 }: DataTableProps<TData, TValue>) {
+  const { data, count } = useServerTableStore<
+    TData,
+    { data: TData[]; count: number }
+  >((store) => ({ count: store.count, data: store.data }));
+  const pathname = usePathname();
+
+  const { page, limit, query, setLimit, setPage } = useUrlPagination();
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    // onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
+    // onPaginationChange: setPagination,
+    manualPagination: true,
+    manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    // getFilteredRowModel: getFilteredRowModel(),
     enableFilters: true,
     getRowId: (row) => row.id,
+    rowCount: count,
     state: {
       sorting,
-      columnFilters,
+      columnFilters: [{ id: searchKey, value: query }],
       rowSelection,
-      pagination,
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: limit,
+      },
     },
   });
 
   const [, deleteSelected, isLoading] = useFormState(deleteAction, void 0);
 
   const isSelectionMode = Object.keys(rowSelection).length > 0;
-
+  // table.setColumnFilters
   return (
     <div className="space-y-4">
       <div className="flex items-center">
-        <Input
-          placeholder="Search"
-          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn(searchKey)?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <form method="get" action={pathname} className="max-w-sm w-full">
+          <input type="hidden" name="limit" defaultValue={limit} />
+          <Input
+            placeholder="Search"
+            type="search"
+            name="query"
+            defaultValue={
+              (table.getColumn(searchKey)?.getFilterValue() as string) ?? ""
+            }
+            className="w-full"
+          />
+        </form>
         <div className="flex-1" />
         <AnimatePresence>
           {isSelectionMode && (
@@ -226,7 +241,8 @@ export function DataTable<TData extends IData, TValue>({
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
-                table.setPageSize(Number(value));
+                // table.setPageSize(Number(value));
+                setLimit(parseInt(value));
               }}
             >
               <SelectTrigger className="h-8 w-[70px]">
@@ -251,7 +267,7 @@ export function DataTable<TData extends IData, TValue>({
             <Button
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
-              onClick={() => table.setPageIndex(0)}
+              onClick={() => setPage(1)}
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to first page</span>
@@ -260,7 +276,7 @@ export function DataTable<TData extends IData, TValue>({
             <Button
               variant="outline"
               className="h-8 w-8 p-0"
-              onClick={() => table.previousPage()}
+              onClick={() => setPage(page - 1)}
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to previous page</span>
@@ -269,7 +285,7 @@ export function DataTable<TData extends IData, TValue>({
             <Button
               variant="outline"
               className="h-8 w-8 p-0"
-              onClick={() => table.nextPage()}
+              onClick={() => setPage(page + 1)}
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to next page</span>
@@ -278,7 +294,7 @@ export function DataTable<TData extends IData, TValue>({
             <Button
               variant="outline"
               className="hidden h-8 w-8 p-0 lg:flex"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              onClick={() => setPage(table.getPageCount())}
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to last page</span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -9,20 +9,20 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 // import { ApiList } from "@/components/ui/api-list";
 
-import { columns, SubjectColumn } from "./columns";
-import Link from "next/link";
+import { columns } from "./columns";
 import { deleteManySubjects } from "@/actions/subject";
+import { useServerTableStore } from "@/hooks/use-server-table-data";
 
-interface SubjectsClientProps {
-  data: SubjectColumn[];
-}
+interface SubjectsClientProps {}
 
-export const SubjectsClient: React.FC<SubjectsClientProps> = ({ data }) => {
+export const SubjectsClient: React.FC<SubjectsClientProps> = () => {
+  const count = useServerTableStore((state) => state.count);
+
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Subjects (${data.length})`}
+          title={`Subjects (${count})`}
           description="Manage subjects for your products"
         />
         <Button asChild>
@@ -35,7 +35,6 @@ export const SubjectsClient: React.FC<SubjectsClientProps> = ({ data }) => {
       <DataTable
         searchKey="name"
         columns={columns}
-        data={data}
         deleteAction={deleteManySubjects}
       />
       <Heading title="API" description="API Calls for Subjects" />

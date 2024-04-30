@@ -11,17 +11,16 @@ import { Separator } from "@/components/ui/separator";
 import { columns, PostColumn } from "./columns";
 import Link from "next/link";
 import { deleteManyPosts } from "@/actions/post";
+import { useServerTableStore } from "@/hooks/use-server-table-data";
 
-interface PostsClientProps {
-  data: PostColumn[];
-}
+export const PostsClient: React.FC = () => {
+  const count = useServerTableStore((state) => state.count);
 
-export const PostsClient: React.FC<PostsClientProps> = ({ data }) => {
   return (
     <>
       <div className="flex items-center justify-between">
         <Heading
-          title={`Posts (${data.length})`}
+          title={`Posts (${count})`}
           description="Manage posts for your products"
         />
         <Button asChild>
@@ -34,7 +33,6 @@ export const PostsClient: React.FC<PostsClientProps> = ({ data }) => {
       <DataTable
         searchKey="text"
         columns={columns}
-        data={data}
         deleteAction={deleteManyPosts}
       />
       {/* <Heading title="API" description="API Calls for Posts" />

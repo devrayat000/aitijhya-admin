@@ -1,6 +1,7 @@
 import { bookAuthor, post, subject, chapter } from "@/db/schema";
 import db from "@/lib/db";
-import { eq, inArray, sql } from "drizzle-orm";
+import { count, eq, ilike, inArray, sql } from "drizzle-orm";
+import { GetParams } from "./types";
 
 const postsQuery = db
   .select({
@@ -27,14 +28,41 @@ const postsQuery = db
   .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
   .innerJoin(subject, eq(subject.id, bookAuthor.subjectId));
 
-const postsStatement = postsQuery.prepare("get_posts");
+const postCountStatement = db
+  .select({ count: count() })
+  .from(post)
+  .where(ilike(post.text, sql.placeholder("query")))
+  .prepare("get_post_count");
+
+const postsStatement = postsQuery
+  .offset(sql.placeholder("offset"))
+  .limit(sql.placeholder("limit"))
+  .where(ilike(post.text, sql.placeholder("query")))
+  .prepare("get_posts");
+
 const postByIdStatement = postsQuery
   .where(eq(post.id, sql.placeholder("id")))
   .prepare("get_post_by_id");
 
-export async function getPosts() {
-  const books = await postsStatement.execute();
-  return books;
+export type PostsQuery = Awaited<
+  ReturnType<(typeof postsQuery)["execute"]>
+>[number];
+export async function getPosts(params?: GetParams) {
+  const page = params?.page || 1;
+  const limit = params?.limit || 10;
+  const query = `%${params?.query || ""}%`;
+  console.log("getPosts -> query", query);
+
+  const [posts, [{ count }]] = await Promise.all([
+    postsStatement.execute({
+      limit,
+      offset: (page - 1) * limit,
+      query,
+    }),
+    postCountStatement.execute({ query }),
+  ]);
+
+  return { posts, count };
 }
 
 export async function getPostById(id: string) {

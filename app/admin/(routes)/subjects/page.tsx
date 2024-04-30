@@ -1,16 +1,22 @@
-import { format } from "date-fns";
-
+import { ServerTableStoreProvider } from "@/hooks/use-server-table-data";
 import { SubjectsClient } from "./components/client";
-import db from "@/lib/db";
-import { subject } from "@/db/schema";
+import { searchParamsSchema } from "@/lib/schemas";
+import { getSubjects } from "@/services/subject";
 
-const SizesPage = async ({ params }: { params: { storeId: string } }) => {
-  const subjects = await db.select().from(subject);
+const SizesPage = async ({
+  searchParams,
+}: {
+  searchParams: Record<string, string>;
+}) => {
+  const { page, limit, query } = searchParamsSchema.parse(searchParams);
+  const { subjects, count } = await getSubjects({ page, limit, query });
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <SubjectsClient data={subjects} />
+        <ServerTableStoreProvider initialData={{ data: subjects, count }}>
+          <SubjectsClient />
+        </ServerTableStoreProvider>
       </div>
     </div>
   );
