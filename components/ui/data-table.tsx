@@ -84,30 +84,22 @@ export function DataTable<TData extends IData, TValue>({
   searchKey,
   deleteAction,
 }: DataTableProps<TData, TValue>) {
-  const { data, count } = useServerTableStore<
-    TData,
-    { data: TData[]; count: number }
-  >((store) => ({ count: store.count, data: store.data }));
+  const { data, count } = useServerTableStore<TData>();
   const pathname = usePathname();
 
   const { page, limit, query, setLimit, setPage } = useUrlPagination();
   const [sorting, setSorting] = useState<SortingState>([]);
-  // const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const table = useReactTable({
     data,
     columns,
     onSortingChange: setSorting,
-    // onColumnFiltersChange: setColumnFilters,
     onRowSelectionChange: setRowSelection,
-    // onPaginationChange: setPagination,
     manualPagination: true,
     manualFiltering: true,
     getCoreRowModel: getCoreRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    // getFilteredRowModel: getFilteredRowModel(),
     enableFilters: true,
     getRowId: (row) => row.id,
     rowCount: count,
@@ -125,7 +117,7 @@ export function DataTable<TData extends IData, TValue>({
   const [, deleteSelected, isLoading] = useFormState(deleteAction, void 0);
 
   const isSelectionMode = Object.keys(rowSelection).length > 0;
-  // table.setColumnFilters
+
   return (
     <div className="space-y-4">
       <div className="flex items-center">

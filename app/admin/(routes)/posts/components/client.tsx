@@ -12,9 +12,11 @@ import { columns } from "./columns";
 import Link from "next/link";
 import { deleteManyPosts } from "@/actions/post";
 import { useServerTableStore } from "@/hooks/use-server-table-data";
+import { useSearchParams } from "next/navigation";
 
 export const PostsClient: React.FC = () => {
-  const count = useServerTableStore((state) => state.count);
+  const { count } = useServerTableStore();
+  const searchParams = useSearchParams();
 
   return (
     <>
@@ -38,6 +40,7 @@ export const PostsClient: React.FC = () => {
       </div>
       <Separator />
       <DataTable
+        key={searchParams.toString()}
         searchKey="text"
         columns={columns}
         deleteAction={deleteManyPosts}

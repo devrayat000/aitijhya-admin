@@ -16,7 +16,7 @@ import { useServerTableStore } from "@/hooks/use-server-table-data";
 interface SubjectsClientProps {}
 
 export const SubjectsClient: React.FC<SubjectsClientProps> = () => {
-  const count = useServerTableStore((state) => state.count);
+  const { count } = useServerTableStore();
 
   return (
     <>

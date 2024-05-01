@@ -16,7 +16,7 @@ import { useServerTableStore } from "@/hooks/use-server-table-data";
 interface ChaptersClientProps {}
 
 export const ChaptersClient: React.FC<ChaptersClientProps> = () => {
-  const count = useServerTableStore((state) => state.count);
+  const { count } = useServerTableStore();
 
   return (
     <>
