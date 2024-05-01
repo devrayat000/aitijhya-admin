@@ -38,7 +38,6 @@ export async function getBookmarkedPosts() {
       chapter: chapter.name,
       subject: subject.name,
       book: bookAuthor.name,
-      bookUrl: bookAuthor.embedUrl,
     })
     .from(bookmark)
     .innerJoin(post, eq(bookmark.postId, post.id))

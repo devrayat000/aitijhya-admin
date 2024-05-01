@@ -67,9 +67,9 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({ initialData }) => {
         const { id } = await createSubject(data);
         router.replace(`/admin/subjects/${id}`);
       }
-      toast.success(toastMessage);
+      toast({ description: toastMessage });
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast({ description: "Something went wrong.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -81,11 +81,13 @@ export const SubjectForm: React.FC<SubjectFormProps> = ({ initialData }) => {
       if (typeof params.subjectId === "string")
         await deleteSubject(params.subjectId as string);
       router.replace(`/admin/subjects`);
-      toast.success("Subject deleted.");
+      toast({ description: "Subject deleted." });
     } catch (error: any) {
-      toast.error(
-        "Make sure you removed all products using this subject first."
-      );
+      toast({
+        description:
+          "Make sure you removed all products using this subject first.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
       setOpen(false);

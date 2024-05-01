@@ -1,6 +1,10 @@
 "use server";
 
 import { eq, inArray, InferInsertModel } from "drizzle-orm";
+import { map, merge, pick } from "lodash";
+import { revalidatePath } from "next/cache";
+import { put } from "@vercel/blob";
+
 import { post } from "@/db/schema";
 import db from "@/lib/db";
 import {
@@ -10,8 +14,7 @@ import {
   saveManyIndices,
   saveManyIndicesByIds,
 } from "@/webhooks/saveIndex";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { env } from "@/lib/utils";
 
 type PostInput = Omit<InferInsertModel<typeof post>, "id">;
 
@@ -61,4 +64,48 @@ export async function deleteManyPosts(_: void, ids: string[]) {
   await deleteManyIndices(ids);
   revalidatePath("/admin/posts");
   // redirect(`/admin/posts`);
+}
+
+export async function bulkUploadPosts(formData: FormData) {
+  const files = formData.getAll("files");
+
+  // console.log(files.length);
+
+  const blobsPrommise = files
+    .map((file) => {
+      if (typeof file !== "string") {
+        return put(`demo/${file.name}`, file, {
+          access: "public",
+          multipart: true,
+        });
+      }
+    })
+    .filter(Boolean);
+
+  const fetchUrl = new URL(
+    "/bulk-upload",
+    env("NEXT_PUBLIC_OCR_URL", "http://127.0.0.1:8000")
+  );
+  const extractedPromise = fetch(fetchUrl, {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .then((data) => data.results as { text: string; file: string }[]);
+
+  const [blobs, results] = await Promise.all([
+    Promise.all(blobsPrommise),
+    extractedPromise,
+  ]);
+
+  const data = merge(blobs, results).map((obj) => ({
+    //   @ts-ignore
+    text: obj.text,
+    imageUrl: obj!.url,
+    chapterId: formData.get("chapterId")!.toString(),
+  }));
+
+  await createPost(data);
+
+  return data;
 }

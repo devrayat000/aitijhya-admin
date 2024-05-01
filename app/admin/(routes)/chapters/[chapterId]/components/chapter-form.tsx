@@ -93,9 +93,9 @@ export const ChapterForm: React.FC<ChapterFormProps> = ({
         const { id } = await createChapter(data);
         router.replace(`/admin/chapters/${id}`);
       }
-      toast.success(toastMessage);
+      toast({ description: toastMessage });
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast({ description: "Something went wrong.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -107,11 +107,13 @@ export const ChapterForm: React.FC<ChapterFormProps> = ({
       if (typeof params.chapterId === "string")
         await deleteChapter(params.chapterId as string);
       router.replace(`/admin/chapters`);
-      toast.success("Chapter deleted.");
+      toast({ description: "Chapter deleted." });
     } catch (error: any) {
-      toast.error(
-        "Make sure you removed all products using this chapter first."
-      );
+      toast({
+        description:
+          "Make sure you removed all products using this chapter first.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
       setOpen(false);

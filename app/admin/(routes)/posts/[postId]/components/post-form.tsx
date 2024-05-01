@@ -31,7 +31,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createPost, deletePost, updatePost } from "@/actions/post";
+import {
+  bulkUploadPosts,
+  createPost,
+  deletePost,
+  updatePost,
+} from "@/actions/post";
 import { getBooksBySubject } from "@/actions/book";
 import { getChaptersByBooks } from "@/actions/chapter";
 import { Textarea } from "@/components/ui/textarea";
@@ -151,41 +156,42 @@ export const PostForm: React.FC<PostFormProps> = ({
   });
 
   const onUploadBulk = async (formData: FormData) => {
-    const xhr = new XMLHttpRequest();
     const { id, dismiss, update } = toast({
       title: "Uploading files...",
       variant: "default",
-      description: <Progress value={0} className="h-1.5" />,
-      onSwipeCancel: xhr.abort,
+      description: <Progress value={50} className="h-1.5" />,
     });
-
-    const success = await new Promise((resolve) => {
-      xhr.upload.addEventListener("progress", (event) => {
-        if (event.lengthComputable) {
-          const uploadProgress = event.loaded / event.total;
-          update({
-            id,
-            description: (
-              <Progress value={uploadProgress * 100} className="h-1.5" />
-            ),
-          });
-        }
-      });
-      xhr.addEventListener("progress", (event) => {
-        if (event.lengthComputable) {
-          const downloadProgress = event.loaded / event.total;
-        }
-      });
-      xhr.addEventListener("loadend", () => {
-        dismiss();
-        resolve(xhr.readyState === 4 && xhr.status === 200);
-        router.replace(`/admin/posts`);
-      });
-      xhr.open("POST", "/api/posts/bulk", true);
-      // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-      xhr.send(formData);
-    });
-    console.log("success", success);
+    await bulkUploadPosts(formData);
+    dismiss();
+    router.replace(`/admin/posts`);
+    // const xhr = new XMLHttpRequest();
+    // const success = await new Promise((resolve) => {
+    //   xhr.upload.addEventListener("progress", (event) => {
+    //     if (event.lengthComputable) {
+    //       const uploadProgress = event.loaded / event.total;
+    //       update({
+    //         id,
+    //         description: (
+    //           <Progress value={uploadProgress * 100} className="h-1.5" />
+    //         ),
+    //       });
+    //     }
+    //   });
+    //   xhr.addEventListener("progress", (event) => {
+    //     if (event.lengthComputable) {
+    //       const downloadProgress = event.loaded / event.total;
+    //     }
+    //   });
+    //   xhr.addEventListener("loadend", () => {
+    //     dismiss();
+    //     resolve(xhr.readyState === 4 && xhr.status === 200);
+    //     router.replace(`/admin/posts`);
+    //   });
+    //   xhr.open("POST", "/api/posts/bulk", true);
+    //   // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+    //   xhr.send(formData);
+    // });
+    // console.log("success", success);
   };
 
   const onSubmit: SubmitHandler<PostFormValues> = async ({
@@ -244,12 +250,12 @@ export const PostForm: React.FC<PostFormProps> = ({
         router.replace(`/admin/posts/${id}`);
       }
       toast({
-        title: toastMessage,
+        description: toastMessage,
         variant: "default",
       });
     } catch (error: any) {
       toast({
-        title: "Something went wrong.",
+        description: "Something went wrong.",
         variant: "destructive",
       });
     } finally {
@@ -263,10 +269,11 @@ export const PostForm: React.FC<PostFormProps> = ({
       if (typeof params.postId === "string")
         await deletePost(params.postId as string);
       router.replace(`/admin/posts`);
-      toast({ title: "Post deleted." });
+      toast({ description: "Post deleted." });
     } catch (error: any) {
       toast({
-        title: "Make sure you removed all products using this post first.",
+        description:
+          "Make sure you removed all products using this post first.",
         variant: "destructive",
       });
     } finally {

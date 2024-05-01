@@ -34,10 +34,10 @@ const postsStatement = db
   .innerJoin(chapter, eq(chapter.id, post.chapterId))
   .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
   .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-  .offset(sql.placeholder("offset"))
-  .limit(sql.placeholder("limit"))
   .where(ilike(post.text, sql.placeholder("query")))
   .orderBy(desc(post.createdAt))
+  .offset(sql.placeholder("offset"))
+  .limit(sql.placeholder("limit"))
   .prepare("get_posts");
 
 const postByIdStatement = db
@@ -145,32 +145,29 @@ export async function getPostByIdForIndexing(id: string) {
   return post;
 }
 
-const postsIndexStatement = db
-  .select({
-    objectID: post.id,
-    text: post.text,
-    keywords: post.keywords,
-    imageUrl: post.imageUrl,
-    chapter: {
-      name: chapter.name,
-    },
-    subject: {
-      name: subject.name,
-    },
-    book: {
-      name: bookAuthor.name,
-      edition: bookAuthor.edition,
-    },
-  })
-  .from(post)
-  .innerJoin(chapter, eq(chapter.id, post.chapterId))
-  .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-  .where(inArray(post.id, sql.placeholder("ids")))
-  .prepare("get_posts_by_ids_for_indexing");
-
 export async function getPostsByIdsForIndexing(ids: string[]) {
-  const posts = await postsIndexStatement.execute({ ids });
+  const posts = await db
+    .select({
+      objectID: post.id,
+      text: post.text,
+      keywords: post.keywords,
+      imageUrl: post.imageUrl,
+      chapter: {
+        name: chapter.name,
+      },
+      subject: {
+        name: subject.name,
+      },
+      book: {
+        name: bookAuthor.name,
+        edition: bookAuthor.edition,
+      },
+    })
+    .from(post)
+    .innerJoin(chapter, eq(chapter.id, post.chapterId))
+    .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
+    .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
+    .where(inArray(post.id, ids));
   return posts;
 }
 

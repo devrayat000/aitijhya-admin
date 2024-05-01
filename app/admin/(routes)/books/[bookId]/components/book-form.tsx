@@ -144,9 +144,9 @@ export const BookForm: React.FC<BookFormProps> = ({
         });
         router.replace(`/admin/books/${id}`);
       }
-      toast.success(toastMessage);
+      toast({ description: toastMessage });
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast({ description: "Something went wrong.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -158,9 +158,13 @@ export const BookForm: React.FC<BookFormProps> = ({
       if (typeof params?.bookId === "string")
         await deleteBook(params.bookId as string);
       router.replace(`/admin/books`);
-      toast.success("Book deleted.");
+      toast({ description: "Chapter deleted." });
     } catch (error: any) {
-      toast.error("Make sure you removed all products using this book first.");
+      toast({
+        description:
+          "Make sure you removed all products using this chapter first.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
       setOpen(false);
