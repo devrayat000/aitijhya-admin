@@ -2,6 +2,7 @@ import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 import { map, merge, pick } from "lodash";
 import { createPost } from "@/actions/post";
+import { env } from "@/lib/utils";
 
 export async function POST(request: Request): Promise<NextResponse> {
   const formData = await request.formData();
@@ -20,7 +21,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     })
     .filter(Boolean);
 
-  const extractedPromise = fetch("http://127.0.0.1:8000/bulk-upload", {
+  const fetchUrl = new URL(
+    "/bulk-upload",
+    env("NEXT_PUBLIC_OCR_URL", "http://127.0.0.1:8000")
+  );
+  const extractedPromise = fetch(fetchUrl, {
     method: "POST",
     body: formData,
   })
