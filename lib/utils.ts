@@ -13,6 +13,8 @@ export const formatter = new Intl.NumberFormat("en-US", {
 export function env(key: string): string | undefined;
 export function env(key: string, fallback: string): string;
 export function env(key: string, fallback?: string) {
+  console.log(key, process.env[key]);
+
   return process.env[key] || fallback;
 }
 
