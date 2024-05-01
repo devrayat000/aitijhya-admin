@@ -45,6 +45,7 @@ import { upload } from "@vercel/blob/client";
 import DropZoneInput from "@/components/drop-zone";
 import { createFile, env } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
+import { Loader } from "@/components/ui/loader";
 
 const bulkSchema = z
   .object({
@@ -134,10 +135,11 @@ export const PostForm: React.FC<PostFormProps> = ({
   });
 
   const onUploadBulk = async (formData: FormData) => {
-    const { id, dismiss, update } = toast({
+    const { dismiss } = toast({
       title: "Uploading files...",
       variant: "default",
-      description: <Progress value={50} className="h-1.5" />,
+      description: <Loader />,
+      duration: Infinity,
     });
 
     // upload images using client upload
