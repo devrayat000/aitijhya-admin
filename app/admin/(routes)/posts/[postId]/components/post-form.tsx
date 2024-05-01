@@ -9,6 +9,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { InferSelectModel } from "drizzle-orm";
+import merge from "lodash/merge";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ import { getChaptersByBooks } from "@/actions/chapter";
 import { Textarea } from "@/components/ui/textarea";
 import { upload } from "@vercel/blob/client";
 import DropZoneInput from "@/components/drop-zone";
-import { createFile } from "@/lib/utils";
+import { createFile, env } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 
 const bulkSchema = z
@@ -68,29 +69,6 @@ const singleSchema = z.object({
 });
 
 const formSchema = singleSchema.merge(bulkSchema);
-
-// const formSchema = z
-//   .object({
-//     // text: z.string().min(1),
-//     page: z.preprocess(
-//       (x) => (!!x ? Number(x) : undefined),
-//       z.number().int().positive().optional()
-//     ),
-//     // image: z.instanceof(File),
-//     keywords: z
-//       .preprocess(
-//         (x) =>
-//           String(x)
-//             .split(",")
-//             .map((t) => t.trim()),
-//         z.string().array()
-//       )
-//       .optional(),
-//     subjectId: z.string().min(1),
-//     bookAuthorId: z.string().min(1),
-//     chapterId: z.string().min(1),
-//   })
-//   .passthrough();
 
 type PostFormValues = z.infer<typeof formSchema> & {
   image: File | null;
@@ -161,37 +139,49 @@ export const PostForm: React.FC<PostFormProps> = ({
       variant: "default",
       description: <Progress value={50} className="h-1.5" />,
     });
-    await bulkUploadPosts(formData);
+
+    // upload images using client upload
+    const files = formData.getAll("files");
+    const blobsPrommise = files
+      .map((file) => {
+        if (typeof file !== "string") {
+          return upload(`demo/${file.name}`, file, {
+            access: "public",
+            handleUploadUrl: "/api/image/upload",
+            multipart: true,
+          });
+        }
+      })
+      .filter(Boolean);
+
+    // upload images for extraction
+    const fetchUrl = new URL(
+      "/bulk-upload",
+      env("NEXT_PUBLIC_OCR_URL", "http://127.0.0.1:8000")
+    );
+    const extractedPromise = fetch(fetchUrl, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => data.results as { text: string; file: string }[]);
+
+    // await results
+    const [blobs, results] = await Promise.all([
+      Promise.all(blobsPrommise),
+      extractedPromise,
+    ]);
+
+    const data = merge(blobs, results).map((obj) => ({
+      //   @ts-ignore
+      text: obj.text,
+      imageUrl: obj!.url,
+      chapterId: formData.get("chapterId")!.toString(),
+    }));
+
+    await createPost(data);
     dismiss();
     router.replace(`/admin/posts`);
-    // const xhr = new XMLHttpRequest();
-    // const success = await new Promise((resolve) => {
-    //   xhr.upload.addEventListener("progress", (event) => {
-    //     if (event.lengthComputable) {
-    //       const uploadProgress = event.loaded / event.total;
-    //       update({
-    //         id,
-    //         description: (
-    //           <Progress value={uploadProgress * 100} className="h-1.5" />
-    //         ),
-    //       });
-    //     }
-    //   });
-    //   xhr.addEventListener("progress", (event) => {
-    //     if (event.lengthComputable) {
-    //       const downloadProgress = event.loaded / event.total;
-    //     }
-    //   });
-    //   xhr.addEventListener("loadend", () => {
-    //     dismiss();
-    //     resolve(xhr.readyState === 4 && xhr.status === 200);
-    //     router.replace(`/admin/posts`);
-    //   });
-    //   xhr.open("POST", "/api/posts/bulk", true);
-    //   // xhr.setRequestHeader("Content-Type", "multipart/form-data");
-    //   xhr.send(formData);
-    // });
-    // console.log("success", success);
   };
 
   const onSubmit: SubmitHandler<PostFormValues> = async ({
