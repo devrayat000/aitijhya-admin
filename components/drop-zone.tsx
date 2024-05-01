@@ -7,17 +7,20 @@ interface FileWithPreview extends File {
 }
 
 interface DropZoneInputProps extends React.ComponentPropsWithoutRef<"input"> {
-  onFileDrop?: (file: File) => void;
+  onFileDrop?: (file: File[]) => void;
   defaultFile?: File;
+  maxFiles?: number;
 }
 
 const DropZoneInput = forwardRef<HTMLInputElement, DropZoneInputProps>(
-  ({ onFileDrop, defaultFile, ...props }, ref) => {
-    const [file, setFile] = useState<FileWithPreview | undefined>(() => {
+  ({ onFileDrop, defaultFile, multiple, maxFiles, ...props }, ref) => {
+    const [files, setFiles] = useState<FileWithPreview[] | undefined>(() => {
       if (defaultFile) {
-        return Object.assign(defaultFile, {
-          preview: URL.createObjectURL(defaultFile),
-        });
+        return [
+          Object.assign(defaultFile, {
+            preview: URL.createObjectURL(defaultFile),
+          }),
+        ];
       }
       return undefined;
     });
@@ -27,36 +30,45 @@ const DropZoneInput = forwardRef<HTMLInputElement, DropZoneInputProps>(
         "image/jpeg": [],
         "image/png": [],
       },
-      multiple: false,
-      onDrop: (acceptedFiles) => {
+      multiple: multiple,
+      maxSize: 5 * 1024 * 1024,
+      maxFiles: maxFiles,
+      onDrop: (acceptedFiles, fileRejections) => {
         const files = acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
         );
-        onFileDrop?.(files[0]);
-        setFile(files[0]);
+        onFileDrop?.(files);
+        setFiles(files);
       },
     });
 
-    const thumbs = file && file.type.includes("image") && (
-      <div className="mt-2 relative aspect-[32/9]">
-        <Image
-          src={file.preview}
-          onLoad={() => {
-            URL.revokeObjectURL(file.preview);
-          }}
-          fill
-          className="object-contain"
-          alt={file.name}
-        />
+    const thumbs = files && (
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        {files.map(
+          (file) =>
+            file.type.includes("image") && (
+              <div className="mt-2 relative h-40 basis-[30%]" key={file.name}>
+                <Image
+                  src={file.preview}
+                  onLoad={() => {
+                    URL.revokeObjectURL(file.preview);
+                  }}
+                  fill
+                  className="object-contain"
+                  alt={file.name}
+                />
+              </div>
+            )
+        )}
       </div>
     );
 
     useEffect(() => {
       // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
-      return () => file && URL.revokeObjectURL(file.preview);
-    }, [file]);
+      return () => files?.forEach((file) => URL.revokeObjectURL(file.preview));
+    }, [files]);
 
     return (
       <section>

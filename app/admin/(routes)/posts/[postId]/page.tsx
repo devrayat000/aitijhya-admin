@@ -18,7 +18,7 @@ const PostPage = async ({ params }: { params: { postId: string } }) => {
     subjects: await getAllSubjects(),
   };
 
-  if (params.postId !== "new") {
+  if (params.postId !== "new" && params.postId !== "bulk") {
     const post = await getPostById(params.postId);
     initialData = {
       ...initialData,

@@ -50,6 +50,13 @@
       "when": 1714049753580,
       "tag": "0006_nosy_black_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1714565344612,
+      "tag": "0007_purple_shiva",
+      "breakpoints": true
     }
   ]
 }

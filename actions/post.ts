@@ -7,22 +7,33 @@ import {
   saveIndex,
   deleteIndex,
   deleteManyIndices,
+  saveManyIndices,
+  saveManyIndicesByIds,
 } from "@/webhooks/saveIndex";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 type PostInput = Omit<InferInsertModel<typeof post>, "id">;
 
-export async function createPost(params: PostInput) {
-  const [data] = await db
+export async function createPost(params: PostInput): Promise<{ id: string }>;
+export async function createPost(
+  params: PostInput[]
+): Promise<{ id: string }[]>;
+export async function createPost(params: PostInput[] | PostInput) {
+  const results = await db
     .insert(post)
-    .values(params)
+    .values(Array.isArray(params) ? params : [params])
     .returning({ id: post.id });
 
-  await saveIndex(data.id);
-  revalidatePath("/admin/posts");
-  // redirect(`/admin/posts`);
-  return data;
+  if (Array.isArray(params)) {
+    await saveManyIndicesByIds(results.map((r) => r.id));
+    revalidatePath("/admin/posts");
+    return results;
+  } else {
+    await saveIndex(results[0].id);
+    revalidatePath("/admin/posts");
+    return results[0];
+  }
 }
 
 export async function updatePost(id: string, params: Partial<PostInput>) {

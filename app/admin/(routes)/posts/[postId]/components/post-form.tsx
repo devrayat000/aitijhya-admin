@@ -4,7 +4,7 @@ import * as z from "zod";
 import { Suspense, use, useEffect, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "@/components/ui/use-toast";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -38,33 +38,59 @@ import { Textarea } from "@/components/ui/textarea";
 import { upload } from "@vercel/blob/client";
 import DropZoneInput from "@/components/drop-zone";
 import { createFile } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
 
-const formSchema = z
+const bulkSchema = z
   .object({
-    text: z.string().min(1),
-    page: z.preprocess(
-      (x) => (!!x ? Number(x) : undefined),
-      z.number().int().positive().optional()
-    ),
-    // image: z.instanceof(File),
-    keywords: z
-      .preprocess(
-        (x) =>
-          String(x)
-            .split(",")
-            .map((t) => t.trim()),
-        z.string().array()
-      )
-      .optional(),
     subjectId: z.string().min(1),
     bookAuthorId: z.string().min(1),
     chapterId: z.string().min(1),
   })
   .passthrough();
 
+const singleSchema = z.object({
+  text: z.string().min(1),
+  page: z.number().int().positive().optional(),
+  keywords: z
+    .preprocess(
+      (x) =>
+        String(x)
+          .split(",")
+          .map((t) => t.trim()),
+      z.string().array()
+    )
+    .optional(),
+});
+
+const formSchema = singleSchema.merge(bulkSchema);
+
+// const formSchema = z
+//   .object({
+//     // text: z.string().min(1),
+//     page: z.preprocess(
+//       (x) => (!!x ? Number(x) : undefined),
+//       z.number().int().positive().optional()
+//     ),
+//     // image: z.instanceof(File),
+//     keywords: z
+//       .preprocess(
+//         (x) =>
+//           String(x)
+//             .split(",")
+//             .map((t) => t.trim()),
+//         z.string().array()
+//       )
+//       .optional(),
+//     subjectId: z.string().min(1),
+//     bookAuthorId: z.string().min(1),
+//     chapterId: z.string().min(1),
+//   })
+//   .passthrough();
+
 type PostFormValues = z.infer<typeof formSchema> & {
   image: File | null;
 };
+
 type Chapter = InferSelectModel<typeof chapter>;
 type Subject = InferSelectModel<typeof subject>;
 type Post = InferSelectModel<typeof post> & {
@@ -110,7 +136,9 @@ export const PostForm: React.FC<PostFormProps> = ({
     : null;
 
   const form = useForm<PostFormValues>({
-    resolver: zodResolver(formSchema, { async: true }),
+    resolver: zodResolver(params.postId === "bulk" ? bulkSchema : formSchema, {
+      async: true,
+    }),
     defaultValues: {
       text: initialData?.text ?? "",
       page: initialData?.page ?? undefined,
@@ -122,11 +150,65 @@ export const PostForm: React.FC<PostFormProps> = ({
     },
   });
 
-  const onSubmit = async ({
+  const onUploadBulk = async (formData: FormData) => {
+    const xhr = new XMLHttpRequest();
+    const { id, dismiss, update } = toast({
+      title: "Uploading files...",
+      variant: "default",
+      description: <Progress value={0} className="h-1.5" />,
+      onSwipeCancel: xhr.abort,
+    });
+
+    const success = await new Promise((resolve) => {
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          const uploadProgress = event.loaded / event.total;
+          update({
+            id,
+            description: (
+              <Progress value={uploadProgress * 100} className="h-1.5" />
+            ),
+          });
+        }
+      });
+      xhr.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          const downloadProgress = event.loaded / event.total;
+        }
+      });
+      xhr.addEventListener("loadend", () => {
+        dismiss();
+        resolve(xhr.readyState === 4 && xhr.status === 200);
+        router.replace(`/admin/posts`);
+      });
+      xhr.open("POST", "/api/posts/bulk", true);
+      // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+      xhr.send(formData);
+    });
+    console.log("success", success);
+  };
+
+  const onSubmit: SubmitHandler<PostFormValues> = async ({
     subjectId,
     bookAuthorId,
     ...data
-  }: PostFormValues) => {
+  }) => {
+    console.log("submitting");
+
+    if (params.postId === "bulk") {
+      const formData = new FormData();
+      formData.append("subjectId", subjectId);
+      formData.append("bookAuthorId", bookAuthorId);
+      formData.append("chapterId", data.chapterId);
+      if (data.image && Array.isArray(data.image)) {
+        data.image.forEach((file: File) => {
+          formData.append("files", file);
+        });
+      }
+      await onUploadBulk(formData);
+      return;
+    }
+
     try {
       setLoading(true);
       // console.log(data);
@@ -157,13 +239,19 @@ export const PostForm: React.FC<PostFormProps> = ({
           chapterId: data.chapterId,
           keywords: data.keywords,
           // @ts-ignore
-          imageUrl: data["imageUrl"],
+          imageUrl: data["imageUrl"] as string,
         });
         router.replace(`/admin/posts/${id}`);
       }
-      toast.success(toastMessage);
+      toast({
+        title: toastMessage,
+        variant: "default",
+      });
     } catch (error: any) {
-      toast.error("Something went wrong.");
+      toast({
+        title: "Something went wrong.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -175,9 +263,12 @@ export const PostForm: React.FC<PostFormProps> = ({
       if (typeof params.postId === "string")
         await deletePost(params.postId as string);
       router.replace(`/admin/posts`);
-      toast.success("Post deleted.");
+      toast({ title: "Post deleted." });
     } catch (error: any) {
-      toast.error("Make sure you removed all products using this post first.");
+      toast({
+        title: "Make sure you removed all products using this post first.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
       setOpen(false);
@@ -329,24 +420,26 @@ export const PostForm: React.FC<PostFormProps> = ({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="text"
-              disabled={loading}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      rows={5}
-                      placeholder="Question or Text"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {params.postId !== "bulk" && (
+              <FormField
+                control={form.control}
+                name="text"
+                disabled={loading}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={5}
+                        placeholder="Question or Text"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="image"
@@ -359,8 +452,12 @@ export const PostForm: React.FC<PostFormProps> = ({
                       <DropZoneInput
                         {...field}
                         ref={embedRef}
-                        onFileDrop={(file) => onChange(file)}
+                        onFileDrop={(files) =>
+                          onChange(params.postId === "bulk" ? files : files[0])
+                        }
                         defaultFile={value || undefined}
+                        multiple={params.postId === "bulk"}
+                        maxFiles={params.postId === "bulk" ? 50 : undefined}
                       />
                     </Suspense>
                   </FormControl>
@@ -368,50 +465,52 @@ export const PostForm: React.FC<PostFormProps> = ({
                 </FormItem>
               )}
             />
-            <div className="md:grid md:grid-cols-2 gap-x-8 gap-y-4">
-              <FormField
-                control={form.control}
-                name="page"
-                disabled={loading}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Page No.</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. 40"
-                        type="tel"
-                        {...field}
-                        onChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="keywords"
-                disabled={loading}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Keywords</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. vector,curl,divergence"
-                        {...field}
-                        // value={field.value?.join(",")}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value.split(",").map((t) => t.trim())
-                          )
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            {params.postId !== "bulk" && (
+              <div className="md:grid md:grid-cols-2 gap-x-8 gap-y-4">
+                <FormField
+                  control={form.control}
+                  name="page"
+                  disabled={loading}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Page No.</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. 40"
+                          type="tel"
+                          {...field}
+                          onChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="keywords"
+                  disabled={loading}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Keywords</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. vector,curl,divergence"
+                          {...field}
+                          // value={field.value?.join(",")}
+                          onChange={(e) =>
+                            field.onChange(
+                              e.target.value.split(",").map((t) => t.trim())
+                            )
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
           </div>
           <Button disabled={loading} className="ml-auto" type="submit">
             {action}

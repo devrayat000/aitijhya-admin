@@ -1,6 +1,6 @@
 import { bookAuthor, post, subject, chapter } from "@/db/schema";
 import db from "@/lib/db";
-import { count, eq, ilike, inArray, sql } from "drizzle-orm";
+import { count, desc, eq, ilike, inArray, sql } from "drizzle-orm";
 import { GetParams } from "./types";
 
 const postCountStatement = db
@@ -28,6 +28,7 @@ const postsStatement = db
       name: bookAuthor.name,
       id: bookAuthor.id,
     },
+    createdAt: post.createdAt,
   })
   .from(post)
   .innerJoin(chapter, eq(chapter.id, post.chapterId))
@@ -36,6 +37,7 @@ const postsStatement = db
   .offset(sql.placeholder("offset"))
   .limit(sql.placeholder("limit"))
   .where(ilike(post.text, sql.placeholder("query")))
+  .orderBy(desc(post.createdAt))
   .prepare("get_posts");
 
 const postByIdStatement = db
@@ -87,8 +89,8 @@ export async function getPosts(params?: GetParams) {
 }
 
 export async function getPostById(id: string) {
-  const [book] = await postByIdStatement.execute({ id });
-  return book;
+  const [post] = await postByIdStatement.execute({ id });
+  return post;
 }
 
 const allPostsIndexStatement = db
@@ -139,13 +141,42 @@ const postIndexStatement = db
   .prepare("get_post_by_id_for_indexing");
 
 export async function getPostByIdForIndexing(id: string) {
-  const [book] = await postIndexStatement.execute({ id });
-  return book;
+  const [post] = await postIndexStatement.execute({ id });
+  return post;
+}
+
+const postsIndexStatement = db
+  .select({
+    objectID: post.id,
+    text: post.text,
+    keywords: post.keywords,
+    imageUrl: post.imageUrl,
+    chapter: {
+      name: chapter.name,
+    },
+    subject: {
+      name: subject.name,
+    },
+    book: {
+      name: bookAuthor.name,
+      edition: bookAuthor.edition,
+    },
+  })
+  .from(post)
+  .innerJoin(chapter, eq(chapter.id, post.chapterId))
+  .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
+  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
+  .where(inArray(post.id, sql.placeholder("ids")))
+  .prepare("get_posts_by_ids_for_indexing");
+
+export async function getPostsByIdsForIndexing(ids: string[]) {
+  const posts = await postsIndexStatement.execute({ ids });
+  return posts;
 }
 
 export async function getAllPostsForIndexing() {
-  const books = await allPostsIndexStatement.execute();
-  return books;
+  const posts = await allPostsIndexStatement.execute();
+  return posts;
 }
 
 export async function getHitPostsByIds(ids: string[]) {

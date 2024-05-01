@@ -2,6 +2,7 @@ import { postIndex } from "@/lib/algolia";
 import {
   getAllPostsForIndexing,
   getPostByIdForIndexing,
+  getPostsByIdsForIndexing,
 } from "@/services/post";
 
 export async function saveIndex(id: string) {
@@ -11,6 +12,11 @@ export async function saveIndex(id: string) {
 
 export async function saveManyIndices() {
   const posts = await getAllPostsForIndexing();
+  await postIndex.saveObjects(posts);
+}
+
+export async function saveManyIndicesByIds(ids: string[]) {
+  const posts = await getPostsByIdsForIndexing(ids);
   await postIndex.saveObjects(posts);
 }
 

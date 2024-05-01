@@ -59,6 +59,7 @@ export const post = pgTable("posts", {
     .references(() => chapter.id, { onDelete: "cascade" }),
   imageUrl: text("image_url").notNull(),
   keywords: text("keywords").array(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const searchHistory = pgTable("search_history", {

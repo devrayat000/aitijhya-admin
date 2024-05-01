@@ -1,28 +1,14 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 import { CellAction } from "./cell-action";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
+import { PostsQuery } from "@/services/post";
 
-export type PostColumn = {
-  id: string;
-  text: string;
-  subject: {
-    id: string;
-    name: string;
-  };
-  book: {
-    id: string;
-    name: string;
-  };
-  chapter: {
-    id: string;
-    name: string;
-  };
-};
+export type PostColumn = PostsQuery;
 
 export const columns: ColumnDef<PostColumn>[] = [
   {
@@ -51,10 +37,13 @@ export const columns: ColumnDef<PostColumn>[] = [
     accessorKey: "text",
     header: "Question/Text",
     enableResizing: false,
-    size: 600,
+    size: 300,
+    maxSize: 350,
     cell: ({ renderValue }) => (
-      <p className="line-clamp-2 text-ellipsis w-[90%]">
-        {renderValue<string>()}
+      <p className="line-clamp-2 text-ellipsis w-[95%]">
+        {renderValue<string>().slice(0, 75)}
+        <br />
+        {renderValue<string>().slice(75, 150)}
       </p>
     ),
   },
@@ -95,6 +84,24 @@ export const columns: ColumnDef<PostColumn>[] = [
     header: "Subject",
     enableSorting: true,
     enableColumnFilter: true,
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    enableSorting: true,
+    cell: ({ renderValue }) => (
+      <time dateTime={renderValue<string>()}>
+        {new Intl.DateTimeFormat(undefined, {
+          // dateStyle: "long",
+          hour12: true,
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }).format(new Date(renderValue<string>()))}
+      </time>
+    ),
   },
   {
     id: "actions",

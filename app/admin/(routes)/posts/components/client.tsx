@@ -8,7 +8,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 // import { ApiList } from "@/components/ui/api-list";
 
-import { columns, PostColumn } from "./columns";
+import { columns } from "./columns";
 import Link from "next/link";
 import { deleteManyPosts } from "@/actions/post";
 import { useServerTableStore } from "@/hooks/use-server-table-data";
@@ -23,11 +23,18 @@ export const PostsClient: React.FC = () => {
           title={`Posts (${count})`}
           description="Manage posts for your products"
         />
-        <Button asChild>
-          <Link href="/admin/posts/new">
-            <Plus className="mr-2 h-4 w-4" /> Add New
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild>
+            <Link href="/admin/posts/bulk">
+              <Plus className="mr-2 h-4 w-4" /> Bulk Upload
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/admin/posts/new">
+              <Plus className="mr-2 h-4 w-4" /> Add New
+            </Link>
+          </Button>
+        </div>
       </div>
       <Separator />
       <DataTable
