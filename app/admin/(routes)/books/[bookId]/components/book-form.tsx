@@ -256,7 +256,9 @@ export const BookForm: React.FC<BookFormProps> = ({
                     <DropZoneInput
                       {...field}
                       ref={embedRef}
-                      onFileDrop={(file) => onChange(file)}
+                      onFileDrop={(files) =>
+                        onChange(files.length ? files[0] : undefined)
+                      }
                       defaultFile={value || undefined}
                     />
                     {/* <Input
