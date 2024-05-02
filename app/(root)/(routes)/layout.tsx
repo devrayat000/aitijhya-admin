@@ -5,7 +5,6 @@
 
 import Header from "../components/header";
 import { getBookmarkedList } from "@/server/bookmark/service";
-import { getCurrentUserSearchHistory } from "@/services/history";
 import { ServerStoreProvider } from "@/hooks/use-server-data";
 
 // const EbookProvider = dynamic(() => import("@/providers/ebook-provider"), {
@@ -18,13 +17,10 @@ export default async function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [bookmarks, searchHistory] = await Promise.all([
-    getBookmarkedList(),
-    getCurrentUserSearchHistory(),
-  ]);
+  const [bookmarks] = await Promise.all([getBookmarkedList()]);
 
   return (
-    <ServerStoreProvider initialData={{ bookmarks, searchHistory }}>
+    <ServerStoreProvider initialData={{ bookmarks, searchHistory: [] }}>
       <Header />
       <div className="relative z-10">{children}</div>
       {/* <PopupProvider /> */}
