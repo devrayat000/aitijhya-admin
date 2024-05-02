@@ -24,7 +24,11 @@ import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { subject } from "@/db/schema";
-import { createSubject, deleteSubject, updateSubject } from "@/actions/subject";
+import {
+  createSubject,
+  deleteSubject,
+  updateSubject,
+} from "@/server/subject/action/subject";
 
 const formSchema = z.object({
   name: z.string().min(1),

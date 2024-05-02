@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { columns } from "./columns";
 import Link from "next/link";
-import { deleteManyChapters } from "@/actions/chapter";
-import { useServerTableStore } from "@/hooks/use-server-table-data";
+import { deleteManyChapters } from "@/server/chapter/action/chapter";
+import { useServerTableStore } from "@/providers/server-table-provider";
 
 interface ChaptersClientProps {}
 

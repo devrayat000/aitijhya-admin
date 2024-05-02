@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "postbuild": "node --loader ts-node/esm --experimental-specifier-resolution node migrate.ts",
+    "test:demo": "node --loader ts-node/esm --experimental-specifier-resolution node demo.ts",
     "save:index": "node --loader ts-node/esm --experimental-fetch --experimental-specifier-resolution node save-index.ts"
   },
   "dependencies": {

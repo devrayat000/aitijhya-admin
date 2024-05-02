@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { columns } from "./columns";
 import Link from "next/link";
-import { deleteManyPosts } from "@/actions/post";
-import { useServerTableStore } from "@/hooks/use-server-table-data";
+import { deleteManyPosts } from "@/server/post/action";
+import { useServerTableStore } from "@/providers/server-table-provider";
 import { useSearchParams } from "next/navigation";
 
 export const PostsClient: React.FC = () => {

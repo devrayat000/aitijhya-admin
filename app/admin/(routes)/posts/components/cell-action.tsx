@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +16,7 @@ import {
 import { AlertModal } from "@/components/modals/alert-modal";
 
 import { PostColumn } from "./columns";
-import { deletePost } from "@/actions/post";
+import { deletePost } from "@/server/post/action";
 
 interface CellActionProps {
   data: PostColumn;
@@ -31,10 +31,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
       await deletePost(data.id);
-      toast.success("Post deleted.");
+      toast({ description: "Post deleted." });
       router.refresh();
     } catch (error) {
-      toast.error("Make sure you removed all products using this size first.");
+      toast({
+        description:
+          "Make sure you removed all products using this size first.",
+        variant: "destructive",
+      });
     } finally {
       setOpen(false);
       setLoading(false);
@@ -43,7 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Post ID copied to clipboard.");
+    toast({ description: "Post ID copied to clipboard." });
   };
 
   return (

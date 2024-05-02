@@ -1,9 +1,9 @@
 import db from "@/lib/db";
 import { ChapterForm } from "./components/chapter-form";
 import { eq } from "drizzle-orm";
-import { getChapterById } from "@/services/chapter";
-import { getAllSubjects, getSubjects } from "@/services/subject";
-import { getBooksBySubject } from "@/actions/book";
+import { getChapterById } from "@/server/chapter/service";
+import { getAllSubjects, getSubjects } from "@/server/subject/service";
+import { getBooksBySubject } from "@/server/book/action/book";
 
 const ChapterPage = async ({ params }: { params: { chapterId: string } }) => {
   let initialData: any = {

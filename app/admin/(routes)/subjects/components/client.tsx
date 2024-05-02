@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 // import { ApiList } from "@/components/ui/api-list";
 
 import { columns } from "./columns";
-import { deleteManySubjects } from "@/actions/subject";
-import { useServerTableStore } from "@/hooks/use-server-table-data";
+import { deleteManySubjects } from "@/server/subject/action/subject";
+import { useServerTableStore } from "@/providers/server-table-provider";
 
 interface SubjectsClientProps {}
 

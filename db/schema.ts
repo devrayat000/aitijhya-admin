@@ -12,6 +12,7 @@ import { users } from "./auth";
 export const subject = pgTable("subjects", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull().unique(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const bookAuthor = pgTable(
@@ -25,6 +26,7 @@ export const bookAuthor = pgTable(
     subjectId: uuid("subject_id")
       .notNull()
       .references(() => subject.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
     uniqueBook: unique("uniqueBook").on(
@@ -44,6 +46,7 @@ export const chapter = pgTable(
     bookAuthorId: uuid("book_author_id")
       .notNull()
       .references(() => bookAuthor.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => ({
     uniqueChapter: unique("uniqueChapter").on(table.name, table.bookAuthorId),

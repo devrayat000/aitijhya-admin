@@ -1,5 +1,4 @@
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import SearchForm from "./search/components/search-form";
 
 import logoSingle from "@/assets/logo_single.png";
@@ -9,8 +8,6 @@ import logoSingle from "@/assets/logo_single.png";
 // });
 
 export default function LandingPage() {
-  console.log("demo");
-
   return (
     <div className="h-full grid place-items-center">
       <div className="w-full max-w-[52rem] mx-auto">

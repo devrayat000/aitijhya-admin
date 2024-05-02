@@ -55,7 +55,7 @@ import {
 import { useFormState } from "react-dom";
 import { AnimatePresence } from "framer-motion";
 import useUrlPagination from "@/hooks/use-url-pagination";
-import { useServerTableStore } from "@/hooks/use-server-table-data";
+import { useServerTableStore } from "@/providers/server-table-provider";
 import { usePathname } from "next/navigation";
 
 interface IData {

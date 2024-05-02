@@ -1,6 +1,6 @@
 "use client";
 
-import { toggleBookmark } from "@/actions/bookmark";
+import { toggleBookmark } from "@/server/bookmark/action/bookmark";
 import { useServerStore } from "@/hooks/use-server-data";
 import { Bookmark, BookmarkCheck } from "lucide-react";
 import { useCallback, useOptimistic } from "react";

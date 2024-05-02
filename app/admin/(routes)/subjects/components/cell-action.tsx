@@ -16,7 +16,7 @@ import {
 import { AlertModal } from "@/components/modals/alert-modal";
 
 import { SubjectColumn } from "./columns";
-import { deleteSubject } from "@/actions/subject";
+import { deleteSubject } from "@/server/subject/action/subject";
 
 interface CellActionProps {
   data: SubjectColumn;
@@ -31,10 +31,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
       await deleteSubject(data.id);
-      toast.success("Subject deleted.");
+      toast({ description: "Subject deleted." });
       router.refresh();
     } catch (error) {
-      toast.error("Make sure you removed all products using this size first.");
+      toast({
+        description:
+          "Make sure you removed all products using this size first.",
+        variant: "destructive",
+      });
     } finally {
       setOpen(false);
       setLoading(false);
@@ -43,7 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Subject ID copied to clipboard.");
+    toast({ description: "Subject ID copied to clipboard." });
   };
 
   return (

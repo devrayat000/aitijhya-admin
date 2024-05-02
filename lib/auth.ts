@@ -5,6 +5,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import db from "./db";
 import { env } from "./utils";
+import { redirect } from "next/navigation";
 
 const adminAuthStore = [
   {
@@ -98,4 +99,12 @@ export const authOptions: AuthOptions = {
 
 export async function auth() {
   return getServerSession(authOptions);
+}
+
+export async function requireAuth(callbackUrl = "/signin") {
+  const session = await auth();
+  if (!session) {
+    redirect(callbackUrl);
+  }
+  return session;
 }

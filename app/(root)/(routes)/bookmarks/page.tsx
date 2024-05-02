@@ -2,13 +2,15 @@ import Image from "next/image";
 import { use } from "react";
 import Link from "next/link";
 
-import { getBookmarkedPosts } from "@/services/bookmark";
+import { getBookmarkedPosts } from "@/server/bookmark/service";
 import logoMulti from "@/assets/logo_multi.png";
 import ResultCard from "../search/components/result-card";
 import { ServerStoreProvider } from "@/hooks/use-server-data";
+import { requireAuth } from "@/lib/auth";
 
 export default function BookmarksPage() {
-  const posts = use(getBookmarkedPosts());
+  const session = use(requireAuth());
+  const posts = use(getBookmarkedPosts(session.user.id));
 
   return (
     <div className="p-4">

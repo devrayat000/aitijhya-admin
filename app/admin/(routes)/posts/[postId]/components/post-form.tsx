@@ -37,9 +37,9 @@ import {
   createPost,
   deletePost,
   updatePost,
-} from "@/actions/post";
-import { getBooksBySubject } from "@/actions/book";
-import { getChaptersByBooks } from "@/actions/chapter";
+} from "@/server/post/action";
+import { getBooksBySubject } from "@/server/book/action/book";
+import { getChaptersByBooks } from "@/server/chapter/action/chapter";
 import { Textarea } from "@/components/ui/textarea";
 import { upload } from "@vercel/blob/client";
 import DropZoneInput from "@/components/drop-zone";

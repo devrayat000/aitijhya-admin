@@ -40,7 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createBook, deleteBook, updateBook } from "@/actions/book";
+import { createBook, deleteBook, updateBook } from "@/server/book/action/book";
 import { upload } from "@vercel/blob/client";
 import { createFile } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";

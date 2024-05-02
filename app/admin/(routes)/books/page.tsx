@@ -1,7 +1,7 @@
 import { searchParamsSchema } from "@/lib/schemas";
 import { BooksClient } from "./components/client";
-import { getBooks } from "@/services/book";
-import { ServerTableStoreProvider } from "@/hooks/use-server-table-data";
+import { getBooks } from "@/server/book/service";
+import { ServerTableStoreProvider } from "@/providers/server-table-provider";
 
 const SizesPage = async ({
   searchParams,
@@ -9,12 +9,13 @@ const SizesPage = async ({
   searchParams: Record<string, string>;
 }) => {
   const { page, limit, query } = searchParamsSchema.parse(searchParams);
-  const { books, count } = await getBooks({ page, limit, query });
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ServerTableStoreProvider initialData={{ data: books, count }}>
+        <ServerTableStoreProvider
+          initialData={await getBooks({ page, limit, query })}
+        >
           <BooksClient />
         </ServerTableStoreProvider>
       </div>

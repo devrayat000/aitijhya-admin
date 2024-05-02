@@ -6,7 +6,7 @@ import { create } from "zustand";
 import Loading from "@/app/loading";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import splitPdf from "@/lib/split-pdf";
-import { PostHitResults } from "@/services/post";
+import { PostHit } from "@/server/post/service";
 
 import { pdfjs, Document, Page } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";

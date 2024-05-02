@@ -1,5 +1,5 @@
 import { SubjectForm } from "./components/subject-form";
-import { getSubjectById } from "@/services/subject";
+import { getSubjectById } from "@/server/subject/service";
 
 const SizePage = async ({ params }: { params: { subjectId: string } }) => {
   let initialData = null;

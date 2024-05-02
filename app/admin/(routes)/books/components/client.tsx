@@ -10,8 +10,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { columns } from "./columns";
 import Link from "next/link";
-import { deleteManyBooks } from "@/actions/book";
-import { useServerTableStore } from "@/hooks/use-server-table-data";
+import { deleteManyBooks } from "@/server/book/action/book";
+import { useServerTableStore } from "@/providers/server-table-provider";
 
 interface BooksClientProps {}
 

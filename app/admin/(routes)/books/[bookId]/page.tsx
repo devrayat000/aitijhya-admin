@@ -2,8 +2,8 @@ import db from "@/lib/db";
 import { BookForm } from "./components/book-form";
 import { eq } from "drizzle-orm";
 import { bookAuthor, subject } from "@/db/schema";
-import { getBookById } from "@/services/book";
-import { getAllSubjects, getSubjects } from "@/services/subject";
+import { getBookById } from "@/server/book/service";
+import { getAllSubjects, getSubjects } from "@/server/subject/service";
 import { Suspense } from "react";
 
 const SizePage = async ({ params }: { params: { bookId: string } }) => {

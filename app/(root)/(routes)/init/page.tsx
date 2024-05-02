@@ -22,7 +22,7 @@ import {
   FormItem,
   FormField,
 } from "@/components/ui/form";
-import { saveInstitutionalInfo } from "@/actions/institutionalInfos";
+import { saveInstitutionalInfo } from "@/server/institutionalInfo/action/institutionalInfos";
 import { useRouter } from "next/navigation";
 
 const schema = z.object({

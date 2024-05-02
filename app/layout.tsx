@@ -1,7 +1,6 @@
 import { Inter, Tiro_Bangla } from "next/font/google";
 import { Metadata } from "next";
 
-import { ModalProvider } from "@/providers/modal-provider";
 import { ToastProvider } from "@/providers/toast-provider";
 import logo from "@/assets/logo_single.png";
 
@@ -63,7 +62,6 @@ export default async function RootLayout({
         className={cn(inter.variable, tiroBangla.variable)}
       >
         <ToastProvider />
-        <ModalProvider />
         {children}
       </body>
     </html>

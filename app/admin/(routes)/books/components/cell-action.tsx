@@ -16,7 +16,7 @@ import {
 import { AlertModal } from "@/components/modals/alert-modal";
 
 import { BookColumn } from "./columns";
-import { deleteBook } from "@/actions/book";
+import { deleteBook } from "@/server/book/action/book";
 
 interface CellActionProps {
   data: BookColumn;
@@ -31,10 +31,14 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
     try {
       setLoading(true);
       await deleteBook(data.id);
-      toast.success("Book deleted.");
+      toast({ description: "Book deleted." });
       router.refresh();
     } catch (error) {
-      toast.error("Make sure you removed all products using this size first.");
+      toast({
+        description:
+          "Make sure you removed all products using this size first.",
+        variant: "destructive",
+      });
     } finally {
       setOpen(false);
       setLoading(false);
@@ -43,7 +47,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Book ID copied to clipboard.");
+    toast({ description: "Book ID copied to clipboard." });
   };
 
   return (

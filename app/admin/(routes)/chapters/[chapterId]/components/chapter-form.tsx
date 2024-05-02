@@ -31,8 +31,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createChapter, deleteChapter, updateChapter } from "@/actions/chapter";
-import { getBooksBySubject } from "@/actions/book";
+import {
+  createChapter,
+  deleteChapter,
+  updateChapter,
+} from "@/server/chapter/action/chapter";
+import { getBooksBySubject } from "@/server/book/action/book";
 
 const formSchema = z.object({
   name: z.string().min(1),

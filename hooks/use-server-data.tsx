@@ -3,9 +3,9 @@
 import { createStore } from "zustand/vanilla";
 import { type ReactNode, createContext, useRef, useContext } from "react";
 import { type StoreApi, useStore } from "zustand";
-import { BookmarkedList } from "@/services/bookmark";
+import { BookmarkedList } from "@/server/bookmark/service";
 import { SearchHistory } from "@/services/history";
-import { PostHitResults } from "@/services/post";
+import { PostHitResults } from "@/server/post/service";
 
 interface ServerData {
   searchHistory: SearchHistory;

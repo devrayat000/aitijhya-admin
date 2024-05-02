@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { PostHitResults } from "@/services/post";
+import { PostHit } from "@/server/post/service";
 
 import { useEbook } from "@/hooks/use-ebook";
 import Image from "next/image";

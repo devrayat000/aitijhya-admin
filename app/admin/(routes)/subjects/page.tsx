@@ -1,7 +1,7 @@
-import { ServerTableStoreProvider } from "@/hooks/use-server-table-data";
+import { ServerTableStoreProvider } from "@/providers/server-table-provider";
 import { SubjectsClient } from "./components/client";
 import { searchParamsSchema } from "@/lib/schemas";
-import { getSubjects } from "@/services/subject";
+import { getSubjects } from "@/server/subject/service";
 
 const SizesPage = async ({
   searchParams,
@@ -9,12 +9,13 @@ const SizesPage = async ({
   searchParams: Record<string, string>;
 }) => {
   const { page, limit, query } = searchParamsSchema.parse(searchParams);
-  const { subjects, count } = await getSubjects({ page, limit, query });
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
-        <ServerTableStoreProvider initialData={{ data: subjects, count }}>
+        <ServerTableStoreProvider
+          initialData={await getSubjects({ page, limit, query })}
+        >
           <SubjectsClient />
         </ServerTableStoreProvider>
       </div>

@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
-import { getPostById } from "@/services/post";
-import { getAllSubjects, getSubjects } from "@/services/subject";
-import { getBooksBySubject } from "@/actions/book";
-import { getChaptersByBooks } from "@/actions/chapter";
+import { getPostById } from "@/server/post/service";
+import { getAllSubjects } from "@/server/subject/service";
+import { getBooksBySubject } from "@/server/book/action/book";
+import { getChaptersByBooks } from "@/server/chapter/action/chapter";
 
 const PostForm = dynamic(
   () => import("./components/post-form").then((m) => ({ default: m.PostForm })),

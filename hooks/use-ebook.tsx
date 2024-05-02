@@ -1,4 +1,4 @@
-import { PostHitResults } from "@/services/post";
+import { PostHitResults } from "@/server/post/service";
 import { create } from "zustand";
 
 type EbookPopupState = {
