@@ -17,8 +17,9 @@ export const useSearchStore = create<
       saveHistory: (suggestion) => {
         console.log("adding history");
         set((state) => {
-          const newHistoryStack = [suggestion, ...state.history];
-          if (newHistoryStack.length > 15) {
+          const newHistorySet = new Set([suggestion, ...state.history]);
+          const newHistoryStack = Array.from(newHistorySet);
+          while (newHistoryStack.length > 15) {
             newHistoryStack.pop();
           }
           return {

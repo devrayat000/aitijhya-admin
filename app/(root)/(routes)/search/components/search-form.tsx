@@ -16,6 +16,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+async function getOCR(formData: FormData) {
+  const url = new URL("/image-to-text", process.env.NEXT_PUBLIC_OCR_URL);
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData,
+  });
+  const { text } = await response.json();
+  return text as string;
+}
+
 export default function SearchForm() {
   const searchParams = useSearchParams();
   const [inputValue, setInputValue] = useState(
@@ -25,6 +35,7 @@ export default function SearchForm() {
   const history = useStore(useSearchStore, (store) => store.history);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const popupRef = useClickAway<HTMLUListElement>(() => {
     document.activeElement !== inputRef.current && setShowSuggestions(false);
@@ -39,6 +50,21 @@ export default function SearchForm() {
     setInputValue(suggestion);
     router.push(`/search?query=${suggestion}`);
   };
+
+  const onImageSearch = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { files } = event.target;
+      if (files && files.length > 0) {
+        const file = files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+        const text = await getOCR(formData);
+        setInputValue(text);
+        router.push(`/search?query=${encodeURIComponent(text)}`);
+      }
+    },
+    [router]
+  );
 
   const filteredHistory = useMemo(
     () =>
@@ -83,9 +109,19 @@ export default function SearchForm() {
                   variant="ghost"
                   className="w-9 h-9 rounded-full"
                   type="button"
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   <Camera className="h-5 w-5 text-muted-foreground" />
                   {/* <input {...getInputProps()} /> */}
+                  <input
+                    type="file"
+                    id="image-search"
+                    ref={fileInputRef}
+                    accept="images/jpeg,images/png"
+                    className="hidden"
+                    multiple={false}
+                    onChange={onImageSearch}
+                  />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
