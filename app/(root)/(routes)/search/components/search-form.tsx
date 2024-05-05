@@ -9,12 +9,6 @@ import { useClickAway } from "@uidotdev/usehooks";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSearchStore, useStore } from "@/hooks/use-search-history";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 async function getOCR(formData: FormData) {
   const url = new URL("/image-to-text", process.env.NEXT_PUBLIC_OCR_URL);
@@ -59,8 +53,9 @@ export default function SearchForm() {
         const formData = new FormData();
         formData.append("file", file);
         const text = await getOCR(formData);
-        setInputValue(text);
-        router.push(`/search?query=${encodeURIComponent(text)}`);
+        const query = text.replace(/\n/g, " ").slice(0, 128);
+        setInputValue(query);
+        router.push(`/search?query=${encodeURIComponent(query)}`);
       }
     },
     [router]
@@ -101,34 +96,25 @@ export default function SearchForm() {
           />
           <Separator orientation="vertical" className="bg-slate-400 w-0.5" />
 
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="w-9 h-9 rounded-full"
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Camera className="h-5 w-5 text-muted-foreground" />
-                  {/* <input {...getInputProps()} /> */}
-                  <input
-                    type="file"
-                    id="image-search"
-                    ref={fileInputRef}
-                    accept="images/jpeg,images/png"
-                    className="hidden"
-                    multiple={false}
-                    onChange={onImageSearch}
-                  />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>This feature is still under development</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="w-9 h-9 rounded-full -mr-2"
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Camera className="h-5 w-5 text-muted-foreground" />
+            {/* <input {...getInputProps()} /> */}
+            <input
+              type="file"
+              id="image-search"
+              ref={fileInputRef}
+              accept="images/jpeg,images/png"
+              className="hidden"
+              multiple={false}
+              onChange={onImageSearch}
+            />
+          </Button>
 
           {showSuggestions && filteredHistory && filteredHistory.length > 0 && (
             <motion.ul
