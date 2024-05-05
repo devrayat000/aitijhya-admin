@@ -109,7 +109,7 @@ export default function SearchForm() {
               type="file"
               id="image-search"
               ref={fileInputRef}
-              accept="images/jpeg,images/png"
+              accept="image/jpeg,image/png"
               className="hidden"
               multiple={false}
               onChange={onImageSearch}
