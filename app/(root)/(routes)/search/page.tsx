@@ -2,12 +2,11 @@ import Image from "next/image";
 import { RedirectType, redirect } from "next/navigation";
 import Link from "next/link";
 
-import { postIndex } from "@/lib/algolia";
-import { PostHit } from "@/server/post/service";
 import logoSingle from "@/assets/logo_single.png";
 import SearchForm from "./components/search-form";
-import PostPagination from "./components/pagination";
-import ResultCard from "./components/result-card";
+import { Suspense } from "react";
+import SearchResults from "./components/search-results";
+import { ResultSkeleton } from "./components/result-card";
 
 export default async function SearchPage({
   searchParams,
@@ -17,19 +16,6 @@ export default async function SearchPage({
   if (!searchParams?.query) {
     redirect("/", RedirectType.replace);
   }
-
-  const currentPage = parseInt(searchParams.page || "1");
-
-  const query = searchParams.query;
-
-  const results = await postIndex.search<PostHit>(query, {
-    optionalWords: query,
-    hitsPerPage: 12,
-    page: currentPage - 1,
-    cacheable: true,
-  });
-
-  const posts = results.hits;
 
   return (
     <div className="px-4">
@@ -41,20 +27,9 @@ export default async function SearchPage({
           <SearchForm />
         </div>
       </div>
-      <section className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-8">
-        {posts ? (
-          posts.map((post) => <ResultCard key={post.objectID} {...post} />)
-        ) : (
-          <div className="flex justify-center">
-            <p>Nothing found... 😓</p>
-          </div>
-        )}
-      </section>
-      <PostPagination
-        currentPage={currentPage}
-        searchParams={searchParams}
-        totalPages={results.nbPages}
-      />
+      <Suspense fallback={<ResultSkeleton />}>
+        <SearchResults searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }

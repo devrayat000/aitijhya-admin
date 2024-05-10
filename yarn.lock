@@ -2214,12 +2214,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.12.3":
-  version: 20.12.3
-  resolution: "@types/node@npm:20.12.3"
+"@types/node@npm:^20.12.11":
+  version: 20.12.11
+  resolution: "@types/node@npm:20.12.11"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/45c8485a0e55276b42c26ba1df6c480e4e1a3a3abbf4ea0ff6b4e2823c4f77e32b7e166d4263d464f207cfea5bd4de8879b8df2c7132a727b0346a30191d6bea
+  checksum: 10c0/efaa7b08c50ba6e6982ac7d531ba08d5935539ba76e954807df1ff9382a319ead7e003ccaca5ad7cf33ecf53f212507f7c1f2794bd2ff52df6365fef21f6e1fb
   languageName: node
   linkType: hard
 
@@ -2855,7 +2855,7 @@ __metadata:
     "@radix-ui/react-tooltip": "npm:^1.0.7"
     "@tanstack/react-table": "npm:^8.15.3"
     "@types/lodash": "npm:^4.17.0"
-    "@types/node": "npm:^20.12.3"
+    "@types/node": "npm:^20.12.11"
     "@types/react": "npm:^18.2.74"
     "@types/react-dom": "npm:^18.2.23"
     "@uidotdev/usehooks": "npm:^2.4.1"
