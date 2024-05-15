@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import Image from "next/image";
 
@@ -10,6 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 export type ResultCardProps = PostHit;
 
 export default function ResultCard(post: ResultCardProps) {
+  const isNative =
+    typeof window !== "undefined" && "isNative" in window && !!window.isNative;
+
   return (
     <article className="rounded-2xl overflow-hidden shadow-lg">
       <div className="relative isolate aspect-[3/4] rounded-t-inherit border-border border">
@@ -37,8 +40,8 @@ export default function ResultCard(post: ResultCardProps) {
           <a
             href={post.imageUrl!}
             title="Result image"
-            target="_blank"
-            rel="noreferer"
+            target={!isNative ? "_blank" : undefined}
+            rel={!isNative ? "noreferer" : undefined}
           >
             See full image
           </a>

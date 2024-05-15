@@ -23,7 +23,7 @@ export const metadata: Metadata = {
  কোন বইতে আছে সবকিছু দেখতে পাবেন সেকেন্ডের
  মাঝে। বয়াকাডেমিকে অবশ্যই কাজে লাগাবে। ভর্তি
   পরীক্ষায় যেন এই টুলস তোমার ডে টু ডে ব্যবহারের
-  সঙ্গী হয়।`,
+  সঙ্গী হয়।`.replace(/\s+/g, " "),
   alternates: { canonical: "https://taalaash.com" },
   appleWebApp: { capable: true, title: "Taalaash" },
   applicationName: "Taalaash",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
  কোন বইতে আছে সবকিছু দেখতে পাবেন সেকেন্ডের
  মাঝে। বয়াকাডেমিকে অবশ্যই কাজে লাগাবে। ভর্তি
   পরীক্ষায় যেন এই টুলস তোমার ডে টু ডে ব্যবহারের
-  সঙ্গী হয়।`,
+  সঙ্গী হয়।`.replace(/\s+/g, " "),
   },
   icons: [{ url: logo.src, rel: "icon" }],
   metadataBase: new URL("https://taalaash.com"),
