@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDailyUserCount, getUserCount } from "@/server/user/service";
 import DailyUserChart from "./components/daily-user-count";
 import { getStats } from "@/server/miscellaneous/service/get-stats";
+import { runReport } from "@/server/miscellaneous/service/get-analytics";
 
 interface DashboardPageProps {
   params: {
@@ -23,6 +24,8 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
   //   { userCount, bookAuthorCount, chapterCount, postCount, subjectCount },
   //   dailyUsers,
   // ] = await Promise.all([getStats(), getDailyUserCount()]);
+
+  // const rows = await runReport();
 
   return (
     <div className="flex-col">
@@ -83,6 +86,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
             <DailyUserChart dailyUsers={dailyUsers.reverse()} />
           </CardContent>
         </Card> */}
+        {/* <pre>{JSON.stringify(rows, null, 2)}</pre> */}
       </div>
     </div>
   );

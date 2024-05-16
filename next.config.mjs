@@ -12,6 +12,7 @@ const nextConfig = {
       },
     ],
     minimumCacheTTL: 864000 * 30,
+    unoptimized: true,
   },
   typescript: { ignoreBuildErrors: true },
   eslint: { ignoreDuringBuilds: true },
