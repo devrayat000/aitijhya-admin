@@ -2,7 +2,7 @@ import { Inter, Tiro_Bangla } from "next/font/google";
 import { Metadata } from "next";
 
 import { ToastProvider } from "@/providers/toast-provider";
-import logo from "@/assets/logo_single.png";
+import logo from "@/assets/logo_sq.png";
 
 import "./globals.css";
 import { cn } from "@/lib/utils";
