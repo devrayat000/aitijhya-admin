@@ -2,7 +2,8 @@
 
 import dayjs from "dayjs";
 import {
-  Line,
+  Bar,
+  BarChart,
   LineChart,
   ResponsiveContainer,
   Tooltip,
@@ -15,28 +16,32 @@ import type {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
-export interface DailyUserChartProps {
-  dailyUsers: any[];
+export interface DailyActiveUserBarProps {
+  data: any[];
 }
 
-export default function DailyUserChart({ dailyUsers }: DailyUserChartProps) {
+export default function DailyActiveUserBar({ data }: DailyActiveUserBarProps) {
+  console.log(data);
+
   return (
     <ResponsiveContainer className="w-full h-80" height={320}>
-      <LineChart data={dailyUsers}>
+      <BarChart data={data}>
         <XAxis
           tickLine={false}
-          dataKey="created_date"
+          axisLine={false}
+          dataKey="date"
           tickFormatter={(value) => dayjs(value).format("DD MMM")}
         />
-        <YAxis tickLine={false} dataKey="count" />
-        <Tooltip content={CustomTooltip} shared />
-        <Line
-          type="linear"
-          dataKey="count"
-          label="User count"
-          className="stroke-card-result"
+        <YAxis tickLine={false} axisLine={false} dataKey="active1DayUsers" />
+        {/* <Tooltip content={CustomTooltip} shared /> */}
+        <Bar
+          //   type="linear"
+          dataKey="active1DayUsers"
+          label="Active Users"
+          className="fill-card-result"
+          radius={[8, 8, 0, 0]}
         />
-      </LineChart>
+      </BarChart>
     </ResponsiveContainer>
   );
 }
@@ -58,10 +63,10 @@ function CustomTooltip<TValue extends ValueType, TName extends NameType>({
       style={contentStyle}
     >
       <div className="text-sm text-muted-foreground" style={labelStyle}>
-        {payload[0].payload.created_date}
+        {payload[0].payload.date}
       </div>
       <div className="text-lg font-bold" style={itemStyle}>
-        Count: {payload[0].payload.count}
+        Count: {payload[0].payload.active1DayUsers}
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   experimental: {
     scrollRestoration: true,
+    turbo: { useSwcCss: true },
   },
   reactStrictMode: false,
   webpack(config, { webpack }) {
@@ -28,6 +29,7 @@ const nextConfig = {
     );
     return config;
   },
+  // output: "standalone",
 };
 
 export default nextConfig;

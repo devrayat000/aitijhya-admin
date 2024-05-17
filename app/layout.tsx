@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = true;
+// export const dynamic = true;
 
 export default async function RootLayout({
   children,
