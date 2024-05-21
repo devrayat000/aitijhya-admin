@@ -7,7 +7,7 @@ import BookmarkButton from "./bookmark";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export type ResultCardProps = PostHit;
+export type ResultCardProps = Omit<PostHit, "text" | "keywords">;
 
 export default function ResultCard(post: ResultCardProps) {
   const isNative =

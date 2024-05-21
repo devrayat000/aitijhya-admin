@@ -25,7 +25,10 @@ export default function DailyActiveUserBar({ data }: DailyActiveUserBarProps) {
 
   return (
     <ResponsiveContainer className="w-full h-80" height={320}>
-      <BarChart data={data}>
+      <BarChart
+        data={data}
+        className="[&_.recharts-tooltip-cursor]:fill-slate-800/30"
+      >
         <XAxis
           tickLine={false}
           axisLine={false}
@@ -33,9 +36,8 @@ export default function DailyActiveUserBar({ data }: DailyActiveUserBarProps) {
           tickFormatter={(value) => dayjs(value).format("DD MMM")}
         />
         <YAxis tickLine={false} axisLine={false} dataKey="active1DayUsers" />
-        {/* <Tooltip content={CustomTooltip} shared /> */}
+        <Tooltip content={CustomTooltip} shared />
         <Bar
-          //   type="linear"
           dataKey="active1DayUsers"
           label="Active Users"
           className="fill-card-result"

@@ -27,6 +27,9 @@ export const useSearchStore = create<
           };
         });
       },
+      clearHistory: () => {
+        set({ history: [] });
+      },
     }),
     {
       name: "search-history",

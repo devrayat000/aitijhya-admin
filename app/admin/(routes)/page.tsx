@@ -21,19 +21,19 @@ interface DashboardPageProps {
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
-  const [
-    { userCount, bookAuthorCount, chapterCount, postCount, subjectCount },
-    dailyUsers,
-  ] = await Promise.all([getStats(), getDailyUserCount()]);
+  // const [
+  //   { userCount, bookAuthorCount, chapterCount, postCount, subjectCount },
+  //   dailyUsers,
+  // ] = await Promise.all([getStats(), getDailyUserCount()]);
 
-  const report = await runReport();
+  // const report = await runReport();
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <Heading title="Dashboard" description="Overview of your store" />
         <Separator />
-        <div className="grid gap-4 grid-cols-5">
+        {/* <div className="grid gap-4 grid-cols-5">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-nowrap">
               <CardTitle className="text-sm font-medium flex-1">
@@ -64,7 +64,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
               <BookTextIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{postCount}</div>
+              <div className="text-2xl font-bold">{bookAuthorCount}</div>
             </CardContent>
           </Card>
           <Card>
@@ -75,7 +75,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
               <BookOpenTextIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{postCount}</div>
+              <div className="text-2xl font-bold">{chapterCount}</div>
             </CardContent>
           </Card>
         </div>
@@ -98,7 +98,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
               />
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </div>
     </div>
   );

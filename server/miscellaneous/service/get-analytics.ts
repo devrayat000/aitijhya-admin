@@ -1,4 +1,4 @@
-import { BetaAnalyticsDataClient, protos } from "@google-analytics/data";
+import { BetaAnalyticsDataClient } from "@google-analytics/data";
 import dayjs from "dayjs";
 
 const analyticsDataClient = new BetaAnalyticsDataClient({
@@ -18,20 +18,15 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
 const PROPERTY_ID = 441360510;
 
 export async function runReport() {
-  const currentDate = dayjs();
-  const dateRanges: protos.google.analytics.data.v1beta.IDateRange[] = [];
-
-  // Start from today and go back to 7 days before
-  for (let i = 0; i < 4; i++) {
-    const startDate = currentDate.subtract(i, "day").format("YYYY-MM-DD");
-    const endDate = currentDate.subtract(i - 1, "day").format("YYYY-MM-DD");
-    dateRanges.unshift({ startDate, endDate });
-  }
-
   const [response] = await analyticsDataClient.runReport({
     property: `properties/${PROPERTY_ID}`,
     // dateRanges: dateRanges,
-    dateRanges: [{ startDate: "2024-05-10", endDate: "today" }],
+    dateRanges: [
+      {
+        startDate: dayjs().subtract(7, "day").format("YYYY-MM-DD"),
+        endDate: "today",
+      },
+    ],
     dimensions: [
       {
         name: "date",

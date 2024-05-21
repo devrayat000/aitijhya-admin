@@ -2,7 +2,7 @@ import { use } from "react";
 
 import { postIndex } from "@/lib/algolia";
 import { PostHit } from "@/server/post/service";
-import ResultCard from "./result-card";
+import ResultCard, { ResultCardProps } from "./result-card";
 import PostPagination from "./pagination";
 
 import { promisify } from "node:util";
@@ -19,11 +19,18 @@ export default function SearchResults({
   const query = searchParams.query;
 
   const results = use(
-    postIndex.search<PostHit>(query, {
+    postIndex.search<ResultCardProps>(query, {
       optionalWords: query,
       hitsPerPage: 12,
       page: currentPage - 1,
       cacheable: true,
+      attributesToRetrieve: [
+        "objectID",
+        "imageUrl",
+        "book",
+        "chapter",
+        "keywords",
+      ],
     })
   );
 

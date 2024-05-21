@@ -22,13 +22,13 @@ export default function BookmarksPage() {
         </Link>
         <ServerStoreProvider
           initialData={{
-            bookmarks: posts.map((p) => ({ postId: p.id })),
+            bookmarks: posts.map((p) => ({ postId: p.objectID })),
             searchHistory: [],
           }}
         >
           <section className="flex flex-col md:flex-row gap-4">
             {posts?.map((hit) => (
-              <ResultCard isStatic key={hit.id} {...hit} />
+              <ResultCard key={hit.objectID} {...hit} />
             ))}
           </section>
         </ServerStoreProvider>
