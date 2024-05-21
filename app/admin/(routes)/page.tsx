@@ -8,7 +8,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Heading } from "@/components/ui/heading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getDailyUserCount, getUserCount } from "@/server/user/service";
+import { getDailyUserCount } from "@/server/user/service";
 import DailyUserChart from "./components/daily-user-count";
 import { getStats } from "@/server/miscellaneous/service/get-stats";
 import { runReport } from "@/server/miscellaneous/service/get-analytics";
@@ -21,19 +21,19 @@ interface DashboardPageProps {
 }
 
 const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
-  // const [
-  //   { userCount, bookAuthorCount, chapterCount, postCount, subjectCount },
-  //   dailyUsers,
-  // ] = await Promise.all([getStats(), getDailyUserCount()]);
+  const [
+    { userCount, bookAuthorCount, chapterCount, postCount, subjectCount },
+    dailyUsers,
+  ] = await Promise.all([getStats(), getDailyUserCount()]);
 
-  // const report = await runReport();
+  const report = await runReport();
 
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <Heading title="Dashboard" description="Overview of your store" />
         <Separator />
-        {/* <div className="grid gap-4 grid-cols-5">
+        <div className="grid gap-4 grid-cols-5">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-nowrap">
               <CardTitle className="text-sm font-medium flex-1">
@@ -98,7 +98,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
               />
             </CardContent>
           </Card>
-        </div> */}
+        </div>
       </div>
     </div>
   );
