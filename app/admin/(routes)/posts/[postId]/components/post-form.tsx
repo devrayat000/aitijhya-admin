@@ -164,6 +164,7 @@ export const PostForm: React.FC<PostFormProps> = ({
     const extractedPromise = fetch(fetchUrl, {
       method: "POST",
       body: formData,
+      signal: AbortSignal.timeout(1000 * 60 * 5),
     })
       .then((res) => res.json())
       .then((data) => data.results as { text: string; file: string }[]);
