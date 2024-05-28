@@ -3281,6 +3281,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"arctic@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "arctic@npm:1.9.0"
+  dependencies:
+    oslo: "npm:1.2.0"
+  checksum: 10c0/0ad3950b5c5ffaa2388b81b304db73e2cda831f965ad51761e758789e36ba7004b2d64b5bca20c6ce9b58b9667f8817ba1df89a5a4c0a1d4369ec26bc21f2496
+  languageName: node
+  linkType: hard
+
 "arg@npm:^4.1.0":
   version: 4.1.3
   resolution: "arg@npm:4.1.3"
@@ -3603,6 +3612,7 @@ __metadata:
     "@vercel/blob": "npm:^0.22.1"
     "@vercel/postgres": "npm:^0.8.0"
     algoliasearch: "npm:^4.23.2"
+    arctic: "npm:^1.9.0"
     autoprefixer: "npm:^10.4.19"
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.1.0"
