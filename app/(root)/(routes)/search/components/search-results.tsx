@@ -6,15 +6,18 @@ import ResultCard, { ResultCardProps } from "./result-card";
 import PostPagination from "./pagination";
 
 import { promisify } from "node:util";
+import { SearchSchema, searchSchema } from "./searchSchema";
 
 const wait = promisify(setTimeout);
 
 export default function SearchResults({
-  searchParams,
+  searchParams: params,
 }: {
-  searchParams: { query: string; page?: string; subjects?: string[] };
+  searchParams: SearchSchema;
 }) {
-  const currentPage = parseInt(searchParams.page || "1");
+  const searchParams = use(searchSchema.parseAsync(params));
+  const currentPage = searchParams.page;
+  console.log({ currentPage });
 
   const query = searchParams.query;
 
