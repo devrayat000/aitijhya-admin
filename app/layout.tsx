@@ -57,6 +57,12 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="google-site-verification"
+          content="vZDtRk0Srm9iwSChDW5c4g8otPXyLw2YlSKTInirxrA"
+        />
+      </head>
       <body
         // className={cn(inter.className, tiroBangla.className)}
         className={cn(inter.variable, tiroBangla.variable)}
