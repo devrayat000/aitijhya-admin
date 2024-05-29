@@ -12,7 +12,7 @@ const wait = promisify(setTimeout);
 export default function SearchResults({
   searchParams,
 }: {
-  searchParams: { query: string; page?: string };
+  searchParams: { query: string; page?: string; subjects?: string[] };
 }) {
   const currentPage = parseInt(searchParams.page || "1");
 
@@ -30,6 +30,10 @@ export default function SearchResults({
         "book",
         "chapter",
         "keywords",
+      ],
+      facetFilters: [
+        searchParams.subjects?.map((subject) => `subject.name:${subject}`) ||
+          [],
       ],
     })
   );

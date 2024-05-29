@@ -7,11 +7,13 @@ import SearchForm from "./components/search-form";
 import { Suspense } from "react";
 import SearchResults from "./components/search-results";
 import { ResultSkeleton } from "./components/result-card";
+import Filters from "./components/filters";
 
+// TODO: Implement zod validation of search params
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams?: { query: string; page?: string };
+  searchParams?: { query: string; page?: string; subjects?: string[] };
 }) {
   if (!searchParams?.query) {
     redirect("/", RedirectType.replace);
@@ -27,9 +29,16 @@ export default async function SearchPage({
           <SearchForm />
         </div>
       </div>
-      <Suspense fallback={<ResultSkeleton />}>
-        <SearchResults searchParams={searchParams} />
-      </Suspense>
+      <section className="flex">
+        <aside className="basis-80 border-r border-border">
+          <Filters searchParams={searchParams} />
+        </aside>
+        <main className="flex-1">
+          <Suspense fallback={<ResultSkeleton />}>
+            <SearchResults searchParams={searchParams} />
+          </Suspense>
+        </main>
+      </section>
     </div>
   );
 }
