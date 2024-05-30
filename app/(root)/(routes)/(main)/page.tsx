@@ -1,5 +1,5 @@
 import Image from "next/image";
-import SearchForm from "./search/components/search-form";
+import SearchForm from "../(search)/search/components/search-form";
 
 import logoSingle from "@/assets/logo_single.png";
 

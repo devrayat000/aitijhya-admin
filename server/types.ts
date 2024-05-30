@@ -1,9 +1,11 @@
+import { SQL } from "drizzle-orm";
 import type { AnyPgSelect, PgSelectPrepare } from "drizzle-orm/pg-core";
 
 export interface GetParams {
   page?: number;
   limit?: number;
   query?: string;
+  orderBy?: (SQL | SQL.Aliased)[];
 }
 
 export type GetResults<T> = Promise<{

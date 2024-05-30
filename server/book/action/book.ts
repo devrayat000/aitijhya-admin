@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 
 import { bookAuthor } from "@/db/schema";
 import db from "@/lib/db";
+import { getFilteredBooks } from "../service/get-filtered-books";
 
 export async function createBook(params: InferInsertModel<typeof bookAuthor>) {
   const [data] = await db
@@ -34,13 +35,16 @@ export async function deleteBook(id: string) {
 }
 
 export async function getBooksBySubject(
-  _: InferSelectModel<typeof bookAuthor>[] | null,
+  _: Pick<InferSelectModel<typeof bookAuthor>, "id" | "name">[] | null,
   subjectId: string
 ) {
-  const books = await db
-    .select()
-    .from(bookAuthor)
-    .where(eq(bookAuthor.subjectId, subjectId));
+  const books = await getFilteredBooks({
+    subjects: [subjectId],
+    fields: {
+      id: bookAuthor.id,
+      name: bookAuthor.name,
+    },
+  });
   return books;
 }
 

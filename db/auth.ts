@@ -6,6 +6,8 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
+import { relations } from "drizzle-orm";
+import { bookmark } from "./schema";
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -20,6 +22,10 @@ export const users = pgTable("user", {
     .notNull()
     .defaultNow(),
 });
+
+export const userRelations = relations(users, ({ many }) => ({
+  bookmarks: many(bookmark),
+}));
 
 export const institutionalInfo = pgTable(
   "institutional_infos",

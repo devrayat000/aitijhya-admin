@@ -1,22 +1,27 @@
 import { use } from "react";
+import without from "lodash/without";
 
 import { postIndex } from "@/lib/algolia";
-import { PostHit } from "@/server/post/service";
 import ResultCard, { ResultCardProps } from "./result-card";
 import PostPagination from "./pagination";
-
-import { promisify } from "node:util";
-
-const wait = promisify(setTimeout);
+import { SearchSchema, searchSchema } from "./searchSchema";
 
 export default function SearchResults({
-  searchParams,
+  searchParams: params,
 }: {
-  searchParams: { query: string; page?: string };
+  searchParams: SearchSchema;
 }) {
-  const currentPage = parseInt(searchParams.page || "1");
+  const searchParams = use(searchSchema.parseAsync(params));
+  const { page: currentPage, query, subject, chapter, book } = searchParams;
 
-  const query = searchParams.query;
+  const facets = without(
+    [
+      subject ? `subject.name:${subject}` : null,
+      book ? `book.name:${book}` : null,
+      chapter ? `chapter.name:${chapter}` : null,
+    ],
+    null
+  );
 
   const results = use(
     postIndex.search<ResultCardProps>(query, {
@@ -31,14 +36,15 @@ export default function SearchResults({
         "chapter",
         "keywords",
       ],
+      facetFilters: facets as unknown as string[],
     })
   );
 
   const posts = results.hits;
 
   return (
-    <>
-      <section className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-8">
+    <div className="@container/grid w-full">
+      <section className="flex flex-col @sm/grid:grid @lg/grid:grid-cols-2 @xl/grid:grid-cols-3 gap-4 py-8">
         {posts ? (
           posts.map((post) => <ResultCard key={post.objectID} {...post} />)
         ) : (
@@ -52,6 +58,6 @@ export default function SearchResults({
         searchParams={searchParams}
         totalPages={results.nbPages}
       />
-    </>
+    </div>
   );
 }

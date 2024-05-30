@@ -37,6 +37,7 @@ import {
   updateChapter,
 } from "@/server/chapter/action/chapter";
 import { getBooksBySubject } from "@/server/book/action/book";
+import { ChapterTable } from "@/server/chapter/service";
 
 const formSchema = z.object({
   name: z.string().min(1),
@@ -46,16 +47,7 @@ const formSchema = z.object({
 
 type ChapterFormValues = z.infer<typeof formSchema>;
 type Subject = InferSelectModel<typeof subject>;
-type Chapter = InferSelectModel<typeof chapter> & {
-  subject: {
-    id: string;
-    name: string;
-  };
-  book: {
-    id: string;
-    name: string;
-  };
-};
+type Chapter = ChapterTable;
 interface ChapterFormProps {
   initialData: {
     subjects: Subject[];
@@ -128,8 +120,6 @@ export const ChapterForm: React.FC<ChapterFormProps> = ({
     getBooksBySubject,
     books
   );
-
-  console.log({ booksBySubject });
 
   return (
     <>
