@@ -55,7 +55,6 @@ export default function BookFilter({ books }: BookFilterProps) {
               value={field.value}
               disabled={field.disabled}
               name={field.name}
-              required
             >
               <SelectTrigger onBlur={field.onBlur}>
                 <SelectValue placeholder="Select a book" />

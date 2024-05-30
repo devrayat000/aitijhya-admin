@@ -21,10 +21,16 @@ export default function FilterClient({ initialData }: FilterClientProps) {
   const searchParams = useSearchParams();
   const form = useForm({
     defaultValues: {
-      subject: searchParams.get("subject") ?? "",
-      book: searchParams.get("book") ?? "",
-      chapter: searchParams.get("chapter") ?? "",
+      subject: searchParams.get("subject") || undefined,
+      book: searchParams.get("book") || undefined,
+      chapter: searchParams.get("chapter") || undefined,
     },
+  });
+
+  console.log({
+    subject: searchParams.get("subject") || undefined,
+    book: searchParams.get("book") || undefined,
+    chapter: searchParams.get("chapter") || undefined,
   });
 
   return (
