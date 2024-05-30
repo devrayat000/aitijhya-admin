@@ -1,31 +1,20 @@
 import { bookAuthor, chapter, subject } from "@/db/schema";
-import db from "@/lib/db";
-import { eq, ilike, sql } from "drizzle-orm";
-import { GetParams, GetResults, TableData } from "../../types";
+import { GetParams, GetResults } from "../../types";
 import { countChapters } from "./count-chapters";
+import { getFilteredChapters } from "./get-filtered-chapters";
 
-const chaptersStatement = db
-  .select({
-    id: chapter.id,
-    name: chapter.name,
-    subject: {
-      name: subject.name,
-      id: subject.id,
-    },
-    book: {
-      name: bookAuthor.name,
-      id: bookAuthor.id,
-    },
-  })
-  .from(chapter)
-  .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-  .offset(sql.placeholder("offset"))
-  .limit(sql.placeholder("limit"))
-  .where(ilike(chapter.name, sql.placeholder("query")))
-  .prepare("get_chapters");
-
-export type ChapterTable = TableData<typeof chaptersStatement>;
+export type ChapterTable = {
+  id: string;
+  name: string;
+  book: {
+    name: string;
+    id: string;
+  };
+  subject: {
+    name: string;
+    id: string;
+  };
+};
 
 export async function getChapters(
   params?: GetParams
@@ -35,13 +24,26 @@ export async function getChapters(
   const query = `%${params?.query || ""}%`;
 
   const [data, count] = await Promise.all([
-    chaptersStatement.execute({
+    getFilteredChapters({
       limit,
-      offset: (page - 1) * limit,
+      page,
       query,
+      fields: {
+        id: chapter.id,
+        name: chapter.name,
+        book: {
+          name: bookAuthor.name,
+          id: bookAuthor.id,
+        },
+        subject: {
+          name: subject.name,
+          id: subject.id,
+        },
+      },
     }),
     countChapters(query),
   ]);
 
+  // @ts-ignore
   return { data, count };
 }

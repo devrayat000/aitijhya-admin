@@ -3,6 +3,7 @@ import db from "@/lib/db";
 import { ilike, sql } from "drizzle-orm";
 import { GetParams, GetResults, TableData } from "../../types";
 import { countSubjects } from "./count-subjects";
+import { getFilteredSubjects } from "./get-filtered-subjects";
 
 const subjectsStatement = db
   .select()
@@ -19,13 +20,18 @@ export async function getSubjects(
 ): GetResults<SubjectTable> {
   const page = params?.page || 1;
   const limit = params?.limit || 10;
-  const query = `%${params?.query || ""}%`;
+  const query = params?.query;
 
   const [data, count] = await Promise.all([
-    subjectsStatement.execute({
+    getFilteredSubjects({
       limit,
-      offset: (page - 1) * limit,
+      page,
       query,
+      fields: {
+        id: subject.id,
+        name: subject.name,
+        createdAt: subject.createdAt,
+      },
     }),
     countSubjects(query),
   ]);

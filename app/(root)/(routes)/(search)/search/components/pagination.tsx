@@ -7,11 +7,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { SearchSchema } from "./searchSchema";
 
 interface PostPaginationProps {
   currentPage: number;
   totalPages: number;
-  searchParams: Record<string, string>;
+  searchParams: SearchSchema;
 }
 
 export default function PostPagination({

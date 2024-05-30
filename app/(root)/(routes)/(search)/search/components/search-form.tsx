@@ -146,7 +146,7 @@ export default function SearchForm() {
           className="w-12 h-12 rounded-full bg-card-result hover:bg-card-result/90"
           variant="default"
         >
-          <Search className="h-8 w-8 text-white" />
+          <Search className="h-6 w-6 text-white" />
         </Button>
       </div>
     </form>

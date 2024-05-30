@@ -15,7 +15,7 @@ const ChapterPage = async ({ params }: { params: { chapterId: string } }) => {
     initialData = {
       ...initialData,
       chapter,
-      books: await getBooksBySubject(null, chapter.subject!.id),
+      books: await getBooksBySubject(null, chapter.subject.id),
     };
   }
   return (

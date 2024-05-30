@@ -6,17 +6,18 @@ import ResultCard, { ResultCardProps } from "./result-card";
 import PostPagination from "./pagination";
 
 import { promisify } from "node:util";
+import { SearchSchema, searchSchema } from "./searchSchema";
 
 const wait = promisify(setTimeout);
 
 export default function SearchResults({
-  searchParams,
+  searchParams: params,
 }: {
-  searchParams: { query: string; page?: string };
+  searchParams: SearchSchema;
 }) {
-  const currentPage = parseInt(searchParams.page || "1");
-
-  const query = searchParams.query;
+  const searchParams = use(searchSchema.parseAsync(params));
+  const { page: currentPage, query, subject, chapter, book } = searchParams;
+  console.log({ currentPage });
 
   const results = use(
     postIndex.search<ResultCardProps>(query, {
@@ -31,14 +32,19 @@ export default function SearchResults({
         "chapter",
         "keywords",
       ],
+      facetFilters: [
+        subject ? `subject.name:${subject}` : [],
+        book ? `book.name:${book}` : [],
+        chapter ? `chapter.name:${chapter}` : [],
+      ],
     })
   );
 
   const posts = results.hits;
 
   return (
-    <>
-      <section className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-8">
+    <div className="@container/grid w-full">
+      <section className="flex flex-col @sm/grid:grid @lg/grid:grid-cols-2 @xl/grid:grid-cols-3 gap-4 py-8">
         {posts ? (
           posts.map((post) => <ResultCard key={post.objectID} {...post} />)
         ) : (
@@ -52,6 +58,6 @@ export default function SearchResults({
         searchParams={searchParams}
         totalPages={results.nbPages}
       />
-    </>
+    </div>
   );
 }

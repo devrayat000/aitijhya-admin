@@ -1,53 +1,62 @@
-import { bookAuthor, post, subject, chapter } from "@/db/schema";
-import db from "@/lib/db";
-import { desc, eq, ilike, sql } from "drizzle-orm";
-import { GetParams, GetResults, TableData } from "../../types";
+import { bookAuthor, chapter, post, subject } from "@/db/schema";
+import { GetParams, GetResults } from "../../types";
 import { countPosts } from "./count-posts";
+import { getFilteredPosts } from "./get-filtered-posts";
+import { desc } from "drizzle-orm";
 
-const postsStatement = db
-  .select({
-    id: post.id,
-    text: post.text,
-    page: post.page,
-    keywords: post.keywords,
-    imageUrl: post.imageUrl,
-    chapter: {
-      name: chapter.name,
-      id: chapter.id,
-    },
-    subject: {
-      name: subject.name,
-      id: subject.id,
-    },
-    book: {
-      name: bookAuthor.name,
-      id: bookAuthor.id,
-    },
-    createdAt: post.createdAt,
-  })
-  .from(post)
-  .innerJoin(chapter, eq(chapter.id, post.chapterId))
-  .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-  .where(ilike(post.text, sql.placeholder("query")))
-  .orderBy(desc(post.createdAt))
-  .offset(sql.placeholder("offset"))
-  .limit(sql.placeholder("limit"))
-  .prepare("get_posts");
-
-export type PostTable = TableData<typeof postsStatement>;
+export type PostTable = {
+  id: string;
+  text: string;
+  page: number | null;
+  keywords: string[] | null;
+  imageUrl: string;
+  chapter: {
+    name: string;
+    id: string;
+  };
+  subject: {
+    name: string;
+    id: string;
+  };
+  book: {
+    name: string;
+    id: string;
+  };
+  createdAt: Date;
+};
 
 export async function getPosts(params?: GetParams): GetResults<PostTable> {
   const page = params?.page || 1;
   const limit = params?.limit || 10;
-  const query = `%${params?.query || ""}%`;
+  const query = params?.query?.trim();
   console.log("getPosts -> query", query);
 
   const [data, count] = await Promise.all([
-    postsStatement.execute({
+    getFilteredPosts({
       limit,
-      offset: (page - 1) * limit,
+      page,
       query,
+      fields: {
+        id: post.id,
+        text: post.text,
+        page: post.page,
+        keywords: post.keywords,
+        imageUrl: post.imageUrl,
+        createdAt: post.createdAt,
+        chapter: {
+          name: chapter.name,
+          id: chapter.id,
+        },
+        subject: {
+          name: subject.name,
+          id: subject.id,
+        },
+        book: {
+          name: bookAuthor.name,
+          id: bookAuthor.id,
+        },
+      },
+      orderBy: [desc(post.createdAt)],
     }),
     countPosts(query),
   ]);

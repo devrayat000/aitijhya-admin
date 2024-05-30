@@ -1,11 +1,12 @@
 import { subject } from "@/db/schema";
-import db from "@/lib/db";
-
-const allSubjectsStatement = db
-  .select()
-  .from(subject)
-  .prepare("get_all_subjects");
+import { getFilteredSubjects } from "./get-filtered-subjects";
 
 export function getAllSubjects() {
-  return allSubjectsStatement.execute();
+  return getFilteredSubjects({
+    fields: {
+      id: subject.id,
+      name: subject.name,
+      createdAt: subject.createdAt,
+    },
+  });
 }

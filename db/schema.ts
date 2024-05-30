@@ -8,12 +8,17 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth";
+import { relations } from "drizzle-orm";
 
 export const subject = pgTable("subjects", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull().unique(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const subjectRelations = relations(subject, ({ many }) => ({
+  books: many(bookAuthor),
+}));
 
 export const bookAuthor = pgTable(
   "book_authors",
@@ -38,6 +43,14 @@ export const bookAuthor = pgTable(
   })
 );
 
+export const bookAuthorRelations = relations(bookAuthor, ({ one, many }) => ({
+  subject: one(subject, {
+    fields: [bookAuthor.subjectId],
+    references: [subject.id],
+  }),
+  chapters: many(chapter),
+}));
+
 export const chapter = pgTable(
   "chapters",
   {
@@ -53,6 +66,14 @@ export const chapter = pgTable(
   })
 );
 
+export const chapterRelations = relations(chapter, ({ one, many }) => ({
+  book: one(bookAuthor, {
+    fields: [chapter.bookAuthorId],
+    references: [bookAuthor.id],
+  }),
+  posts: many(post),
+}));
+
 export const post = pgTable("posts", {
   id: uuid("id").primaryKey().defaultRandom(),
   text: text("text").notNull(),
@@ -64,6 +85,13 @@ export const post = pgTable("posts", {
   keywords: text("keywords").array(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const postRelations = relations(post, ({ one }) => ({
+  chapter: one(chapter, {
+    fields: [post.chapterId],
+    references: [chapter.id],
+  }),
+}));
 
 export const searchHistory = pgTable("search_history", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -84,5 +112,16 @@ export const bookmark = pgTable("bookmarks", {
     .references(() => post.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const bookmarkRelations = relations(bookmark, ({ one }) => ({
+  user: one(users, {
+    fields: [bookmark.userId],
+    references: [users.id],
+  }),
+  post: one(post, {
+    fields: [bookmark.postId],
+    references: [post.id],
+  }),
+}));
 
 export * from "./auth";
