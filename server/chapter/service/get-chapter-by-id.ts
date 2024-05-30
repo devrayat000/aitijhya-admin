@@ -1,27 +1,23 @@
 import { bookAuthor, chapter, subject } from "@/db/schema";
-import db from "@/lib/db";
-import { eq, sql } from "drizzle-orm";
+import { getFilteredChapters } from "./get-filtered-chapters";
+import { ChapterTable } from "./get-chapters";
 
-const chapterByIdStatement = db
-  .select({
-    id: chapter.id,
-    name: chapter.name,
-    subject: {
-      name: subject.name,
-      id: subject.id,
+export async function getChapterById(id: string): Promise<ChapterTable> {
+  const [chapterById] = await getFilteredChapters({
+    chapters: [id],
+    fields: {
+      id: chapter.id,
+      name: chapter.name,
+      book: {
+        name: bookAuthor.name,
+        id: bookAuthor.id,
+      },
+      subject: {
+        name: subject.name,
+        id: subject.id,
+      },
     },
-    book: {
-      name: bookAuthor.name,
-      id: bookAuthor.id,
-    },
-  })
-  .from(chapter)
-  .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-  .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-  .where(eq(chapter.id, sql.placeholder("id")))
-  .prepare("get_chapter_by_id");
+  });
 
-export async function getChapterById(id: string) {
-  const [chapterById] = await chapterByIdStatement.execute({ id });
-  return chapterById;
+  return chapterById as unknown as ChapterTable;
 }

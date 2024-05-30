@@ -16,10 +16,8 @@ export default function SearchResults({
   searchParams: SearchSchema;
 }) {
   const searchParams = use(searchSchema.parseAsync(params));
-  const currentPage = searchParams.page;
+  const { page: currentPage, query, subject, chapter, book } = searchParams;
   console.log({ currentPage });
-
-  const query = searchParams.query;
 
   const results = use(
     postIndex.search<ResultCardProps>(query, {
@@ -35,8 +33,9 @@ export default function SearchResults({
         "keywords",
       ],
       facetFilters: [
-        searchParams.subjects?.map((subject) => `subject.name:${subject}`) ||
-          [],
+        subject ? `subject.name:${subject}` : [],
+        book ? `book.name:${book}` : [],
+        chapter ? `chapter.name:${chapter}` : [],
       ],
     })
   );
@@ -44,8 +43,8 @@ export default function SearchResults({
   const posts = results.hits;
 
   return (
-    <>
-      <section className="flex flex-col sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 py-8">
+    <div className="@container/grid w-full">
+      <section className="flex flex-col @sm/grid:grid @lg/grid:grid-cols-2 @xl/grid:grid-cols-3 gap-4 py-8">
         {posts ? (
           posts.map((post) => <ResultCard key={post.objectID} {...post} />)
         ) : (
@@ -59,6 +58,6 @@ export default function SearchResults({
         searchParams={searchParams}
         totalPages={results.nbPages}
       />
-    </>
+    </div>
   );
 }

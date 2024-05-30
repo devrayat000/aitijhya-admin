@@ -4,6 +4,7 @@ import { chapter } from "@/db/schema";
 import db from "@/lib/db";
 import { InferSelectModel, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getFilteredChapters } from "../service/get-filtered-chapters";
 
 export async function createChapter(params: {
   name: string;
@@ -38,10 +39,13 @@ export async function getChaptersByBooks(
   _: InferSelectModel<typeof chapter>[] | null,
   bookAuthorId: string
 ) {
-  const books = await db
-    .select()
-    .from(chapter)
-    .where(eq(chapter.bookAuthorId, bookAuthorId));
+  const books = await getFilteredChapters({
+    books: [bookAuthorId],
+    fields: {
+      id: chapter.id,
+      name: chapter.name,
+    },
+  });
   return books;
 }
 

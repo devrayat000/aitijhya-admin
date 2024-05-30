@@ -1,10 +1,10 @@
-import { bookAuthor, post, subject, chapter } from "@/db/schema";
-import db from "@/lib/db";
-import { eq, inArray } from "drizzle-orm";
+import { bookAuthor, chapter, post, subject } from "@/db/schema";
+import { getFilteredPosts } from "./get-filtered-posts";
 
 export async function getManyPostsForIndexing(ids: string[]) {
-  const posts = await db
-    .select({
+  const posts = await getFilteredPosts({
+    posts: ids,
+    fields: {
       objectID: post.id,
       text: post.text,
       keywords: post.keywords,
@@ -12,18 +12,14 @@ export async function getManyPostsForIndexing(ids: string[]) {
       chapter: {
         name: chapter.name,
       },
-      subject: {
-        name: subject.name,
-      },
       book: {
         name: bookAuthor.name,
         edition: bookAuthor.edition,
       },
-    })
-    .from(post)
-    .innerJoin(chapter, eq(chapter.id, post.chapterId))
-    .innerJoin(bookAuthor, eq(bookAuthor.id, chapter.bookAuthorId))
-    .innerJoin(subject, eq(subject.id, bookAuthor.subjectId))
-    .where(inArray(post.id, ids));
+      subject: {
+        name: subject.name,
+      },
+    },
+  });
   return posts;
 }

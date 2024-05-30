@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { getBookmarkedPosts } from "@/server/bookmark/service";
 import logoMulti from "@/assets/logo_multi.png";
-import ResultCard from "../search/components/result-card";
+import ResultCard from "../../(search)/search/components/result-card";
 import { ServerStoreProvider } from "@/hooks/use-server-data";
 import { requireAuth } from "@/lib/auth";
 

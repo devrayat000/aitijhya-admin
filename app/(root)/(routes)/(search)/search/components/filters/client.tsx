@@ -1,0 +1,37 @@
+"use client";
+
+import SubjectFilter from "./subjects";
+import { useForm } from "react-hook-form";
+import { Form } from "@/components/ui/form";
+import { useSearchParams } from "next/navigation";
+import BookFilter from "./books";
+import ChapterFilter from "./chapters";
+
+type FilterItem = { value: string };
+
+export interface FilterClientProps {
+  initialData?: {
+    subjects?: FilterItem[];
+    books?: FilterItem[];
+    chapters?: FilterItem[];
+  };
+}
+
+export default function FilterClient({ initialData }: FilterClientProps) {
+  const searchParams = useSearchParams();
+  const form = useForm({
+    defaultValues: {
+      subject: searchParams.get("subject") ?? "",
+      book: searchParams.get("book") ?? "",
+      chapter: searchParams.get("chapter") ?? "",
+    },
+  });
+
+  return (
+    <Form {...form}>
+      <SubjectFilter subjects={initialData?.subjects} />
+      <BookFilter books={initialData?.books} />
+      <ChapterFilter chapters={initialData?.chapters} />
+    </Form>
+  );
+}
