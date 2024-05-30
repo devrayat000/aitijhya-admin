@@ -1,7 +1,9 @@
 "use server";
 
 import { eq, inArray, InferInsertModel } from "drizzle-orm";
-import { map, merge, pick } from "lodash";
+import map from "lodash/map";
+import merge from "lodash/merge";
+import pick from "lodash/pick";
 import { revalidatePath } from "next/cache";
 import { put } from "@vercel/blob";
 

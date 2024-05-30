@@ -1,14 +1,10 @@
 import { use } from "react";
+import without from "lodash/without";
 
 import { postIndex } from "@/lib/algolia";
-import { PostHit } from "@/server/post/service";
 import ResultCard, { ResultCardProps } from "./result-card";
 import PostPagination from "./pagination";
-
-import { promisify } from "node:util";
 import { SearchSchema, searchSchema } from "./searchSchema";
-
-const wait = promisify(setTimeout);
 
 export default function SearchResults({
   searchParams: params,
@@ -17,7 +13,15 @@ export default function SearchResults({
 }) {
   const searchParams = use(searchSchema.parseAsync(params));
   const { page: currentPage, query, subject, chapter, book } = searchParams;
-  console.log({ currentPage });
+
+  const facets = without(
+    [
+      subject ? `subject.name:${subject}` : null,
+      book ? `book.name:${book}` : null,
+      chapter ? `chapter.name:${chapter}` : null,
+    ],
+    null
+  );
 
   const results = use(
     postIndex.search<ResultCardProps>(query, {
@@ -32,11 +36,7 @@ export default function SearchResults({
         "chapter",
         "keywords",
       ],
-      facetFilters: [
-        subject ? `subject.name:${subject}` : [],
-        book ? `book.name:${book}` : [],
-        chapter ? `chapter.name:${chapter}` : [],
-      ],
+      facetFilters: facets as unknown as string[],
     })
   );
 
