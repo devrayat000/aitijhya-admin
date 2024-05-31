@@ -21,23 +21,30 @@ export interface DailyUserChartProps {
 
 export default function DailyUserChart({ dailyUsers }: DailyUserChartProps) {
   return (
-    <ResponsiveContainer className="w-full h-80" height={320}>
-      <LineChart data={dailyUsers}>
-        <XAxis
-          tickLine={false}
-          dataKey="created_date"
-          tickFormatter={(value) => dayjs(value).format("DD MMM")}
-        />
-        <YAxis tickLine={false} dataKey="count" />
-        <Tooltip content={CustomTooltip} shared />
-        <Line
-          type="linear"
-          dataKey="count"
-          label="User count"
-          className="stroke-card-result"
-        />
-      </LineChart>
-    </ResponsiveContainer>
+    <div className="h-56 md:h-64 lg:h-80">
+      <ResponsiveContainer>
+        <LineChart data={dailyUsers}>
+          <XAxis
+            tickLine={false}
+            dataKey="created_date"
+            tickFormatter={(value) => dayjs(value).format("DD MMM")}
+            className="text-xs md:text-sm lg:text-base"
+          />
+          <YAxis
+            tickLine={false}
+            dataKey="count"
+            className="text-xs md:text-sm lg:text-base"
+          />
+          <Tooltip content={CustomTooltip} shared />
+          <Line
+            type="linear"
+            dataKey="count"
+            label="User count"
+            className="stroke-card-result"
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
 

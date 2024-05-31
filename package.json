@@ -67,6 +67,7 @@
     "sharp": "^0.33.3",
     "tailwind-merge": "^2.2.2",
     "typescript": "^5.4.3",
+    "vaul": "^0.9.1",
     "zod": "^3.22.4",
     "zustand": "^4.5.2"
   },

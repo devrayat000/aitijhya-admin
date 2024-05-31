@@ -22,6 +22,7 @@ export function MainNav({
   const pathname = usePathname();
 
   const routes = [
+    new NavPath(`/admin`, "Dashboard"),
     new NavPath(`/admin/subjects`, "Subjects"),
     new NavPath(`/admin/books`, "Books"),
     new NavPath(`/admin/chapters`, "Chapters"),
@@ -33,7 +34,9 @@ export function MainNav({
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
       {...props}
     >
-      <Image src={logoSingle} alt="Logo" height={52} />
+      <Link href="/admin">
+        <Image src={logoSingle} alt="Logo" height={52} />
+      </Link>
       {routes.map((route) => (
         <Link
           key={route.href}

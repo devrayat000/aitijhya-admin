@@ -1,4 +1,4 @@
-import Navbar from "@/components/navbar";
+import Navbar from "@/app/admin/(routes)/components/navbar";
 import { ThemeProvider } from "@/providers/theme-provider";
 
 export default async function DashboardLayout({

@@ -9,8 +9,8 @@ export interface CountCardProps {
 export default function CountCard({ count, name, icon: Icon }: CountCardProps) {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 flex-nowrap">
-        <CardTitle className="text-sm font-medium flex-1">
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 flex-nowrap">
+        <CardTitle className="text-xs md:text-sm font-medium flex-1">
           Total {name} Count
         </CardTitle>
         {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
