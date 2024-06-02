@@ -45,7 +45,7 @@ export default function SearchResults({
   return (
     <div className="@container/grid w-full">
       <section className="flex flex-col @sm/grid:grid @lg/grid:grid-cols-2 @xl/grid:grid-cols-3 gap-4 py-8">
-        {posts ? (
+        {posts.length ? (
           posts.map((post) => <ResultCard key={post.objectID} {...post} />)
         ) : (
           <div className="flex justify-center">
