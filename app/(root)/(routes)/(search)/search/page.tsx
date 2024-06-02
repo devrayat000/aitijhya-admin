@@ -30,7 +30,7 @@ export default async function SearchPage({
           <Filters searchParams={searchParams} />
         </aside>
         <main className="flex-1">
-          <ScrollArea className="h-[calc(100vh-5rem)]">
+          <ScrollArea className="h-[calc(100vh-9rem)]">
             <div className="pl-4 lg:pl-0 pr-4">
               <Suspense fallback={<ResultSkeleton />}>
                 <SearchResults searchParams={searchParams} />

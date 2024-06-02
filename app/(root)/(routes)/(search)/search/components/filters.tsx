@@ -13,10 +13,15 @@ export default function Filters({
 }) {
   const subjects = use(postIndex.searchForFacetValues("subject.name", ""));
   const books = searchParams.subject
-    ? use(getBooksBySubject([], searchParams.subject))
+    ? use(getBooksBySubject([], { subject: searchParams.subject }))
     : undefined;
   const chapters = searchParams.book
-    ? use(getChaptersByBook([], searchParams.book))
+    ? use(
+        getChaptersByBook([], {
+          subject: searchParams.subject,
+          book: searchParams.book,
+        })
+      )
     : undefined;
 
   const initial = {

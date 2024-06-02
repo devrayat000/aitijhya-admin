@@ -11,7 +11,7 @@ export default function FilterSidebar({
   initialData: FilterClientProps["initialData"];
 }) {
   return (
-    <aside className="lg:basis-80 hidden lg:mt-3 lg:block border-r border-border min-h-[calc(100vh-8rem)]">
+    <aside className="lg:basis-80 hidden lg:mt-3 lg:block border-r border-border min-h-[calc(100vh-11rem)]">
       <form className="p-4">
         <h3 className="text-2xl font-semibold">Filters</h3>
         <input type="hidden" name="query" value={searchParams.query} />

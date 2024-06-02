@@ -7,7 +7,7 @@ import SearchForm from "../search/components/search-form";
 
 export default function SearchHeader() {
   return (
-    <header className="flex justify-between items-center gap-x-6 gap-y-2 px-3 lg:px-6 py-2 lg:py-3 z-50">
+    <header className="flex justify-between items-center gap-x-6 gap-y-2 px-3 h-20 lg:px-6 py-2 lg:py-3 z-50">
       <Link href="/" className="flex justify-center">
         <Image src={logoSingle} alt="logo" width={120} />
       </Link>

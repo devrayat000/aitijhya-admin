@@ -20,7 +20,7 @@ export async function getBooksBySubject(
 
 export async function getChaptersByBook(
   _: { value: string }[],
-  { book, subject }: { book: string; subject: string }
+  { book, subject }: { book: string; subject?: string }
 ) {
   const facets = without(
     [
