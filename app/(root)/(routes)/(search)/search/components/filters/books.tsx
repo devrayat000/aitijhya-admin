@@ -33,7 +33,7 @@ export default function BookFilter({ books }: BookFilterProps) {
   useEffect(() => {
     const { unsubscribe } = form.watch(({ subject }) => {
       if (subject) {
-        getBooks(subject);
+        getBooks({ subject });
       }
     });
     return unsubscribe;

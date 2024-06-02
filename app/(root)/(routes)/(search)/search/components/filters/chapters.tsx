@@ -31,9 +31,9 @@ export default function ChapterFilter({ chapters }: ChapterFilterProps) {
   );
 
   useEffect(() => {
-    const { unsubscribe } = form.watch(({ book }) => {
-      if (book) {
-        getChapters(book);
+    const { unsubscribe } = form.watch(({ book, subject }) => {
+      if (book && subject) {
+        getChapters({ book, subject });
       }
     });
     return unsubscribe;
