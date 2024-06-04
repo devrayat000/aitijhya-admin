@@ -12,7 +12,7 @@ export default function HomeLayout({
     <div className="max-h-svh">
       {children}
       <GoogleAnalytics gaId={process.env.GA_TRACKING_ID!} />
-      <footer className="px-16 grid place-items-center h-16 shadow-md">
+      <footer className="px-8 md:px-16 grid place-items-center h-10 md:h-16">
         <div className="flex justify-between items-center w-full">
           <p>&copy; 2024 Biology Haters | All Rights Reserved</p>
           <p>
