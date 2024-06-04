@@ -1,5 +1,6 @@
 import db from "@/lib/db";
 import { mapKeys, camelCase } from "lodash";
+import { unstable_cache as cache } from "next/cache";
 
 import { post, subject, chapter, bookAuthor, users } from "@/db/schema";
 import { sql } from "drizzle-orm";
@@ -21,7 +22,11 @@ export type Stats = {
   postCount: number;
 };
 
-export async function getStats(): Promise<Stats> {
-  const [stats] = await db.execute<Stats>(statsStatement);
-  return mapKeys(stats, (_, key) => camelCase(key)) as any;
-}
+export const getStats = cache(
+  async (): Promise<Stats> => {
+    const [stats] = await db.execute<Stats>(statsStatement);
+    return mapKeys(stats, (_, key) => camelCase(key)) as any;
+  },
+  ["getStats"],
+  { tags: ["getStats"], revalidate: 1800 }
+);

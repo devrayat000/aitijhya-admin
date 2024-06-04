@@ -72,3 +72,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 };
 
 export default DashboardPage;
+
+// export const revalidate = 1800;
+export const runtime = "nodejs";
+// export const dynamic = "force-static";

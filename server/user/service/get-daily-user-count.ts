@@ -1,6 +1,7 @@
 import { users } from "@/db/auth";
 import db from "@/lib/db";
 import { count, desc, sql } from "drizzle-orm";
+import { unstable_cache as cache } from "next/cache";
 
 const dailyUserStatement = db
   .select({
@@ -15,7 +16,14 @@ const dailyUserStatement = db
   .limit(7)
   .prepare("get_daily_user_count_statement");
 
-export async function getDailyUserCount() {
-  const dailyUserCount = await dailyUserStatement.execute();
-  return dailyUserCount;
-}
+export const getDailyUserCount = cache(
+  async () => {
+    const dailyUserCount = await dailyUserStatement.execute();
+    return dailyUserCount;
+  },
+  ["getDailyUserCount"],
+  {
+    tags: ["getDailyUserCount"],
+    revalidate: 1800,
+  }
+);

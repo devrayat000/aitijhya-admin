@@ -1,5 +1,6 @@
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 import dayjs from "dayjs";
+import { unstable_cache as cache } from "next/cache";
 
 const analyticsDataClient = new BetaAnalyticsDataClient({
   credentials: {
@@ -17,30 +18,34 @@ const analyticsDataClient = new BetaAnalyticsDataClient({
 
 const PROPERTY_ID = 441360510;
 
-export async function runReport() {
-  const [response] = await analyticsDataClient.runReport({
-    property: `properties/${PROPERTY_ID}`,
-    // dateRanges: dateRanges,
-    dateRanges: [
-      {
-        startDate: dayjs().subtract(7, "day").format("YYYY-MM-DD"),
-        endDate: "today",
-      },
-    ],
-    dimensions: [
-      {
-        name: "date",
-      },
-    ],
-    metrics: [{ name: "active1DayUsers" }],
-  });
+export const runReport = cache(
+  async function runReport() {
+    const [response] = await analyticsDataClient.runReport({
+      property: `properties/${PROPERTY_ID}`,
+      // dateRanges: dateRanges,
+      dateRanges: [
+        {
+          startDate: dayjs().subtract(7, "day").format("YYYY-MM-DD"),
+          endDate: "today",
+        },
+      ],
+      dimensions: [
+        {
+          name: "date",
+        },
+      ],
+      metrics: [{ name: "active1DayUsers" }],
+    });
 
-  const report = response.rows?.map((row) => {
-    return {
-      date: row.dimensionValues?.[0].value || dayjs().format("YYYY-MM-DD"),
-      active1DayUsers: parseInt(row.metricValues?.[0].value ?? "0"),
-    };
-  });
+    const report = response.rows?.map((row) => {
+      return {
+        date: row.dimensionValues?.[0].value || dayjs().format("YYYY-MM-DD"),
+        active1DayUsers: parseInt(row.metricValues?.[0].value ?? "0"),
+      };
+    });
 
-  return report || [];
-}
+    return report || [];
+  },
+  ["runReport"],
+  { tags: ["runReport"], revalidate: 900 }
+);
