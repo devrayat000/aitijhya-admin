@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import BookFilter from "./books";
 import ChapterFilter from "./chapters";
 
-type FilterItem = { value: string };
+type FilterItem = { value: string; count: number };
 
 export interface FilterClientProps {
   initialData?: {

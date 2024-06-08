@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { getBooksBySubject } from "./actions";
 
 export type BookFilterProps = {
-  books?: { value: string }[];
+  books?: { value: string; count: number }[];
 };
 
 export default function BookFilter({ books }: BookFilterProps) {
@@ -61,8 +61,17 @@ export default function BookFilter({ books }: BookFilterProps) {
               </SelectTrigger>
               <SelectContent className="max-h-96">
                 {initialBooks?.map((book) => (
-                  <SelectItem key={book.value} value={book.value}>
-                    {book.value}
+                  <SelectItem
+                    key={book.value}
+                    value={book.value}
+                    className="block"
+                  >
+                    <div className="flex items-start gap-2">
+                      <span className="flex-1">{book.value}</span>
+                      <span className="text-muted-foreground text-xs py-px px-1 rounded-full border-border border">
+                        {book.count}
+                      </span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>

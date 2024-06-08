@@ -11,7 +11,9 @@ export default function Filters({
 }: {
   searchParams: SearchSchema;
 }) {
-  const subjects = use(postIndex.searchForFacetValues("subject.name", ""));
+  const subjects = use(
+    postIndex.searchForFacetValues("subject.name", "", { maxFacetHits: 100 })
+  );
   const books = searchParams.subject
     ? use(getBooksBySubject([], { subject: searchParams.subject }))
     : undefined;

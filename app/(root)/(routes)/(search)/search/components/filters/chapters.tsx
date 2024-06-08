@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import { getChaptersByBook } from "./actions";
 
 export type ChapterFilterProps = {
-  chapters?: { value: string }[];
+  chapters?: { value: string; count: number }[];
 };
 
 export default function ChapterFilter({ chapters }: ChapterFilterProps) {
@@ -62,8 +62,17 @@ export default function ChapterFilter({ chapters }: ChapterFilterProps) {
               </SelectTrigger>
               <SelectContent className="max-h-96">
                 {initialChapters?.map((chapter) => (
-                  <SelectItem key={chapter.value} value={chapter.value}>
-                    {chapter.value}
+                  <SelectItem
+                    key={chapter.value}
+                    value={chapter.value}
+                    className="block"
+                  >
+                    <div className="flex items-start gap-2">
+                      <span className="flex-1">{chapter.value}</span>
+                      <span className="text-muted-foreground text-xs py-px px-1 rounded-full border-border border">
+                        {chapter.count}
+                      </span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
