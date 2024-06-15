@@ -97,4 +97,9 @@ body,
   body {
     @apply bg-background text-foreground font-sans;
   }
+
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
 }

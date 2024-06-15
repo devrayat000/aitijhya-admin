@@ -23,11 +23,11 @@ export type BookFilterProps = {
   books?: { value: string; count: number }[];
 };
 
-export default function BookFilter({ books }: BookFilterProps) {
+export default function BookFilter({ books = [] }: BookFilterProps) {
   const form = useFormContext();
   const [initialBooks, getBooks, isLoading] = useFormState(
     getBooksBySubject,
-    books ?? []
+    books
   );
 
   useEffect(() => {
