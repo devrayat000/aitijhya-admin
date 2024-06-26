@@ -6,13 +6,13 @@ import { PostHit } from "@/server/post/service";
 import BookmarkButton from "./bookmark";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePopup } from "@/providers/popup-provider";
+import { useSearchParams } from "next/navigation";
 
 export type ResultCardProps = Omit<PostHit, "text" | "keywords">;
 
 export default function ResultCard(post: ResultCardProps) {
-  const isNative =
-    typeof window !== "undefined" && "isNative" in window && !!window.isNative;
-
+  const searchParams = useSearchParams();
   return (
     <article className="rounded-2xl overflow-hidden shadow-lg">
       <div className="relative isolate aspect-[3/4] rounded-t-inherit border-border border">
@@ -24,29 +24,48 @@ export default function ResultCard(post: ResultCardProps) {
         />
         <BookmarkButton postId={post.objectID} />
       </div>
-      <div className="grid grid-cols-3 gap-x-2 h-full text-white bg-card-result px-3 py-2">
-        <div>
-          <span className="block text-[0.5rem] leading-none">
-            {post.book.edition} - Edition
-          </span>
-          <h6 className="text-xs leading-none mt-px">{post.book.name}</h6>
+      <div className="text-white bg-card-result px-3 py-2">
+        <div className="grid grid-cols-2 gap-x-2 h-full">
+          <div>
+            <span className="block text-[0.5rem] leading-none">
+              {post.book.edition} - Edition
+            </span>
+            <h6 className="text-xs leading-none mt-px">{post.book.name}</h6>
+          </div>
+
+          <p className="text-xs rounded-full leading-none justify-self-end">
+            {post.chapter.name}
+          </p>
         </div>
-        <Button
-          size="sm"
-          variant="secondary"
-          className="text-xs h-7 py-0.5 leading-none rounded-full"
-          asChild
-        >
-          <a
-            href={post.imageUrl!}
+        <div className="mt-1 flex gap-x-2">
+          <Button
+            size="sm"
+            variant="secondary"
+            className="text-xs h-7 py-0.5 leading-none rounded-full w-full"
             title="Result image"
-            target={!isNative ? "_blank" : undefined}
-            rel={!isNative ? "noreferer" : undefined}
+            onClick={() => usePopup.getState().open(post)}
           >
-            See full image
-          </a>
-        </Button>
-        <p className="text-xs rounded-full leading-none">{post.chapter.name}</p>
+            Full Page
+          </Button>
+          <Button
+            size="sm"
+            variant="default"
+            className="text-xs h-7 py-0.5 leading-none rounded-full w-full"
+            title="Marked image"
+            onClick={() =>
+              usePopup.getState().open({
+                ...post,
+                imageUrl: `${
+                  process.env.NEXT_PUBLIC_OCR_URL
+                }/marked-image?q=${searchParams.get("query")}&post_id=${
+                  post.objectID
+                }`,
+              })
+            }
+          >
+            Highlighted
+          </Button>
+        </div>
       </div>
     </article>
   );

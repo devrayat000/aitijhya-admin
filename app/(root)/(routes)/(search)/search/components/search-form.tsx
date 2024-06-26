@@ -81,11 +81,13 @@ export default function SearchForm() {
 
   return (
     <form role="search" method="get" action="/search" onSubmit={onSubmit}>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 px-2">
         <div className="relative isolate z-10 px-4 flex flex-1 h-12 w-full rounded-full border border-input bg-input py-2 text-sm items-center justify-between gap-x-2">
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
             placeholder="Questions or keywords..."
+            autoComplete="off"
+            aria-autocomplete="none"
             className="flex-1 bg-transparent text-sm p-0 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             type="search"
             name="query"
@@ -94,7 +96,6 @@ export default function SearchForm() {
             ref={inputRef}
             onFocus={() => setShowSuggestions(true)}
           />
-          <Separator orientation="vertical" className="bg-slate-400 w-0.5" />
 
           <Button
             size="icon"
@@ -143,9 +144,11 @@ export default function SearchForm() {
         <Button
           type="submit"
           size="icon"
-          className="w-12 h-12 rounded-full bg-card-result hover:bg-card-result/90"
+          className="hidden md:inline-flex w-12 h-12 rounded-full bg-card-result hover:bg-card-result/90"
           variant="default"
+          title="Search"
         >
+          <span className="sr-only">Search</span>
           <Search className="h-6 w-6 text-white" />
         </Button>
       </div>
