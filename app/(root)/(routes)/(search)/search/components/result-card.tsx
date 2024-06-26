@@ -57,9 +57,9 @@ export default function ResultCard(post: ResultCardProps) {
                 ...post,
                 imageUrl: `${
                   process.env.NEXT_PUBLIC_OCR_URL
-                }/marked-image?image_url=${post.imageUrl}&q=${searchParams.get(
-                  "query"
-                )}&post_id=${post.objectID}`,
+                }/marked-image?q=${searchParams.get("query")}&post_id=${
+                  post.objectID
+                }`,
               })
             }
           >
