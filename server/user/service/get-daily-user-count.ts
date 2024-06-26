@@ -6,12 +6,13 @@ import { unstable_cache as cache } from "next/cache";
 const dailyUserStatement = db
   .select({
     count: count(users.id).as("user_count"),
-    created_date: sql`to_char(${users.createdAt}, 'DD Mon YYYY')`
-      .mapWith(String)
-      .as("created_date"),
+    created_date:
+      sql`to_date(to_char(${users.createdAt}, 'DD Mon YYYY'), 'DD Mon YYYY')`
+        .mapWith(String)
+        .as("created_date"),
   })
   .from(users)
-  .groupBy(sql`to_char(${users.createdAt}, 'DD Mon YYYY')`)
+  .groupBy(sql`created_date`)
   .orderBy(desc(sql`created_date`))
   .limit(7)
   .prepare("get_daily_user_count_statement");
