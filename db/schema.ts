@@ -6,6 +6,8 @@ import {
   unique,
   timestamp,
   boolean,
+  primaryKey,
+  foreignKey,
 } from "drizzle-orm/pg-core";
 import { users } from "./auth";
 import { relations } from "drizzle-orm";
@@ -18,6 +20,7 @@ export const subject = pgTable("subjects", {
 
 export const subjectRelations = relations(subject, ({ many }) => ({
   books: many(bookAuthor),
+  ads: many(adsToSubjects),
 }));
 
 export const bookAuthor = pgTable(
@@ -121,6 +124,50 @@ export const bookmarkRelations = relations(bookmark, ({ one }) => ({
   post: one(post, {
     fields: [bookmark.postId],
     references: [post.id],
+  }),
+}));
+
+export const ad = pgTable("ads", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title").notNull(),
+  description: text("description"),
+  link: text("link").notNull().unique(),
+  imageUrl: text("image_url").notNull(),
+  classes: text("classes").array(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const adsToSubjects = pgTable(
+  "ads_to_subjects",
+  {
+    adId: uuid("ad_id")
+      .notNull()
+      .references(() => ad.id, { onDelete: "cascade" }),
+    subjectId: uuid("subject_id")
+      .notNull()
+      .references(() => subject.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    compoundKey: primaryKey({
+      columns: [table.adId, table.subjectId],
+      name: "ad_subject_pk",
+    }),
+  })
+);
+
+export const adsRelations = relations(ad, ({ many }) => ({
+  subjects: many(adsToSubjects),
+}));
+
+export const adsToSubjectsRelations = relations(adsToSubjects, ({ one }) => ({
+  ad: one(ad, {
+    fields: [adsToSubjects.adId],
+    references: [ad.id],
+  }),
+  subject: one(subject, {
+    fields: [adsToSubjects.subjectId],
+    references: [subject.id],
   }),
 }));
 

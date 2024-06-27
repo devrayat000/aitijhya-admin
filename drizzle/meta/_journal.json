@@ -64,6 +64,20 @@
       "when": 1714664122823,
       "tag": "0008_rainy_shinobi_shaw",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1719469015073,
+      "tag": "0009_fancy_power_pack",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1719483149577,
+      "tag": "0010_lonely_blink",
+      "breakpoints": true
     }
   ]
 }

@@ -15,6 +15,7 @@ import { getStats } from "@/server/miscellaneous/service/get-stats";
 import { runReport } from "@/server/miscellaneous/service/get-analytics";
 import DailyActiveUserBar from "./components/daily-active-user-count";
 import CountCard from "./components/count-card";
+import db from "@/lib/db";
 
 interface DashboardPageProps {
   params: {
