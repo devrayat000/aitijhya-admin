@@ -2,6 +2,9 @@ import Image from "next/image";
 import SearchForm from "../(search)/search/components/search-form";
 
 import logoSingle from "@/assets/logo_single.png";
+import Stats from "./components/stats";
+import { Suspense } from "react";
+import Loading from "@/app/loading";
 
 // const SearchForm = dynamic(() => import("./search/components/search-form"), {
 //   ssr: false,
@@ -16,6 +19,11 @@ export default function LandingPage() {
         </div>
         <div className="max-w-[52rem] mx-auto">
           <SearchForm />
+        </div>
+        <div>
+          <Suspense fallback={<Loading />}>
+            <Stats />
+          </Suspense>
         </div>
       </div>
     </div>
