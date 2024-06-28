@@ -9,6 +9,7 @@ import { useClickAway } from "@uidotdev/usehooks";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSearchStore, useStore } from "@/hooks/use-search-history";
+import { cn } from "@/lib/utils";
 
 async function getOCR(formData: FormData) {
   const url = new URL("/image-to-text", process.env.NEXT_PUBLIC_OCR_URL);
@@ -82,7 +83,7 @@ export default function SearchForm() {
   return (
     <form role="search" method="get" action="/search" onSubmit={onSubmit}>
       <div className="flex items-center gap-2 px-2">
-        <div className="relative isolate z-10 px-4 flex flex-1 h-12 w-full rounded-full border border-input bg-input py-2 text-sm items-center justify-between gap-x-2">
+        <div className="relative z-[1200] isolate px-4 flex flex-1 h-12 w-full rounded-full border border-input bg-input py-2 text-sm items-center justify-between gap-x-2">
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
             placeholder="Questions or keywords..."
@@ -120,17 +121,19 @@ export default function SearchForm() {
           {showSuggestions && filteredHistory && filteredHistory.length > 0 && (
             <motion.ul
               ref={popupRef}
-              className="absolute top-full left-0 mt-2 w-full shadow z-50 rounded-lg bg-background"
+              className="absolute top-full left-0 mt-1 w-full shadow z-[1200] rounded-lg border border-border bg-background"
             >
               {filteredHistory.map((suggestion, index) => (
                 <motion.li
                   key={index}
-                  className={buttonVariants({
-                    size: "lg",
-                    variant: "ghost",
-                    className:
-                      "w-full cursor-pointer text-left justify-stretch",
-                  })}
+                  className={cn(
+                    buttonVariants({
+                      size: "lg",
+                      variant: "ghost",
+                      className:
+                        "w-full cursor-pointer text-left justify-stretch",
+                    })
+                  )}
                   role="button"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >

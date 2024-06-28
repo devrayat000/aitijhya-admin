@@ -19,25 +19,35 @@ export interface FilterClientProps {
 
 export default function FilterClient({ initialData }: FilterClientProps) {
   const searchParams = useSearchParams();
+
   const form = useForm({
     defaultValues: {
-      subject: searchParams.get("subject") || undefined,
-      book: searchParams.get("book") || undefined,
-      chapter: searchParams.get("chapter") || undefined,
+      subjects:
+        initialData?.subjects?.filter((s) =>
+          searchParams.getAll("subjects").includes(s.value)
+        ) || [],
+      books:
+        initialData?.books?.filter((s) =>
+          searchParams.getAll("books").includes(s.value)
+        ) || [],
+      chapters:
+        initialData?.chapters?.filter((s) =>
+          searchParams.getAll("chapters").includes(s.value)
+        ) || [],
     },
-  });
-
-  console.log({
-    subject: searchParams.get("subject") || undefined,
-    book: searchParams.get("book") || undefined,
-    chapter: searchParams.get("chapter") || undefined,
   });
 
   return (
     <Form {...form}>
       <SubjectFilter subjects={initialData?.subjects} />
-      <BookFilter books={initialData?.books} />
-      <ChapterFilter chapters={initialData?.chapters} />
+      <BookFilter
+        books={initialData?.books}
+        query={searchParams.get("query")!}
+      />
+      <ChapterFilter
+        chapters={initialData?.chapters}
+        query={searchParams.get("query")!}
+      />
     </Form>
   );
 }

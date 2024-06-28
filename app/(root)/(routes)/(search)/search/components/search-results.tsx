@@ -12,16 +12,9 @@ export default function SearchResults({
   searchParams: SearchSchema;
 }) {
   const searchParams = use(searchSchema.parseAsync(params));
-  const { page: currentPage, query, subject, chapter, book } = searchParams;
+  console.log("Results", searchParams.books);
 
-  const facets = without(
-    [
-      subject ? `subject.name:${subject}` : null,
-      book ? `book.name:${book}` : null,
-      chapter ? `chapter.name:${chapter}` : null,
-    ],
-    null
-  );
+  const { page: currentPage, query, subjects, chapters, books } = searchParams;
 
   const results = use(
     postIndex.search<ResultCardProps>(query, {
@@ -36,7 +29,11 @@ export default function SearchResults({
         "chapter",
         "keywords",
       ],
-      facetFilters: facets as unknown as string[],
+      facetFilters: [
+        subjects?.map((subject) => `subject.name:${subject}`) || [],
+        books?.map((book) => `book.name:${book}`) || [],
+        chapters?.map((chapter) => `chapter.name:${chapter}`) || [],
+      ],
     })
   );
 
@@ -44,7 +41,7 @@ export default function SearchResults({
 
   return (
     <div className="@container/grid w-full">
-      <section className="flex flex-col @sm/grid:grid @lg/grid:grid-cols-2 @xl/grid:grid-cols-3 gap-4 py-8">
+      <section className="flex flex-col @sm/grid:grid @sm/grid:grid-cols-2 @md/grid:grid-cols-3 gap-4 py-8">
         {posts.length ? (
           posts.map((post) => <ResultCard key={post.objectID} {...post} />)
         ) : (

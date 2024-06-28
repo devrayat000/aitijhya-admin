@@ -1,5 +1,5 @@
 import { use } from "react";
-import { SearchSchema } from "./searchSchema";
+import { SearchSchema, searchSchema } from "./searchSchema";
 import { postIndex } from "@/lib/algolia";
 import { getBooksBySubject, getChaptersByBook } from "./filters/actions";
 import FilterSheet from "./filters/sheet";
@@ -11,17 +11,31 @@ export default function Filters({
 }: {
   searchParams: SearchSchema;
 }) {
+  const params = use(searchSchema.parseAsync(searchParams));
+
   const subjects = use(
-    postIndex.searchForFacetValues("subject.name", "", { maxFacetHits: 100 })
+    postIndex.searchForFacetValues("subject.name", "", {
+      maxFacetHits: 100,
+      query: params.query,
+    })
   );
-  const books = searchParams.subject
-    ? use(getBooksBySubject([], { subject: searchParams.subject }))
+
+  const books = params.subjects?.length
+    ? use(
+        getBooksBySubject([], {
+          subjects: params.subjects || [],
+          query: params.query,
+        })
+      )
     : undefined;
-  const chapters = searchParams.book
+  console.log("Filter Component", params.books);
+
+  const chapters = params.books?.length
     ? use(
         getChaptersByBook([], {
-          subject: searchParams.subject,
-          book: searchParams.book,
+          subjects: params.subjects || [],
+          books: params.books || [],
+          query: params.query,
         })
       )
     : undefined;
@@ -29,7 +43,7 @@ export default function Filters({
   const initial = {
     subjects: subjects.facetHits,
     books: books,
-    chapters,
+    chapters: chapters,
   };
 
   return (

@@ -1,3 +1,4 @@
+import Footer from "../../components/footer";
 import Header from "../../components/header";
 
 export default function MainLayout({
@@ -9,6 +10,7 @@ export default function MainLayout({
     <>
       <Header />
       <div className="relative z-10">{children}</div>
+      <Footer className="absolute bottom-0" />
     </>
   );
 }

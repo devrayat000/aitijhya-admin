@@ -2,28 +2,32 @@
 
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import { useFormContext } from "react-hook-form";
 import { useFormState } from "react-dom";
 import { useEffect } from "react";
 import { getBooksBySubject } from "./actions";
+import { SearchSchema } from "../searchSchema";
+import Select from "@/components/react-select";
 
 export type BookFilterProps = {
   books?: { value: string; count: number }[];
+  query: string;
 };
 
-export default function BookFilter({ books = [] }: BookFilterProps) {
+export default function BookFilter({ books = [], query }: BookFilterProps) {
   const form = useFormContext();
   const [initialBooks, getBooks, isLoading] = useFormState(
     getBooksBySubject,
@@ -31,52 +35,42 @@ export default function BookFilter({ books = [] }: BookFilterProps) {
   );
 
   useEffect(() => {
-    const { unsubscribe } = form.watch(({ subject }) => {
-      if (subject) {
-        getBooks({ subject });
+    const { unsubscribe } = form.watch(({ subjects }) => {
+      if (subjects?.length) {
+        // @ts-ignore
+        getBooks({ subjects: subjects.map((s) => s.value), query });
       }
     });
     return unsubscribe;
-  }, [form, getBooks]);
+  }, [form, getBooks, query]);
 
   return (
     <FormField
       control={form.control}
-      name="book"
+      name="books"
       disabled={
         form.formState.isSubmitting || !initialBooks?.length || isLoading
       }
       render={({ field }) => (
-        <FormItem>
-          <FormLabel>Book</FormLabel>
+        <FormItem className="mt-2">
+          <FormLabel>Books</FormLabel>
           <FormControl>
             <Select
-              onValueChange={field.onChange}
-              value={field.value}
-              disabled={field.disabled}
               name={field.name}
-            >
-              <SelectTrigger onBlur={field.onBlur}>
-                <SelectValue placeholder="Select a book" />
-              </SelectTrigger>
-              <SelectContent className="max-h-96">
-                {initialBooks?.map((book) => (
-                  <SelectItem
-                    key={book.value}
-                    value={book.value}
-                    className="block"
-                  >
-                    <div className="flex items-start gap-2">
-                      <span className="flex-1">{book.value}</span>
-                      <span className="text-muted-foreground text-xs py-px px-1 rounded-full border-border border">
-                        {book.count}
-                      </span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onBlur={field.onBlur}
+              isDisabled={field.disabled}
+              options={initialBooks}
+              isMulti
+              value={field.value}
+              getOptionValue={(option) => option.value}
+              getOptionLabel={(option) => `${option.value} (${option.count})`}
+              onChange={field.onChange}
+              closeMenuOnSelect={false}
+            />
           </FormControl>
+          <FormDescription className="text-xs">
+            You can select multiple items
+          </FormDescription>
           <FormMessage />
         </FormItem>
       )}

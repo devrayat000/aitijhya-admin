@@ -10,30 +10,9 @@ export default function HomeLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen">
+    <div className="relative h-screen overflow-hidden">
       {children}
       <GoogleAnalytics gaId={process.env.GA_TRACKING_ID!} />
-      <footer className="absolute bottom-0 w-full px-4 md:px-16 grid place-items-center h-10 md:h-16 text-slate-500">
-        <div className="flex justify-between items-center w-full">
-          <p className="text-xs">&copy; 2024 | Biology Haters</p>
-          <p className="text-xs">
-            Developed by{" "}
-            <a
-              href="https://www.facebook.com/rayat.ass"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                buttonVariants({
-                  variant: "link",
-                  className: "text-slate-500 text-xs p-0 underline",
-                })
-              )}
-            >
-              @Zul Ikram
-            </a>
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

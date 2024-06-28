@@ -6,34 +6,38 @@ import { postIndex } from "@/lib/algolia";
 
 export async function getBooksBySubject(
   _: { value: string }[],
-  { subject }: { subject: string }
+  { subjects, query }: { subjects: string[]; query: string }
 ) {
-  const facets = without([subject ? `subject.name:${subject}` : null], null);
+  // const facets = without([subject ? `subject.name:${subject}` : null], null);
 
   const books = await postIndex.searchForFacetValues("book.name", "", {
     maxFacetHits: 100,
     // @ts-ignore
-    facetFilters: facets,
+    facetFilters: [subjects?.map((subject) => `subject.name:${subject}`)],
+    query,
   });
+
   return books.facetHits;
 }
 
 export async function getChaptersByBook(
   _: { value: string }[],
-  { book, subject }: { book: string; subject?: string }
+  {
+    books,
+    subjects,
+    query,
+  }: { books: string[]; subjects: string[]; query: string }
 ) {
-  const facets = without(
-    [
-      book ? `book.name:${book}` : null,
-      subject ? `subject.name:${subject}` : null,
-    ],
-    null
-  );
+  console.log(books, subjects, query);
 
-  const books = await postIndex.searchForFacetValues("chapter.name", "", {
+  const chapters = await postIndex.searchForFacetValues("chapter.name", "", {
     maxFacetHits: 100,
     // @ts-ignore
-    facetFilters: facets,
+    facetFilters: [
+      books?.map((book) => `book.name:${book}`),
+      subjects?.map((subject) => `subject.name:${subject}`),
+    ],
+    query,
   });
-  return books.facetHits;
+  return chapters.facetHits;
 }
